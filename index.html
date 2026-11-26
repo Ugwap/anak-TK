@@ -7,42 +7,317 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Hitung TK" />
-  <title>Hitung Hewan, Bentuk & Warna - TK</title>
+  <title>Dunia Bermain & Belajar TK</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+
   <style>
+    :root {
+      --font-kids: "Fredoka", "Comic Sans MS", "Trebuchet MS", system-ui, sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
+      font-family: var(--font-kids);
     }
 
     body {
-      background: #e0f2fe;
+      background: linear-gradient(180deg, #e0f2fe 0%, #fef9c3 100%);
       color: #0f172a;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100dvh;
-      padding: 10px;
-      gap: 8px;
-      overflow: hidden;
+      padding: 12px;
+      overflow-x: hidden;
     }
 
-    .top-hud {
+    .app-shell {
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Layar 1: Sapaan & Isi Nama */
+    .welcome-card {
+      width: 100%;
+      background: #ffffff;
+      border: 3px solid #38bdf8;
+      border-radius: 26px;
+      padding: 22px 18px;
+      box-shadow: 0 10px 24px rgba(2, 132, 199, 0.16);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .mascot-row {
+      font-size: 3.2rem;
+      line-height: 1.1;
+    }
+
+    .welcome-title {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0369a1;
+      letter-spacing: 0.3px;
+    }
+
+    .field-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .field-label {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .name-input {
+      width: 100%;
+      font-size: 1.15rem;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border: 2.5px solid #7dd3fc;
+      background: #f0f9ff;
+      color: #0f172a;
+      user-select: text;
+      -webkit-user-select: text;
+      outline: none;
+    }
+
+    .name-input:focus {
+      border-color: #0284c7;
+      background: #ffffff;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .mood-btn {
+      padding: 10px 6px;
+      border-radius: 16px;
+      border: 2.5px solid #e2e8f0;
+      background: #f8fafc;
+      color: #1e293b;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .mood-btn span.emo {
+      font-size: 1.5rem;
+    }
+
+    .mood-btn.selected {
+      background: #fef9c3;
+      border-color: #eab308;
+      box-shadow: 0 3px 0 #ca8a04;
+      transform: translateY(-1px);
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      border: none;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #0369a1;
+      transition: transform 0.1s ease;
+    }
+
+    .primary-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #0369a1;
+    }
+
+    .warn-text {
+      color: #dc2626;
+      font-size: 0.95rem;
+      font-weight: 600;
+      min-height: 20px;
+    }
+
+    /* Layar 2: Menu 6 Kotak Game */
+    .lobby-header {
+      width: 100%;
+      background: #ffffff;
+      border: 3px solid #7dd3fc;
+      border-radius: 22px;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 5px 0 #38bdf8;
+    }
+
+    .greeting-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .greeting-main {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0369a1;
+    }
+
+    .greeting-sub {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .small-btn {
+      padding: 8px 12px;
+      border-radius: 14px;
+      border: 2px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .games-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .game-box {
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      border-radius: 22px;
+      padding: 14px 12px;
+      min-height: 144px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #cbd5e1;
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+
+    .game-box:active {
+      transform: translateY(2px);
+    }
+
+    .game-box.ready {
+      background: #f0f9ff;
+      border-color: #0284c7;
+      box-shadow: 0 5px 0 #0284c7;
+    }
+
+    .game-box.coming {
+      background: #f8fafc;
+      border-style: dashed;
+      border-color: #94a3b8;
+      box-shadow: 0 4px 0 #e2e8f0;
+    }
+
+    .game-icon {
+      font-size: 2.3rem;
+      line-height: 1.1;
+    }
+
+    .game-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .game-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .game-box.ready .game-tag {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .game-box.coming .game-tag {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    .idea-banner {
+      width: 100%;
+      background: #ffffff;
+      border: 2.5px solid #facc15;
+      border-radius: 18px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      text-align: center;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Layar 3: Area Game Aktif */
+    .top-hud {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
       font-weight: 700;
       font-size: 0.9rem;
     }
@@ -54,11 +329,12 @@
       border-radius: 999px;
       box-shadow: 0 3px 0 #38bdf8;
       white-space: nowrap;
+      color: #0f172a;
+      cursor: pointer;
     }
 
     .level-bar {
       width: 100%;
-      max-width: 440px;
       display: flex;
       justify-content: center;
       gap: 6px;
@@ -66,13 +342,13 @@
 
     .lvl-btn {
       flex: 1;
-      padding: 6px 8px;
-      border-radius: 12px;
+      padding: 7px 6px;
+      border-radius: 14px;
       border: 2px solid #93c5fd;
       background: #ffffff;
       color: #1e3a8a;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       cursor: pointer;
       transition: transform 0.1s ease, background 0.15s ease;
     }
@@ -90,7 +366,6 @@
 
     .canvas-wrap {
       width: 100%;
-      max-width: 440px;
       aspect-ratio: 3 / 4;
       border-radius: 22px;
       overflow: hidden;
@@ -108,23 +383,232 @@
   </style>
 </head>
 <body>
-  <div class="top-hud">
-    <div class="pill">⭐ Bintang: <span id="starsEl">0</span></div>
-    <div class="pill">🎯 Dapat: <span id="pickedEl">0</span> / <span id="targetEl">2</span></div>
-    <button id="voiceBtn" class="pill" style="cursor:pointer; background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊 Ulangi</button>
-  </div>
+  <div class="app-shell">
+    <!-- LAYAR 1: SAPAAN & ISI NAMA (PERTAMA KALI MASUK) -->
+    <section id="welcomeScreen" class="screen">
+      <div class="welcome-card">
+        <div class="mascot-row">🐰 ⭐ 🎨 🐶</div>
+        <h1 class="welcome-title">Halo! Ayo Main & Belajar!</h1>
 
-  <div class="level-bar">
-    <button class="lvl-btn active" data-level="easy">Mudah (Bentuk + Warna)</button>
-    <button class="lvl-btn" data-level="medium">Sedang (+ Hewan)</button>
-    <button class="lvl-btn" data-level="mix">Campuran Seru</button>
-  </div>
+        <div class="field-box">
+          <label for="childNameInput" class="field-label">Siapa nama kamu?</label>
+          <input
+            id="childNameInput"
+            class="name-input"
+            type="text"
+            maxlength="18"
+            placeholder="Ketik nama panggilanmu..."
+            autocomplete="off"
+          />
+        </div>
 
-  <div class="canvas-wrap">
-    <canvas id="gameCanvas" width="440" height="586"></canvas>
+        <div class="field-box">
+          <div class="field-label">Hari ini perasaanmu gimana?</div>
+          <div class="mood-grid" id="moodGrid">
+            <button type="button" class="mood-btn selected" data-mood="Semangat">
+              <span class="emo">😄</span>
+              <span>Semangat</span>
+            </button>
+            <button type="button" class="mood-btn" data-mood="Ceria">
+              <span class="emo">🥳</span>
+              <span>Ceria</span>
+            </button>
+            <button type="button" class="mood-btn" data-mood="Penasaran">
+              <span class="emo">🤩</span>
+              <span>Penasaran</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="welcomeWarn" class="warn-text"></div>
+        <button id="enterLobbyBtn" type="button" class="primary-btn">Lanjut Pilih Game →</button>
+      </div>
+    </section>
+
+    <!-- LAYAR 2: 6 KOTAK PILIHAN GAME -->
+    <section id="lobbyScreen" class="screen">
+      <div class="lobby-header">
+        <div class="greeting-wrap">
+          <div id="lobbyGreeting" class="greeting-main">Hai, Teman!</div>
+          <div id="lobbySub" class="greeting-sub">Pilih 1 dari 6 kotak game di bawah</div>
+        </div>
+        <button id="editProfileBtn" type="button" class="small-btn">✏️ Ganti Nama</button>
+      </div>
+
+      <div id="gamesGrid" class="games-grid"></div>
+
+      <div id="ideaBanner" class="idea-banner">
+        💡 Kotak 1 sudah siap dimainkan. 5 kotak lainnya disiapkan untuk ide game TK berikutnya!
+      </div>
+    </section>
+
+    <!-- LAYAR 3: GAME AKTIF (KOTAK 1: HITUNG HEWAN, BENTUK & WARNA) -->
+    <section id="gameScreen" class="screen">
+      <div class="top-hud">
+        <button id="backLobbyBtn" type="button" class="pill" style="background:#f1f5f9; border-color:#94a3b8; box-shadow:0 3px 0 #64748b;">← Menu</button>
+        <div class="pill">⭐ <span id="starsEl">0</span></div>
+        <div class="pill">🎯 <span id="pickedEl">0</span>/<span id="targetEl">2</span></div>
+        <button id="voiceBtn" type="button" class="pill" style="background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊</button>
+      </div>
+
+      <div class="level-bar">
+        <button type="button" class="lvl-btn active" data-level="easy">Mudah</button>
+        <button type="button" class="lvl-btn" data-level="medium">Sedang (+Hewan)</button>
+        <button type="button" class="lvl-btn" data-level="mix">Campuran</button>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas" width="440" height="586"></canvas>
+      </div>
+    </section>
   </div>
 
   <script>
+    // --- Navigasi Layar & Profil Anak ---
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const lobbyScreen = document.getElementById("lobbyScreen");
+    const gameScreen = document.getElementById("gameScreen");
+
+    const childNameInput = document.getElementById("childNameInput");
+    const moodBtns = document.querySelectorAll(".mood-btn");
+    const welcomeWarn = document.getElementById("welcomeWarn");
+    const enterLobbyBtn = document.getElementById("enterLobbyBtn");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    const backLobbyBtn = document.getElementById("backLobbyBtn");
+
+    const lobbyGreeting = document.getElementById("lobbyGreeting");
+    const lobbySub = document.getElementById("lobbySub");
+    const gamesGrid = document.getElementById("gamesGrid");
+    const ideaBanner = document.getElementById("ideaBanner");
+
+    const STORAGE_NAME_KEY = "tk_player_name";
+    const STORAGE_MOOD_KEY = "tk_player_mood";
+
+    let selectedMood = localStorage.getItem(STORAGE_MOOD_KEY) || "Semangat";
+
+    const SIX_GAMES = [
+      {
+        id: "hitung-hewan-bentuk",
+        title: "Hitung Hewan, Bentuk & Warna",
+        icon: "🐰🔺",
+        ready: true,
+        note: "Game 1 siap dimainkan! Ayo hitung bentuk, warna, dan hewan."
+      },
+      {
+        id: "slot-2",
+        title: "Game Edukasi 2",
+        icon: "🧩",
+        ready: false,
+        note: "Slot Game 2: masih disiapkan (ide berikutnya)."
+      },
+      {
+        id: "slot-3",
+        title: "Game Edukasi 3",
+        icon: "🎨",
+        ready: false,
+        note: "Slot Game 3: masih disiapkan (ide berikutnya)."
+      },
+      {
+        id: "slot-4",
+        title: "Game Edukasi 4",
+        icon: "🐾",
+        ready: false,
+        note: "Slot Game 4: masih disiapkan (ide berikutnya)."
+      },
+      {
+        id: "slot-5",
+        title: "Game Edukasi 5",
+        icon: "🔤",
+        ready: false,
+        note: "Slot Game 5: masih disiapkan (ide berikutnya)."
+      },
+      {
+        id: "slot-6",
+        title: "Game Edukasi 6",
+        icon: "🌈",
+        ready: false,
+        note: "Slot Game 6: masih disiapkan (ide berikutnya)."
+      }
+    ];
+
+    function showScreen(target) {
+      [welcomeScreen, lobbyScreen, gameScreen].forEach((s) => s.classList.remove("active"));
+      target.classList.add("active");
+    }
+
+    function syncMoodUI() {
+      moodBtns.forEach((btn) => {
+        btn.classList.toggle("selected", btn.dataset.mood === selectedMood);
+      });
+    }
+
+    function renderLobby() {
+      const savedName = (localStorage.getItem(STORAGE_NAME_KEY) || "").trim();
+      lobbyGreeting.textContent = `Hai, ${savedName || "Teman"}!`;
+      lobbySub.textContent = `Suasana hati: ${selectedMood} • Pilih 1 dari 6 kotak`;
+
+      gamesGrid.innerHTML = "";
+      SIX_GAMES.forEach((g, idx) => {
+        const box = document.createElement("button");
+        box.type = "button";
+        box.className = `game-box ${g.ready ? "ready" : "coming"}`;
+        box.innerHTML = `
+          <div class="game-icon">${g.icon}</div>
+          <div class="game-title">${idx + 1}. ${g.title}</div>
+          <span class="game-tag">${g.ready ? "Main Sekarang" : "Segera Hadir"}</span>
+        `;
+
+        box.addEventListener("click", () => {
+          if (g.ready) {
+            openCountGame();
+          } else {
+            ideaBanner.textContent = `💡 ${g.note}`;
+            speakText(`${g.title} masih disiapkan`);
+          }
+        });
+
+        gamesGrid.appendChild(box);
+      });
+    }
+
+    moodBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedMood = btn.dataset.mood;
+        syncMoodUI();
+      });
+    });
+
+    enterLobbyBtn.addEventListener("click", () => {
+      const name = childNameInput.value.trim();
+      if (!name) {
+        welcomeWarn.textContent = "Yuk, tulis namamu dulu ya!";
+        childNameInput.focus();
+        return;
+      }
+      welcomeWarn.textContent = "";
+      localStorage.setItem(STORAGE_NAME_KEY, name);
+      localStorage.setItem(STORAGE_MOOD_KEY, selectedMood);
+      renderLobby();
+      showScreen(lobbyScreen);
+      speakText(`Halo ${name}, ayo pilih game kesukaanmu!`);
+    });
+
+    editProfileBtn.addEventListener("click", () => {
+      childNameInput.value = localStorage.getItem(STORAGE_NAME_KEY) || "";
+      syncMoodUI();
+      welcomeWarn.textContent = "";
+      showScreen(welcomeScreen);
+    });
+
+    backLobbyBtn.addEventListener("click", () => {
+      if ("speechSynthesis" in window) {
+        try { window.speechSynthesis.cancel(); } catch (_) {}
+      }
+      renderLobby();
+      showScreen(lobbyScreen);
+    });
+
+    // --- Game 1: Hitung Hewan, Bentuk & Warna ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const starsEl = document.getElementById("starsEl");
@@ -206,6 +690,7 @@
     }
 
     function getMissionSpeech() {
+      if (!mission) return "";
       if (mission.animal) {
         return `Cari ${targetCount} ${mission.shape.name} warna ${mission.color.name} bergambar ${mission.animal.name}`;
       }
@@ -335,18 +820,28 @@
         };
       });
 
-      if (autoSpeak) {
+      if (autoSpeak && gameScreen.classList.contains("active")) {
         setTimeout(() => speakText(getMissionSpeech()), 220);
       }
+    }
+
+    function openCountGame() {
+      showScreen(gameScreen);
+      setupRound(true);
     }
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      if (!mission) {
+        requestAnimationFrame(draw);
+        return;
+      }
+
       ctx.fillStyle = "#f0f9ff";
       ctx.fillRect(0, 0, canvas.width, 210);
 
-      ctx.font = "56px system-ui";
+      ctx.font = "56px var(--font-kids)";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(helperAnimal.emoji, 68, 96);
@@ -369,13 +864,13 @@
       ctx.stroke();
 
       if (mission.animal) {
-        ctx.font = "24px system-ui";
+        ctx.font = "24px var(--font-kids)";
         ctx.fillText(mission.animal.emoji, 20, -18);
       }
       ctx.restore();
 
       ctx.fillStyle = "#0f172a";
-      ctx.font = "bold 19px system-ui";
+      ctx.font = "700 19px var(--font-kids)";
       ctx.textAlign = "left";
       const ruleText = mission.animal
         ? `Cari ${targetCount} ${mission.shape.name} ${mission.color.name} (${mission.animal.emoji})`
@@ -383,7 +878,7 @@
       ctx.fillText(ruleText, 204, 70, 202);
 
       ctx.fillStyle = statusColor;
-      ctx.font = "bold 16px system-ui";
+      ctx.font = "600 16px var(--font-kids)";
       ctx.fillText(statusMsg, 204, 106, 202);
 
       for (let i = 0; i < targetCount; i++) {
@@ -421,12 +916,12 @@
         ctx.stroke();
         ctx.restore();
 
-        ctx.font = "22px system-ui";
+        ctx.font = "22px var(--font-kids)";
         ctx.textAlign = "left";
         ctx.fillText(card.animal.emoji, 20, 22);
 
         if (card.picked) {
-          ctx.font = "bold 20px system-ui";
+          ctx.font = "700 20px var(--font-kids)";
           ctx.textAlign = "right";
           ctx.fillStyle = "#16a34a";
           ctx.fillText("✓", card.w - 10, 22);
@@ -454,7 +949,7 @@
     }
 
     canvas.addEventListener("pointerdown", (e) => {
-      if (locked) return;
+      if (locked || !mission) return;
       const rect = canvas.getBoundingClientRect();
       const px = (e.clientX - rect.left) * (canvas.width / rect.width);
       const py = (e.clientY - rect.top) * (canvas.height / rect.height);
@@ -483,7 +978,8 @@
                 [659.25, 0.1, 0.12, "triangle"],
                 [783.99, 0.2, 0.22, "triangle"]
               ]);
-              speakText("Hebat sekali! Kamu dapat bintang");
+              const playerName = (localStorage.getItem(STORAGE_NAME_KEY) || "").trim();
+              speakText(playerName ? `Hebat sekali ${playerName}! Kamu dapat bintang` : "Hebat sekali! Kamu dapat bintang");
               setTimeout(() => setupRound(true), 1250);
             }
           } else {
@@ -510,8 +1006,19 @@
       });
     });
 
+    // Inisialisasi awal
+    syncMoodUI();
     setupRound(false);
     draw();
+
+    const existingName = (localStorage.getItem(STORAGE_NAME_KEY) || "").trim();
+    if (existingName) {
+      renderLobby();
+      showScreen(lobbyScreen);
+    } else {
+      childNameInput.value = "";
+      showScreen(welcomeScreen);
+    }
   </script>
 </body>
 </html>
