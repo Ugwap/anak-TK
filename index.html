@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0284c7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Hitung TK" />
   <title>Hitung Hewan, Bentuk & Warna - TK</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -249,8 +258,8 @@
       locked = false;
       pickedCount = 0;
       targetCount = levelMode === "easy"
-        ? Math.floor(Math.random() * 3) + 1 // 1 - 3
-        : Math.floor(Math.random() * 3) + 2; // 2 - 4
+        ? Math.floor(Math.random() * 3) + 1
+        : Math.floor(Math.random() * 3) + 2;
 
       helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
       const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
@@ -334,7 +343,6 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Panel misi atas
       ctx.fillStyle = "#f0f9ff";
       ctx.fillRect(0, 0, canvas.width, 210);
 
@@ -351,7 +359,6 @@
       ctx.fill();
       ctx.stroke();
 
-      // Preview bentuk, warna & hewan target
       ctx.save();
       ctx.translate(166, 82);
       ctx.fillStyle = mission.color.fill;
@@ -379,7 +386,6 @@
       ctx.font = "bold 16px system-ui";
       ctx.fillText(statusMsg, 204, 106, 202);
 
-      // Indikator hitungan visual
       for (let i = 0; i < targetCount; i++) {
         ctx.beginPath();
         ctx.arc(214 + i * 28, 146, 9, 0, Math.PI * 2);
@@ -387,7 +393,6 @@
         ctx.fill();
       }
 
-      // Kartu pilihan
       for (const card of cards) {
         let offsetX = 0;
         if (card.shake > 0) {
@@ -406,7 +411,6 @@
         ctx.fill();
         ctx.stroke();
 
-        // Bentuk berwarna
         ctx.save();
         ctx.translate(card.w / 2, card.h / 2 + 5);
         ctx.fillStyle = card.color.fill;
@@ -417,7 +421,6 @@
         ctx.stroke();
         ctx.restore();
 
-        // Hewan di pojok kiri atas kartu
         ctx.font = "22px system-ui";
         ctx.textAlign = "left";
         ctx.fillText(card.animal.emoji, 20, 22);
@@ -432,7 +435,6 @@
         ctx.restore();
       }
 
-      // Efek kilau bintang
       for (let i = sparkles.length - 1; i >= 0; i--) {
         const sp = sparkles[i];
         sp.x += sp.vx;
