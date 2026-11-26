@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0284c7" />
+  <meta name="theme-color" content="#84cc16" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Hitung TK" />
-  <title>Dunia Bermain & Belajar TK</title>
+  <title>Ayo Main & Belajar TK</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
@@ -20,6 +20,13 @@
   <style>
     :root {
       --font-kids: "Fredoka", "Comic Sans MS", "Trebuchet MS", system-ui, sans-serif;
+      --bg-cream: #f3efe4;
+      --ink-dark: #0f172a;
+      --ink-muted: #57534e;
+      --lime-pop: #84cc16;
+      --lime-dark: #4d7c0f;
+      --navy-pop: #0f172a;
+      --periwinkle: #818cf8;
     }
 
     * {
@@ -32,20 +39,20 @@
     }
 
     body {
-      background: linear-gradient(180deg, #e0f2fe 0%, #fef9c3 100%);
-      color: #0f172a;
+      background: #e7e2d4;
+      color: var(--ink-dark);
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 10px;
       overflow-x: hidden;
     }
 
     .app-shell {
       width: 100%;
-      max-width: 460px;
+      max-width: 440px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -64,160 +71,318 @@
       gap: 10px;
     }
 
-    /* Layar 1: Sapaan & Isi Nama */
-    .welcome-card {
+    /* LAYAR 1: INSPIRASI REFERENSI (Aksen atas, konten tengah, karakter hijau di bawah) */
+    .splash-card {
+      position: relative;
       width: 100%;
-      background: #ffffff;
-      border: 3px solid #38bdf8;
-      border-radius: 26px;
-      padding: 22px 18px;
-      box-shadow: 0 10px 24px rgba(2, 132, 199, 0.16);
+      min-height: 620px;
+      background: var(--bg-cream);
+      border-radius: 30px;
+      border: 3px solid #d6d0c0;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.14);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      text-align: center;
+      justify-content: space-between;
     }
 
-    .mascot-row {
-      font-size: 3.2rem;
-      line-height: 1.1;
+    /* Dekorasi lingkaran atas seperti referensi */
+    .top-blobs {
+      position: relative;
+      height: 122px;
+      width: 100%;
+      pointer-events: none;
     }
 
-    .welcome-title {
-      font-size: 1.55rem;
+    .blob-lime {
+      position: absolute;
+      top: -34px;
+      left: -26px;
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      background: var(--lime-pop);
+    }
+
+    .blob-navy {
+      position: absolute;
+      top: 18px;
+      left: 196px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--navy-pop);
+    }
+
+    .blob-blue {
+      position: absolute;
+      top: -18px;
+      right: -28px;
+      width: 122px;
+      height: 122px;
+      border-radius: 50%;
+      background: var(--periwinkle);
+    }
+
+    .splash-body {
+      position: relative;
+      z-index: 2;
+      padding: 4px 24px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .splash-title {
+      font-size: 2.05rem;
       font-weight: 700;
-      color: #0369a1;
-      letter-spacing: 0.3px;
+      line-height: 1.08;
+      color: var(--ink-dark);
     }
 
-    .field-box {
+    .splash-sub {
+      font-size: 0.98rem;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--ink-muted);
+    }
+
+    .input-group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      text-align: left;
+      gap: 6px;
     }
 
-    .field-label {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #1e293b;
+    .input-label {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--ink-dark);
     }
 
-    .name-input {
+    .splash-input {
       width: 100%;
-      font-size: 1.15rem;
+      padding: 12px 15px;
+      border-radius: 14px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink-dark);
+      font-size: 1.08rem;
       font-weight: 600;
-      padding: 12px 16px;
-      border-radius: 16px;
-      border: 2.5px solid #7dd3fc;
-      background: #f0f9ff;
-      color: #0f172a;
       user-select: text;
       -webkit-user-select: text;
       outline: none;
     }
 
-    .name-input:focus {
-      border-color: #0284c7;
-      background: #ffffff;
+    .splash-input:focus {
+      border-color: var(--lime-dark);
     }
 
-    .mood-grid {
+    .question-pills {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 7px;
     }
 
-    .mood-btn {
-      padding: 10px 6px;
-      border-radius: 16px;
-      border: 2.5px solid #e2e8f0;
-      background: #f8fafc;
-      color: #1e293b;
-      font-size: 0.95rem;
+    .q-pill {
+      padding: 8px 6px;
+      border-radius: 13px;
+      border: 2px solid #d6d0c0;
+      background: #ffffff;
+      color: var(--ink-dark);
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 4px;
-      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      transition: transform 0.1s ease, background 0.12s ease, border-color 0.12s ease;
     }
 
-    .mood-btn span.emo {
-      font-size: 1.5rem;
-    }
-
-    .mood-btn.selected {
-      background: #fef9c3;
-      border-color: #eab308;
-      box-shadow: 0 3px 0 #ca8a04;
+    .q-pill.active {
+      background: #ecfccb;
+      border-color: var(--lime-dark);
+      color: #365314;
       transform: translateY(-1px);
     }
 
-    .primary-btn {
+    .btn-primary-dark {
       width: 100%;
-      padding: 14px 18px;
-      border-radius: 18px;
+      padding: 13px 16px;
+      border-radius: 14px;
       border: none;
-      background: #0284c7;
+      background: var(--navy-pop);
       color: #ffffff;
-      font-size: 1.2rem;
+      font-size: 1.08rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 0 #0369a1;
+      box-shadow: 0 4px 0 #334155;
       transition: transform 0.1s ease;
     }
 
-    .primary-btn:active {
+    .btn-primary-dark:active {
       transform: translateY(2px);
-      box-shadow: 0 2px 0 #0369a1;
+      box-shadow: 0 2px 0 #334155;
     }
 
-    .warn-text {
-      color: #dc2626;
-      font-size: 0.95rem;
+    .btn-secondary-cream {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 14px;
+      border: 2px solid #cbd5e1;
+      background: #faf8f3;
+      color: var(--ink-dark);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-secondary-cream.hidden {
+      display: none;
+    }
+
+    .form-msg {
+      min-height: 18px;
+      font-size: 0.9rem;
       font-weight: 600;
-      min-height: 20px;
+      color: #dc2626;
+      text-align: center;
     }
 
-    /* Layar 2: Menu 6 Kotak Game */
+    /* Karakter hijau bermata besar di bagian bawah seperti referensi */
+    .bottom-monster {
+      position: relative;
+      width: 100%;
+      height: 132px;
+      margin-top: 4px;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .monster-dome {
+      width: 116%;
+      height: 144px;
+      background: var(--lime-pop);
+      border-top-left-radius: 50% 72%;
+      border-top-right-radius: 50% 72%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 14px;
+    }
+
+    .monster-tuft {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 18px;
+      background: var(--lime-pop);
+      border-radius: 14px 14px 0 0;
+    }
+
+    .monster-eyes {
+      display: flex;
+      gap: 24px;
+      margin-top: 6px;
+    }
+
+    .eye-socket {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .brow {
+      width: 22px;
+      height: 5px;
+      background: #0f172a;
+      border-radius: 999px;
+    }
+
+    .brow.left { transform: rotate(-10deg); }
+    .brow.right { transform: rotate(10deg); }
+
+    .eyeball {
+      width: 56px;
+      height: 56px;
+      background: #ffffff;
+      border-radius: 50%;
+      border: 3px solid #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .pupil {
+      width: 22px;
+      height: 22px;
+      background: #0f172a;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .pupil::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      width: 7px;
+      height: 7px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    .nostrils {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .nostril {
+      width: 7px;
+      height: 6px;
+      background: #3f6212;
+      border-radius: 50%;
+    }
+
+    /* LAYAR 2: LOBBY 6 KOTAK GAME */
     .lobby-header {
       width: 100%;
-      background: #ffffff;
-      border: 3px solid #7dd3fc;
+      background: var(--bg-cream);
+      border: 3px solid #d6d0c0;
       border-radius: 22px;
       padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 5px 0 #38bdf8;
-    }
-
-    .greeting-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      box-shadow: 0 5px 0 #c7c0ae;
     }
 
     .greeting-main {
       font-size: 1.15rem;
       font-weight: 700;
-      color: #0369a1;
+      color: #0f172a;
     }
 
     .greeting-sub {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      color: #475569;
+      color: #57534e;
     }
 
     .small-btn {
       padding: 8px 12px;
-      border-radius: 14px;
+      border-radius: 13px;
       border: 2px solid #cbd5e1;
-      background: #f8fafc;
+      background: #ffffff;
       color: #0f172a;
       font-size: 0.88rem;
       font-weight: 700;
@@ -229,15 +394,15 @@
       width: 100%;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 11px;
     }
 
     .game-box {
-      background: #ffffff;
-      border: 3px solid #cbd5e1;
+      background: var(--bg-cream);
+      border: 3px solid #d6d0c0;
       border-radius: 22px;
-      padding: 14px 12px;
-      min-height: 144px;
+      padding: 13px 10px;
+      min-height: 142px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -245,8 +410,8 @@
       text-align: center;
       gap: 6px;
       cursor: pointer;
-      box-shadow: 0 5px 0 #cbd5e1;
-      transition: transform 0.12s ease, border-color 0.12s ease;
+      box-shadow: 0 5px 0 #c7c0ae;
+      transition: transform 0.1s ease;
     }
 
     .game-box:active {
@@ -254,54 +419,54 @@
     }
 
     .game-box.ready {
-      background: #f0f9ff;
-      border-color: #0284c7;
-      box-shadow: 0 5px 0 #0284c7;
+      background: #ecfccb;
+      border-color: var(--lime-pop);
+      box-shadow: 0 5px 0 var(--lime-dark);
     }
 
     .game-box.coming {
-      background: #f8fafc;
+      background: #faf8f3;
       border-style: dashed;
-      border-color: #94a3b8;
-      box-shadow: 0 4px 0 #e2e8f0;
+      border-color: #a8a29e;
+      box-shadow: 0 4px 0 #e7e2d4;
     }
 
     .game-icon {
-      font-size: 2.3rem;
+      font-size: 2.2rem;
       line-height: 1.1;
     }
 
     .game-title {
-      font-size: 1.02rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #0f172a;
-      line-height: 1.2;
+      line-height: 1.18;
     }
 
     .game-tag {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       padding: 3px 10px;
       border-radius: 999px;
     }
 
     .game-box.ready .game-tag {
-      background: #dcfce7;
-      color: #15803d;
+      background: #0f172a;
+      color: #ffffff;
     }
 
     .game-box.coming .game-tag {
       background: #fef9c3;
-      color: #a16207;
+      color: #854d0e;
     }
 
     .idea-banner {
       width: 100%;
-      background: #ffffff;
-      border: 2.5px solid #facc15;
+      background: var(--bg-cream);
+      border: 2.5px solid #d6d0c0;
       border-radius: 18px;
       padding: 10px 14px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       color: #334155;
       text-align: center;
@@ -311,7 +476,7 @@
       justify-content: center;
     }
 
-    /* Layar 3: Area Game Aktif */
+    /* LAYAR 3: GAME AKTIF */
     .top-hud {
       width: 100%;
       display: flex;
@@ -350,7 +515,6 @@
       font-weight: 700;
       font-size: 0.82rem;
       cursor: pointer;
-      transition: transform 0.1s ease, background 0.15s ease;
     }
 
     .lvl-btn.active {
@@ -358,10 +522,6 @@
       border-color: #0369a1;
       color: #ffffff;
       box-shadow: 0 2px 0 #075985;
-    }
-
-    .lvl-btn:active {
-      transform: scale(0.97);
     }
 
     .canvas-wrap {
@@ -384,65 +544,86 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- LAYAR 1: SAPAAN & ISI NAMA (PERTAMA KALI MASUK) -->
-    <section id="welcomeScreen" class="screen">
-      <div class="welcome-card">
-        <div class="mascot-row">🐰 ⭐ 🎨 🐶</div>
-        <h1 class="welcome-title">Halo! Ayo Main & Belajar!</h1>
-
-        <div class="field-box">
-          <label for="childNameInput" class="field-label">Siapa nama kamu?</label>
-          <input
-            id="childNameInput"
-            class="name-input"
-            type="text"
-            maxlength="18"
-            placeholder="Ketik nama panggilanmu..."
-            autocomplete="off"
-          />
+    <!-- LAYAR 1: TAMPILAN PERTAMA (REFERENSI) -->
+    <section id="splashScreen" class="screen">
+      <div class="splash-card">
+        <div class="top-blobs">
+          <div class="blob-lime"></div>
+          <div class="blob-navy"></div>
+          <div class="blob-blue"></div>
         </div>
 
-        <div class="field-box">
-          <div class="field-label">Hari ini perasaanmu gimana?</div>
-          <div class="mood-grid" id="moodGrid">
-            <button type="button" class="mood-btn selected" data-mood="Semangat">
-              <span class="emo">😄</span>
-              <span>Semangat</span>
-            </button>
-            <button type="button" class="mood-btn" data-mood="Ceria">
-              <span class="emo">🥳</span>
-              <span>Ceria</span>
-            </button>
-            <button type="button" class="mood-btn" data-mood="Penasaran">
-              <span class="emo">🤩</span>
-              <span>Penasaran</span>
-            </button>
+        <div class="splash-body">
+          <h1 class="splash-title">Ayo main &amp; hitung seru!</h1>
+          <p class="splash-sub">Kenali bentuk, warna, dan hewan lucu. Tulis namamu dulu ya!</p>
+
+          <div class="input-group">
+            <label for="playerNameInput" class="input-label">Nama kamu siapa?</label>
+            <input
+              id="playerNameInput"
+              class="splash-input"
+              type="text"
+              maxlength="18"
+              placeholder="Ketik nama kamu..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="input-group">
+            <div class="input-label">Hari ini lagi gimana?</div>
+            <div class="question-pills" id="moodPills">
+              <button type="button" class="q-pill active" data-mood="Semangat">😄 Ceria</button>
+              <button type="button" class="q-pill" data-mood="Seru">🤩 Seru</button>
+              <button type="button" class="q-pill" data-mood="Siap Main">🚀 Siap</button>
+            </div>
+          </div>
+
+          <div id="splashMsg" class="form-msg"></div>
+
+          <button id="saveStartBtn" type="button" class="btn-primary-dark">Mulai &amp; Pilih Game</button>
+          <button id="quickContinueBtn" type="button" class="btn-secondary-cream hidden">Lanjut Sebagai ...</button>
+        </div>
+
+        <div class="bottom-monster" aria-hidden="true">
+          <div class="monster-dome">
+            <div class="monster-tuft"></div>
+            <div class="monster-eyes">
+              <div class="eye-socket">
+                <div class="brow left"></div>
+                <div class="eyeball"><div class="pupil"></div></div>
+              </div>
+              <div class="eye-socket">
+                <div class="brow right"></div>
+                <div class="eyeball"><div class="pupil"></div></div>
+              </div>
+            </div>
+            <div class="nostrils">
+              <div class="nostril"></div>
+              <div class="nostril"></div>
+            </div>
           </div>
         </div>
-
-        <div id="welcomeWarn" class="warn-text"></div>
-        <button id="enterLobbyBtn" type="button" class="primary-btn">Lanjut Pilih Game →</button>
       </div>
     </section>
 
     <!-- LAYAR 2: 6 KOTAK PILIHAN GAME -->
     <section id="lobbyScreen" class="screen">
       <div class="lobby-header">
-        <div class="greeting-wrap">
-          <div id="lobbyGreeting" class="greeting-main">Hai, Teman!</div>
-          <div id="lobbySub" class="greeting-sub">Pilih 1 dari 6 kotak game di bawah</div>
+        <div>
+          <div id="lobbyGreeting" class="greeting-main">Halo, Teman!</div>
+          <div id="lobbySub" class="greeting-sub">Pilih 1 dari 6 kotak game</div>
         </div>
-        <button id="editProfileBtn" type="button" class="small-btn">✏️ Ganti Nama</button>
+        <button id="changeNameBtn" type="button" class="small-btn">✏️ Ganti Nama</button>
       </div>
 
       <div id="gamesGrid" class="games-grid"></div>
 
       <div id="ideaBanner" class="idea-banner">
-        💡 Kotak 1 sudah siap dimainkan. 5 kotak lainnya disiapkan untuk ide game TK berikutnya!
+        💡 Kotak 1 siap dimainkan. 5 kotak lainnya disiapkan untuk ide game TK berikutnya!
       </div>
     </section>
 
-    <!-- LAYAR 3: GAME AKTIF (KOTAK 1: HITUNG HEWAN, BENTUK & WARNA) -->
+    <!-- LAYAR 3: GAME AKTIF (KOTAK 1) -->
     <section id="gameScreen" class="screen">
       <div class="top-hud">
         <button id="backLobbyBtn" type="button" class="pill" style="background:#f1f5f9; border-color:#94a3b8; box-shadow:0 3px 0 #64748b;">← Menu</button>
@@ -464,140 +645,121 @@
   </div>
 
   <script>
-    // --- Navigasi Layar & Profil Anak ---
-    const welcomeScreen = document.getElementById("welcomeScreen");
+    const splashScreen = document.getElementById("splashScreen");
     const lobbyScreen = document.getElementById("lobbyScreen");
     const gameScreen = document.getElementById("gameScreen");
 
-    const childNameInput = document.getElementById("childNameInput");
-    const moodBtns = document.querySelectorAll(".mood-btn");
-    const welcomeWarn = document.getElementById("welcomeWarn");
-    const enterLobbyBtn = document.getElementById("enterLobbyBtn");
-    const editProfileBtn = document.getElementById("editProfileBtn");
-    const backLobbyBtn = document.getElementById("backLobbyBtn");
+    const playerNameInput = document.getElementById("playerNameInput");
+    const moodPills = document.querySelectorAll(".q-pill");
+    const splashMsg = document.getElementById("splashMsg");
+    const saveStartBtn = document.getElementById("saveStartBtn");
+    const quickContinueBtn = document.getElementById("quickContinueBtn");
 
     const lobbyGreeting = document.getElementById("lobbyGreeting");
     const lobbySub = document.getElementById("lobbySub");
+    const changeNameBtn = document.getElementById("changeNameBtn");
     const gamesGrid = document.getElementById("gamesGrid");
     const ideaBanner = document.getElementById("ideaBanner");
+    const backLobbyBtn = document.getElementById("backLobbyBtn");
 
-    const STORAGE_NAME_KEY = "tk_player_name";
-    const STORAGE_MOOD_KEY = "tk_player_mood";
+    const NAME_KEY = "tk_player_name";
+    const MOOD_KEY = "tk_player_mood";
 
-    let selectedMood = localStorage.getItem(STORAGE_MOOD_KEY) || "Semangat";
+    let chosenMood = localStorage.getItem(MOOD_KEY) || "Semangat";
 
     const SIX_GAMES = [
-      {
-        id: "hitung-hewan-bentuk",
-        title: "Hitung Hewan, Bentuk & Warna",
-        icon: "🐰🔺",
-        ready: true,
-        note: "Game 1 siap dimainkan! Ayo hitung bentuk, warna, dan hewan."
-      },
-      {
-        id: "slot-2",
-        title: "Game Edukasi 2",
-        icon: "🧩",
-        ready: false,
-        note: "Slot Game 2: masih disiapkan (ide berikutnya)."
-      },
-      {
-        id: "slot-3",
-        title: "Game Edukasi 3",
-        icon: "🎨",
-        ready: false,
-        note: "Slot Game 3: masih disiapkan (ide berikutnya)."
-      },
-      {
-        id: "slot-4",
-        title: "Game Edukasi 4",
-        icon: "🐾",
-        ready: false,
-        note: "Slot Game 4: masih disiapkan (ide berikutnya)."
-      },
-      {
-        id: "slot-5",
-        title: "Game Edukasi 5",
-        icon: "🔤",
-        ready: false,
-        note: "Slot Game 5: masih disiapkan (ide berikutnya)."
-      },
-      {
-        id: "slot-6",
-        title: "Game Edukasi 6",
-        icon: "🌈",
-        ready: false,
-        note: "Slot Game 6: masih disiapkan (ide berikutnya)."
-      }
+      { id: "game-1", title: "Hitung Hewan, Bentuk & Warna", icon: "🐰🔺", ready: true, note: "Game 1 siap dimainkan!" },
+      { id: "game-2", title: "Game Edukasi 2", icon: "🧩", ready: false, note: "Slot 2: ide game TK berikutnya." },
+      { id: "game-3", title: "Game Edukasi 3", icon: "🎨", ready: false, note: "Slot 3: ide game TK berikutnya." },
+      { id: "game-4", title: "Game Edukasi 4", icon: "🐾", ready: false, note: "Slot 4: ide game TK berikutnya." },
+      { id: "game-5", title: "Game Edukasi 5", icon: "🔤", ready: false, note: "Slot 5: ide game TK berikutnya." },
+      { id: "game-6", title: "Game Edukasi 6", icon: "🌈", ready: false, note: "Slot 6: ide game TK berikutnya." }
     ];
 
     function showScreen(target) {
-      [welcomeScreen, lobbyScreen, gameScreen].forEach((s) => s.classList.remove("active"));
+      [splashScreen, lobbyScreen, gameScreen].forEach((el) => el.classList.remove("active"));
       target.classList.add("active");
     }
 
-    function syncMoodUI() {
-      moodBtns.forEach((btn) => {
-        btn.classList.toggle("selected", btn.dataset.mood === selectedMood);
+    function refreshMoodButtons() {
+      moodPills.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.mood === chosenMood);
       });
+    }
+
+    function syncQuickContinue() {
+      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
+      if (saved) {
+        quickContinueBtn.textContent = `Lanjut sebagai ${saved} →`;
+        quickContinueBtn.classList.remove("hidden");
+      } else {
+        quickContinueBtn.classList.add("hidden");
+      }
     }
 
     function renderLobby() {
-      const savedName = (localStorage.getItem(STORAGE_NAME_KEY) || "").trim();
-      lobbyGreeting.textContent = `Hai, ${savedName || "Teman"}!`;
-      lobbySub.textContent = `Suasana hati: ${selectedMood} • Pilih 1 dari 6 kotak`;
+      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
+      lobbyGreeting.textContent = `Halo, ${saved || "Teman"}!`;
+      lobbySub.textContent = `Perasaan: ${chosenMood} • Pilih 1 dari 6 kotak`;
 
       gamesGrid.innerHTML = "";
-      SIX_GAMES.forEach((g, idx) => {
-        const box = document.createElement("button");
-        box.type = "button";
-        box.className = `game-box ${g.ready ? "ready" : "coming"}`;
-        box.innerHTML = `
-          <div class="game-icon">${g.icon}</div>
-          <div class="game-title">${idx + 1}. ${g.title}</div>
-          <span class="game-tag">${g.ready ? "Main Sekarang" : "Segera Hadir"}</span>
+      SIX_GAMES.forEach((game, index) => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `game-box ${game.ready ? "ready" : "coming"}`;
+        card.innerHTML = `
+          <div class="game-icon">${game.icon}</div>
+          <div class="game-title">${index + 1}. ${game.title}</div>
+          <span class="game-tag">${game.ready ? "Main" : "Segera Hadir"}</span>
         `;
-
-        box.addEventListener("click", () => {
-          if (g.ready) {
+        card.addEventListener("click", () => {
+          if (game.ready) {
             openCountGame();
           } else {
-            ideaBanner.textContent = `💡 ${g.note}`;
-            speakText(`${g.title} masih disiapkan`);
+            ideaBanner.textContent = `💡 ${game.note}`;
+            speakText(`${game.title} segera hadir`);
           }
         });
-
-        gamesGrid.appendChild(box);
+        gamesGrid.appendChild(card);
       });
     }
 
-    moodBtns.forEach((btn) => {
+    moodPills.forEach((btn) => {
       btn.addEventListener("click", () => {
-        selectedMood = btn.dataset.mood;
-        syncMoodUI();
+        chosenMood = btn.dataset.mood;
+        refreshMoodButtons();
       });
     });
 
-    enterLobbyBtn.addEventListener("click", () => {
-      const name = childNameInput.value.trim();
+    saveStartBtn.addEventListener("click", () => {
+      const name = playerNameInput.value.trim();
       if (!name) {
-        welcomeWarn.textContent = "Yuk, tulis namamu dulu ya!";
-        childNameInput.focus();
+        splashMsg.textContent = "Tulis namamu dulu ya sebelum mulai!";
+        playerNameInput.focus();
         return;
       }
-      welcomeWarn.textContent = "";
-      localStorage.setItem(STORAGE_NAME_KEY, name);
-      localStorage.setItem(STORAGE_MOOD_KEY, selectedMood);
+      splashMsg.textContent = "";
+      localStorage.setItem(NAME_KEY, name);
+      localStorage.setItem(MOOD_KEY, chosenMood);
       renderLobby();
       showScreen(lobbyScreen);
-      speakText(`Halo ${name}, ayo pilih game kesukaanmu!`);
+      speakText(`Halo ${name}, ayo pilih kotak game!`);
     });
 
-    editProfileBtn.addEventListener("click", () => {
-      childNameInput.value = localStorage.getItem(STORAGE_NAME_KEY) || "";
-      syncMoodUI();
-      welcomeWarn.textContent = "";
-      showScreen(welcomeScreen);
+    quickContinueBtn.addEventListener("click", () => {
+      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
+      if (!saved) return;
+      renderLobby();
+      showScreen(lobbyScreen);
+      speakText(`Selamat datang kembali, ${saved}!`);
+    });
+
+    changeNameBtn.addEventListener("click", () => {
+      playerNameInput.value = localStorage.getItem(NAME_KEY) || "";
+      splashMsg.textContent = "";
+      refreshMoodButtons();
+      syncQuickContinue();
+      showScreen(splashScreen);
     });
 
     backLobbyBtn.addEventListener("click", () => {
@@ -978,7 +1140,7 @@
                 [659.25, 0.1, 0.12, "triangle"],
                 [783.99, 0.2, 0.22, "triangle"]
               ]);
-              const playerName = (localStorage.getItem(STORAGE_NAME_KEY) || "").trim();
+              const playerName = (localStorage.getItem(NAME_KEY) || "").trim();
               speakText(playerName ? `Hebat sekali ${playerName}! Kamu dapat bintang` : "Hebat sekali! Kamu dapat bintang");
               setTimeout(() => setupRound(true), 1250);
             }
@@ -1006,19 +1168,11 @@
       });
     });
 
-    // Inisialisasi awal
-    syncMoodUI();
+    refreshMoodButtons();
+    syncQuickContinue();
     setupRound(false);
     draw();
-
-    const existingName = (localStorage.getItem(STORAGE_NAME_KEY) || "").trim();
-    if (existingName) {
-      renderLobby();
-      showScreen(lobbyScreen);
-    } else {
-      childNameInput.value = "";
-      showScreen(welcomeScreen);
-    }
+    showScreen(splashScreen);
   </script>
 </body>
 </html>
