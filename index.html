@@ -27,6 +27,7 @@
       --lime-dark: #4d7c0f;
       --navy-pop: #0f172a;
       --periwinkle: #818cf8;
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     * {
@@ -35,6 +36,7 @@
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
       font-family: var(--font-kids);
     }
 
@@ -69,9 +71,32 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      animation: screenPop 0.28s var(--ease-bounce);
     }
 
-    /* LAYAR 1: INSPIRASI REFERENSI (Aksen atas, konten tengah, karakter hijau di bawah) */
+    @keyframes screenPop {
+      0% { opacity: 0; transform: scale(0.96) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes jellyBounce {
+      0% { transform: scale(1, 1) translateY(0); }
+      28% { transform: scale(1.12, 0.88) translateY(3px); }
+      55% { transform: scale(0.94, 1.07) translateY(-7px); }
+      78% { transform: scale(1.03, 0.98) translateY(-1px); }
+      100% { transform: scale(1, 1) translateY(0); }
+    }
+
+    @keyframes floatBlob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .bounce-now {
+      animation: jellyBounce 0.45s var(--ease-bounce) !important;
+    }
+
+    /* LAYAR 1: INSPIRASI REFERENSI */
     .splash-card {
       position: relative;
       width: 100%;
@@ -86,7 +111,6 @@
       justify-content: space-between;
     }
 
-    /* Dekorasi lingkaran atas seperti referensi */
     .top-blobs {
       position: relative;
       height: 122px;
@@ -102,6 +126,7 @@
       height: 148px;
       border-radius: 50%;
       background: var(--lime-pop);
+      animation: floatBlob 4.2s ease-in-out infinite;
     }
 
     .blob-navy {
@@ -112,6 +137,7 @@
       height: 64px;
       border-radius: 50%;
       background: var(--navy-pop);
+      animation: floatBlob 3.4s ease-in-out 0.5s infinite;
     }
 
     .blob-blue {
@@ -122,12 +148,13 @@
       height: 122px;
       border-radius: 50%;
       background: var(--periwinkle);
+      animation: floatBlob 4.8s ease-in-out 0.9s infinite;
     }
 
     .splash-body {
       position: relative;
       z-index: 2;
-      padding: 4px 24px 12px;
+      padding: 4px 24px 10px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -171,10 +198,12 @@
       user-select: text;
       -webkit-user-select: text;
       outline: none;
+      transition: border-color 0.15s ease, transform 0.2s var(--ease-bounce);
     }
 
     .splash-input:focus {
       border-color: var(--lime-dark);
+      transform: scale(1.01);
     }
 
     .question-pills {
@@ -196,14 +225,18 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      transition: transform 0.1s ease, background 0.12s ease, border-color 0.12s ease;
+      transition: transform 0.22s var(--ease-bounce), background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .q-pill:active {
+      transform: scale(0.92);
     }
 
     .q-pill.active {
       background: #ecfccb;
       border-color: var(--lime-dark);
       color: #365314;
-      transform: translateY(-1px);
+      transform: translateY(-2px) scale(1.03);
     }
 
     .btn-primary-dark {
@@ -217,12 +250,12 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 0 #334155;
-      transition: transform 0.1s ease;
+      transition: transform 0.22s var(--ease-bounce), box-shadow 0.12s ease;
     }
 
     .btn-primary-dark:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #334155;
+      transform: translateY(3px) scale(0.98);
+      box-shadow: 0 1px 0 #334155;
     }
 
     .btn-secondary-cream {
@@ -235,6 +268,11 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
+      transition: transform 0.22s var(--ease-bounce);
+    }
+
+    .btn-secondary-cream:active {
+      transform: scale(0.97);
     }
 
     .btn-secondary-cream.hidden {
@@ -249,16 +287,30 @@
       text-align: center;
     }
 
-    /* Karakter hijau bermata besar di bagian bawah seperti referensi */
+    /* Karakter hijau bermata besar interaktif */
     .bottom-monster {
       position: relative;
       width: 100%;
       height: 132px;
       margin-top: 4px;
-      pointer-events: none;
+      cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: flex-end;
+      transform-origin: bottom center;
+      transition: transform 0.28s var(--ease-bounce);
+    }
+
+    .bottom-monster.hop {
+      animation: monsterHop 0.55s var(--ease-bounce);
+    }
+
+    @keyframes monsterHop {
+      0% { transform: scale(1, 1) translateY(0); }
+      22% { transform: scale(1.14, 0.84) translateY(6px); }
+      52% { transform: scale(0.93, 1.1) translateY(-18px); }
+      78% { transform: scale(1.05, 0.96) translateY(-3px); }
+      100% { transform: scale(1, 1) translateY(0); }
     }
 
     .monster-dome {
@@ -303,10 +355,14 @@
       height: 5px;
       background: #0f172a;
       border-radius: 999px;
+      transition: transform 0.25s var(--ease-bounce);
     }
 
     .brow.left { transform: rotate(-10deg); }
     .brow.right { transform: rotate(10deg); }
+
+    .bottom-monster.hop .brow.left { transform: rotate(-18deg) translateY(-3px); }
+    .bottom-monster.hop .brow.right { transform: rotate(18deg) translateY(-3px); }
 
     .eyeball {
       width: 56px;
@@ -318,6 +374,12 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      overflow: hidden;
+      transition: transform 0.14s ease;
+    }
+
+    .eyeball.blink {
+      transform: scaleY(0.12);
     }
 
     .pupil {
@@ -326,6 +388,7 @@
       background: #0f172a;
       border-radius: 50%;
       position: relative;
+      transition: transform 0.08s linear;
     }
 
     .pupil::after {
@@ -388,6 +451,11 @@
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
+      transition: transform 0.2s var(--ease-bounce);
+    }
+
+    .small-btn:active {
+      transform: scale(0.92);
     }
 
     .games-grid {
@@ -398,6 +466,8 @@
     }
 
     .game-box {
+      position: relative;
+      overflow: hidden;
       background: var(--bg-cream);
       border: 3px solid #d6d0c0;
       border-radius: 22px;
@@ -411,11 +481,15 @@
       gap: 6px;
       cursor: pointer;
       box-shadow: 0 5px 0 #c7c0ae;
-      transition: transform 0.1s ease;
+      transition: transform 0.24s var(--ease-bounce);
+    }
+
+    .game-box:hover {
+      transform: translateY(-2px);
     }
 
     .game-box:active {
-      transform: translateY(2px);
+      transform: scale(0.94);
     }
 
     .game-box.ready {
@@ -432,8 +506,13 @@
     }
 
     .game-icon {
-      font-size: 2.2rem;
+      font-size: 2.25rem;
       line-height: 1.1;
+      transition: transform 0.25s var(--ease-bounce);
+    }
+
+    .game-box:active .game-icon {
+      transform: scale(1.22) rotate(-6deg);
     }
 
     .game-title {
@@ -458,6 +537,22 @@
     .game-box.coming .game-tag {
       background: #fef9c3;
       color: #854d0e;
+    }
+
+    .tap-ripple {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(132, 204, 22, 0.35);
+      transform: translate(-50%, -50%) scale(0.2);
+      animation: rippleBurst 0.48s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rippleBurst {
+      0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(5.5); }
     }
 
     .idea-banner {
@@ -496,6 +591,11 @@
       white-space: nowrap;
       color: #0f172a;
       cursor: pointer;
+      transition: transform 0.2s var(--ease-bounce);
+    }
+
+    .pill:active {
+      transform: scale(0.92);
     }
 
     .level-bar {
@@ -515,6 +615,11 @@
       font-weight: 700;
       font-size: 0.82rem;
       cursor: pointer;
+      transition: transform 0.2s var(--ease-bounce), background 0.15s ease;
+    }
+
+    .lvl-btn:active {
+      transform: scale(0.94);
     }
 
     .lvl-btn.active {
@@ -522,6 +627,7 @@
       border-color: #0369a1;
       color: #ffffff;
       box-shadow: 0 2px 0 #075985;
+      transform: translateY(-1px);
     }
 
     .canvas-wrap {
@@ -544,7 +650,7 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- LAYAR 1: TAMPILAN PERTAMA (REFERENSI) -->
+    <!-- LAYAR 1: TAMPILAN PERTAMA -->
     <section id="splashScreen" class="screen">
       <div class="splash-card">
         <div class="top-blobs">
@@ -584,7 +690,7 @@
           <button id="quickContinueBtn" type="button" class="btn-secondary-cream hidden">Lanjut Sebagai ...</button>
         </div>
 
-        <div class="bottom-monster" aria-hidden="true">
+        <div id="monsterBuddy" class="bottom-monster" title="Ketuk aku!" aria-label="Karakter hijau lucu">
           <div class="monster-dome">
             <div class="monster-tuft"></div>
             <div class="monster-eyes">
@@ -655,6 +761,10 @@
     const saveStartBtn = document.getElementById("saveStartBtn");
     const quickContinueBtn = document.getElementById("quickContinueBtn");
 
+    const monsterBuddy = document.getElementById("monsterBuddy");
+    const pupils = document.querySelectorAll(".pupil");
+    const eyeballs = document.querySelectorAll(".eyeball");
+
     const lobbyGreeting = document.getElementById("lobbyGreeting");
     const lobbySub = document.getElementById("lobbySub");
     const changeNameBtn = document.getElementById("changeNameBtn");
@@ -675,6 +785,49 @@
       { id: "game-5", title: "Game Edukasi 5", icon: "🔤", ready: false, note: "Slot 5: ide game TK berikutnya." },
       { id: "game-6", title: "Game Edukasi 6", icon: "🌈", ready: false, note: "Slot 6: ide game TK berikutnya." }
     ];
+
+    function triggerBounce(el) {
+      if (!el) return;
+      el.classList.remove("bounce-now");
+      void el.offsetWidth;
+      el.classList.add("bounce-now");
+    }
+
+    // Interaksi monster hijau: melompat bounce + kedip + bola mata mengikuti sentuhan
+    function hopMonster() {
+      monsterBuddy.classList.remove("hop");
+      void monsterBuddy.offsetWidth;
+      monsterBuddy.classList.add("hop");
+      eyeballs.forEach((eb) => eb.classList.add("blink"));
+      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 150);
+      playSound([[587.33, 0, 0.1, "triangle"], [783.99, 0.08, 0.14, "triangle"]]);
+    }
+
+    monsterBuddy.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      hopMonster();
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!splashScreen.classList.contains("active")) return;
+      pupils.forEach((pupil) => {
+        const rect = pupil.parentElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dx = e.clientX - centerX;
+        const dy = e.clientY - centerY;
+        const angle = Math.atan2(dy, dx);
+        const maxOffset = 7;
+        const dist = Math.min(maxOffset, Math.hypot(dx, dy) / 28);
+        pupil.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
+      });
+    });
+
+    setInterval(() => {
+      if (!splashScreen.classList.contains("active")) return;
+      eyeballs.forEach((eb) => eb.classList.add("blink"));
+      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 140);
+    }, 3600);
 
     function showScreen(target) {
       [splashScreen, lobbyScreen, gameScreen].forEach((el) => el.classList.remove("active"));
@@ -697,6 +850,16 @@
       }
     }
 
+    function spawnCardRipple(card, clientX, clientY) {
+      const rect = card.getBoundingClientRect();
+      const rip = document.createElement("span");
+      rip.className = "tap-ripple";
+      rip.style.left = `${clientX - rect.left}px`;
+      rip.style.top = `${clientY - rect.top}px`;
+      card.appendChild(rip);
+      setTimeout(() => rip.remove(), 500);
+    }
+
     function renderLobby() {
       const saved = (localStorage.getItem(NAME_KEY) || "").trim();
       lobbyGreeting.textContent = `Halo, ${saved || "Teman"}!`;
@@ -712,11 +875,18 @@
           <div class="game-title">${index + 1}. ${game.title}</div>
           <span class="game-tag">${game.ready ? "Main" : "Segera Hadir"}</span>
         `;
+        card.addEventListener("pointerdown", (e) => {
+          spawnCardRipple(card, e.clientX, e.clientY);
+          triggerBounce(card);
+        });
         card.addEventListener("click", () => {
           if (game.ready) {
-            openCountGame();
+            playSound([[523.25, 0, 0.1, "triangle"], [659.25, 0.08, 0.14, "triangle"]]);
+            setTimeout(openCountGame, 160);
           } else {
             ideaBanner.textContent = `💡 ${game.note}`;
+            triggerBounce(ideaBanner);
+            playSound([[340, 0, 0.11, "sine"]]);
             speakText(`${game.title} segera hadir`);
           }
         });
@@ -728,13 +898,18 @@
       btn.addEventListener("click", () => {
         chosenMood = btn.dataset.mood;
         refreshMoodButtons();
+        triggerBounce(btn);
+        hopMonster();
       });
     });
 
     saveStartBtn.addEventListener("click", () => {
+      triggerBounce(saveStartBtn);
       const name = playerNameInput.value.trim();
       if (!name) {
         splashMsg.textContent = "Tulis namamu dulu ya sebelum mulai!";
+        triggerBounce(splashMsg);
+        hopMonster();
         playerNameInput.focus();
         return;
       }
@@ -747,6 +922,7 @@
     });
 
     quickContinueBtn.addEventListener("click", () => {
+      triggerBounce(quickContinueBtn);
       const saved = (localStorage.getItem(NAME_KEY) || "").trim();
       if (!saved) return;
       renderLobby();
@@ -755,6 +931,7 @@
     });
 
     changeNameBtn.addEventListener("click", () => {
+      triggerBounce(changeNameBtn);
       playerNameInput.value = localStorage.getItem(NAME_KEY) || "";
       splashMsg.textContent = "";
       refreshMoodButtons();
@@ -763,6 +940,7 @@
     });
 
     backLobbyBtn.addEventListener("click", () => {
+      triggerBounce(backLobbyBtn);
       if ("speechSynthesis" in window) {
         try { window.speechSynthesis.cancel(); } catch (_) {}
       }
@@ -770,7 +948,7 @@
       showScreen(lobbyScreen);
     });
 
-    // --- Game 1: Hitung Hewan, Bentuk & Warna ---
+    // --- Game 1: Hitung Hewan, Bentuk & Warna (Dengan Bounce Canvas) ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const starsEl = document.getElementById("starsEl");
@@ -811,7 +989,9 @@
     let mission = null;
     let cards = [];
     let sparkles = [];
+    let ripples = [];
     let helperAnimal = ANIMALS[4];
+    let helperHop = 0;
     let statusMsg = "Ketuk yang sesuai!";
     let statusColor = "#0369a1";
     let locked = false;
@@ -894,11 +1074,15 @@
           x,
           y,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1.2,
-          life: 34,
+          vy: Math.sin(angle) * speed - 1.4,
+          life: 36,
           color: COLORS[i % COLORS.length].fill
         });
       }
+    }
+
+    function spawnCanvasRipple(x, y, color) {
+      ripples.push({ x, y, r: 8, maxR: 48, life: 22, color });
     }
 
     function setupRound(autoSpeak = true) {
@@ -909,6 +1093,7 @@
         : Math.floor(Math.random() * 3) + 2;
 
       helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+      helperHop = 18;
       const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
       const targetColor = COLORS[Math.floor(Math.random() * COLORS.length)];
       const badgeAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
@@ -978,7 +1163,8 @@
           w: cardW,
           h: cardH,
           picked: false,
-          shake: 0
+          shake: 0,
+          bounce: 0
         };
       });
 
@@ -1003,10 +1189,24 @@
       ctx.fillStyle = "#f0f9ff";
       ctx.fillRect(0, 0, canvas.width, 210);
 
+      // Karakter pembantu dengan bounce
+      let hopOffsetY = 0;
+      let hopScale = 1;
+      if (helperHop > 0) {
+        const p = 1 - helperHop / 18;
+        hopOffsetY = -Math.sin(p * Math.PI) * 14;
+        hopScale = 1 + Math.sin(p * Math.PI) * 0.14;
+        helperHop--;
+      }
+
+      ctx.save();
+      ctx.translate(68, 96 + hopOffsetY);
+      ctx.scale(hopScale, hopScale);
       ctx.font = "56px var(--font-kids)";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(helperAnimal.emoji, 68, 96);
+      ctx.fillText(helperAnimal.emoji, 0, 0);
+      ctx.restore();
 
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#7dd3fc";
@@ -1052,13 +1252,23 @@
 
       for (const card of cards) {
         let offsetX = 0;
+        let cardScale = 1;
+
         if (card.shake > 0) {
           offsetX = Math.sin(card.shake * 1.4) * 7;
           card.shake--;
         }
 
+        if (card.bounce > 0) {
+          const t = 1 - card.bounce / 20;
+          cardScale = 1 + Math.sin(t * Math.PI * 1.4) * 0.14 * (1 - t * 0.5);
+          card.bounce--;
+        }
+
         ctx.save();
-        ctx.translate(card.x + offsetX, card.y);
+        ctx.translate(card.x + card.w / 2 + offsetX, card.y + card.h / 2);
+        ctx.scale(cardScale, cardScale);
+        ctx.translate(-card.w / 2, -card.h / 2);
 
         ctx.fillStyle = card.picked ? "#dcfce7" : "#f8fafc";
         ctx.strokeStyle = card.picked ? "#22c55e" : "#cbd5e1";
@@ -1092,13 +1302,30 @@
         ctx.restore();
       }
 
+      // Gelombang sentuhan (ripple)
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rp = ripples[i];
+        const progress = 1 - rp.life / 22;
+        const radius = rp.r + (rp.maxR - rp.r) * progress;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - progress);
+        ctx.strokeStyle = rp.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(rp.x, rp.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        rp.life--;
+        if (rp.life <= 0) ripples.splice(i, 1);
+      }
+
       for (let i = sparkles.length - 1; i >= 0; i--) {
         const sp = sparkles[i];
         sp.x += sp.vx;
         sp.y += sp.vy;
         sp.vy += 0.12;
         sp.life--;
-        ctx.globalAlpha = Math.max(0, sp.life / 34);
+        ctx.globalAlpha = Math.max(0, sp.life / 36);
         ctx.fillStyle = sp.color;
         ctx.beginPath();
         ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
@@ -1116,13 +1343,25 @@
       const px = (e.clientX - rect.left) * (canvas.width / rect.width);
       const py = (e.clientY - rect.top) * (canvas.height / rect.height);
 
+      // Ketuk hewan pembantu di kiri atas juga bikin dia melompat
+      if (px >= 24 && px <= 112 && py >= 52 && py <= 140) {
+        helperHop = 18;
+        spawnCanvasRipple(68, 96, "#38bdf8");
+        playSound([[659.25, 0, 0.1, "triangle"]]);
+        return;
+      }
+
       for (const card of cards) {
         if (px >= card.x && px <= card.x + card.w && py >= card.y && py <= card.y + card.h) {
+          card.bounce = 20;
+          spawnCanvasRipple(px, py, card.color.fill);
+
           if (card.picked) return;
 
           if (card.isTarget && pickedCount < targetCount) {
             card.picked = true;
             pickedCount++;
+            helperHop = 14;
             pickedEl.textContent = pickedCount;
             statusColor = "#15803d";
             statusMsg = `Mantap! ${pickedCount} dari ${targetCount}`;
@@ -1131,6 +1370,7 @@
 
             if (pickedCount === targetCount) {
               locked = true;
+              helperHop = 22;
               stars++;
               starsEl.textContent = stars;
               localStorage.setItem("tk_hitung_stars", stars);
@@ -1156,6 +1396,8 @@
     });
 
     voiceBtn.addEventListener("click", () => {
+      triggerBounce(voiceBtn);
+      helperHop = 16;
       speakText(getMissionSpeech());
     });
 
@@ -1163,6 +1405,7 @@
       btn.addEventListener("click", () => {
         lvlBtns.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
+        triggerBounce(btn);
         levelMode = btn.dataset.level;
         setupRound(true);
       });
