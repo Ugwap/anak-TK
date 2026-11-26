@@ -1,0 +1,28 @@
+{
+  "name": "Hitung Hewan, Bentuk & Warna TK",
+  "short_name": "Hitung TK",
+  "id": "com.ugwap.hitungtk",
+  "description": "Game edukasi anak TK untuk belajar menghitung dengan variasi hewan, bentuk, dan warna cerah.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#e0f2fe",
+  "theme_color": "#0284c7",
+  "lang": "id-ID",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
