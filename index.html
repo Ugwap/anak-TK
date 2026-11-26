@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Hitung Hewan, Bentuk & Warna - TK</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background: #e0f2fe;
+      color: #0f172a;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .hud {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .pill {
+      background: #ffffff;
+      border: 2px solid #7dd3fc;
+      padding: 6px 14px;
+      border-radius: 999px;
+      box-shadow: 0 3px 0 #38bdf8;
+    }
+
+    .canvas-wrap {
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 3 / 4;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 3px solid #0284c7;
+      background: #ffffff;
+      box-shadow: 0 12px 28px rgba(2, 132, 199, 0.18);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <div class="pill">⭐ Bintang: <span id="starsEl">0</span></div>
+    <div class="pill">🎯 Dapat: <span id="pickedEl">0</span> / <span id="targetEl">2</span></div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="gameCanvas" width="440" height="586"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const starsEl = document.getElementById("starsEl");
+    const pickedEl = document.getElementById("pickedEl");
+    const targetEl = document.getElementById("targetEl");
+
+    const ANIMALS = ["🐶", "🐱", "🐸", "🐥", "🐰"];
+    const SHAPES = ["circle", "triangle", "square", "star"];
+    const COLORS = [
+      { name: "Merah", fill: "#ef4444", stroke: "#991b1b" },
+      { name: "Kuning", fill: "#facc15", stroke: "#a16207" },
+      { name: "Hijau", fill: "#22c55e", stroke: "#166534" },
+      { name: "Biru", fill: "#3b82f6", stroke: "#1e40af" },
+      { name: "Ungu", fill: "#a855f7", stroke: "#6b21a8" }
+    ];
+
+    let stars = 0;
+    let targetCount = 2;
+    let pickedCount = 0;
+    let mission = null;
+    let cards = [];
+    let sparkles = [];
+    let helperAnimal = "🐰";
+    let statusMsg = "Ketuk yang sesuai!";
+    let statusColor = "#0369a1";
+    let locked = false;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSound(notes) {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      const now = audioCtx.currentTime;
+      notes.forEach(([freq, delay, dur, type = "sine"]) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now + delay);
+        gain.gain.setValueAtTime(0.12, now + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + delay);
+        osc.stop(now + delay + dur);
+      });
+    }
+
+    function drawShapePath(shape, r) {
+      ctx.beginPath();
+      if (shape === "circle") {
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+      } else if (shape === "square") {
+        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 8);
+      } else if (shape === "triangle") {
+        ctx.moveTo(0, -r * 1.02);
+        ctx.lineTo(r * 0.98, r * 0.82);
+        ctx.lineTo(-r * 0.98, r * 0.82);
+        ctx.closePath();
+      } else if (shape === "star") {
+        const spikes = 5;
+        const outer = r * 1.06;
+        const inner = r * 0.48;
+        for (let i = 0; i < spikes * 2; i++) {
+          const rad = i % 2 === 0 ? outer : inner;
+          const angle = (i * Math.PI) / spikes - Math.PI / 2;
+          const px = Math.cos(angle) * rad;
+          const py = Math.sin(angle) * rad;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+      }
+    }
+
+    function shapeLabel(shape) {
+      if (shape === "circle") return "Lingkaran";
+      if (shape === "triangle") return "Segitiga";
+      if (shape === "square") return "Kotak";
+      return "Bintang";
+    }
+
+    function spawnSparkles(x, y) {
+      for (let i = 0; i < 16; i++) {
+        const angle = (Math.PI * 2 * i) / 16 + Math.random() * 0.2;
+        const speed = 2 + Math.random() * 3.5;
+        sparkles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1,
+          life: 32,
+          color: COLORS[i % COLORS.length].fill
+        });
+      }
+    }
+
+    function setupRound() {
+      locked = false;
+      pickedCount = 0;
+      targetCount = Math.floor(Math.random() * 3) + 2; // 2 sampai 4
+      helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+
+      const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+      const targetColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const badgeAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+
+      // Mode campuran: cocokkan bentuk + warna, dan opsional cocokkan hewan
+      const useAnimalRule = Math.random() < 0.45;
+      mission = {
+        shape: targetShape,
+        color: targetColor,
+        animal: useAnimalRule ? badgeAnimal : null
+      };
+
+      pickedEl.textContent = pickedCount;
+      targetEl.textContent = targetCount;
+      statusMsg = "Ketuk yang sesuai!";
+      statusColor = "#0369a1";
+
+      // Buat 9 kartu (3x3) dengan jumlah target terjamin ada
+      const totalCards = 9;
+      const list = [];
+
+      for (let i = 0; i < targetCount; i++) {
+        list.push({
+          shape: mission.shape,
+          color: mission.color,
+          animal: mission.animal || ANIMALS[Math.floor(Math.random() * ANIMALS.length)],
+          isTarget: true
+        });
+      }
+
+      while (list.length < totalCards) {
+        const s = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+        const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+        const a = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+
+        const matchesTarget =
+          s === mission.shape &&
+          c.name === mission.color.name &&
+          (!mission.animal || a === mission.animal);
+
+        if (!matchesTarget) {
+          list.push({ shape: s, color: c, animal: a, isTarget: false });
+        }
+      }
+
+      // Acak posisi kartu
+      for (let i = list.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [list[i], list[j]] = [list[j], list[i]];
+      }
+
+      const cols = 3;
+      const cardW = 122;
+      const cardH = 104;
+      const gapX = 16;
+      const gapY = 14;
+      const startX = (canvas.width - (cols * cardW + (cols - 1) * gapX)) / 2;
+      const startY = 228;
+
+      cards = list.map((item, idx) => {
+        const r = Math.floor(idx / cols);
+        const c = idx % cols;
+        return {
+          ...item,
+          x: startX + c * (cardW + gapX),
+          y: startY + r * (cardH + gapY),
+          w: cardW,
+          h: cardH,
+          picked: false,
+          shake: 0
+        };
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Panel misi atas
+      ctx.fillStyle = "#f0f9ff";
+      ctx.fillRect(0, 0, canvas.width, 210);
+
+      ctx.font = "56px system-ui";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(helperAnimal, 68, 96);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#7dd3fc";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(118, 28, 300, 156, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      // Preview bentuk & warna target
+      ctx.save();
+      ctx.translate(166, 82);
+      ctx.fillStyle = mission.color.fill;
+      ctx.strokeStyle = mission.color.stroke;
+      ctx.lineWidth = 3;
+      drawShapePath(mission.shape, 24);
+      ctx.fill();
+      ctx.stroke();
+
+      if (mission.animal) {
+        ctx.font = "22px system-ui";
+        ctx.fillText(mission.animal, 20, -18);
+      }
+      ctx.restore();
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 20px system-ui";
+      ctx.textAlign = "left";
+      const ruleText = mission.animal
+        ? `Cari ${targetCount} ${shapeLabel(mission.shape)} ${mission.color.name} (${mission.animal})`
+        : `Cari ${targetCount} ${shapeLabel(mission.shape)} ${mission.color.name}`;
+      ctx.fillText(ruleText, 204, 72, 202);
+
+      ctx.fillStyle = statusColor;
+      ctx.font = "bold 16px system-ui";
+      ctx.fillText(statusMsg, 204, 108, 202);
+
+      // Indikator hitungan visual (bulatan kosong -> terisi)
+      for (let i = 0; i < targetCount; i++) {
+        ctx.beginPath();
+        ctx.arc(214 + i * 28, 146, 9, 0, Math.PI * 2);
+        ctx.fillStyle = i < pickedCount ? "#22c55e" : "#e2e8f0";
+        ctx.fill();
+      }
+
+      // Kartu pilihan
+      for (const card of cards) {
+        let offsetX = 0;
+        if (card.shake > 0) {
+          offsetX = Math.sin(card.shake * 1.4) * 7;
+          card.shake--;
+        }
+
+        ctx.save();
+        ctx.translate(card.x + offsetX, card.y);
+
+        ctx.fillStyle = card.picked ? "#dcfce7" : "#f8fafc";
+        ctx.strokeStyle = card.picked ? "#22c55e" : "#cbd5e1";
+        ctx.lineWidth = card.picked ? 3.5 : 2;
+        ctx.beginPath();
+        ctx.roundRect(0, 0, card.w, card.h, 16);
+        ctx.fill();
+        ctx.stroke();
+
+        // Bentuk berwarna
+        ctx.save();
+        ctx.translate(card.w / 2, card.h / 2 + 4);
+        ctx.fillStyle = card.color.fill;
+        ctx.strokeStyle = card.color.stroke;
+        ctx.lineWidth = 2.5;
+        drawShapePath(card.shape, 25);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // Hewan kecil di pojok kartu
+        ctx.font = "22px system-ui";
+        ctx.textAlign = "left";
+        ctx.fillText(card.animal, 20, 22);
+
+        if (card.picked) {
+          ctx.font = "bold 20px system-ui";
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#16a34a";
+          ctx.fillText("✓", card.w - 10, 22);
+        }
+
+        ctx.restore();
+      }
+
+      // Efek kilau
+      for (let i = sparkles.length - 1; i >= 0; i--) {
+        const sp = sparkles[i];
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.vy += 0.12;
+        sp.life--;
+        ctx.globalAlpha = Math.max(0, sp.life / 32);
+        ctx.fillStyle = sp.color;
+        ctx.beginPath();
+        ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        if (sp.life <= 0) sparkles.splice(i, 1);
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    canvas.addEventListener("pointerdown", (e) => {
+      if (locked) return;
+      const rect = canvas.getBoundingClientRect();
+      const px = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const py = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      for (const card of cards) {
+        if (px >= card.x && px <= card.x + card.w && py >= card.y && py <= card.y + card.h) {
+          if (card.picked) return;
+
+          if (card.isTarget && pickedCount < targetCount) {
+            card.picked = true;
+            pickedCount++;
+            pickedEl.textContent = pickedCount;
+            statusColor = "#15803d";
+            statusMsg = `Mantap! ${pickedCount} dari ${targetCount}`;
+            spawnSparkles(card.x + card.w / 2, card.y + card.h / 2);
+            playSound([[523 + pickedCount * 75, 0, 0.13, "triangle"]]);
+
+            if (pickedCount === targetCount) {
+              locked = true;
+              stars++;
+              starsEl.textContent = stars;
+              statusMsg = "Hebat! Dapat 1 bintang ⭐";
+              playSound([
+                [523.25, 0, 0.12, "triangle"],
+                [659.25, 0.1, 0.12, "triangle"],
+                [783.99, 0.2, 0.22, "triangle"]
+              ]);
+              setTimeout(setupRound, 1050);
+            }
+          } else {
+            card.shake = 14;
+            statusColor = "#b45309";
+            statusMsg = "Coba perhatikan warna & bentuknya";
+            playSound([[220, 0, 0.14, "sine"]]);
+          }
+          break;
+        }
+      }
+    });
+
+    setupRound();
+    draw();
+  </script>
+</body>
+</html>
