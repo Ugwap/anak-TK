@@ -701,7 +701,7 @@
 
         <div class="splash-body">
           <h1 class="splash-title">Ayo main &amp; hitung seru!</h1>
-          <p class="splash-sub">Kenali bentuk, warna, dan hewan lucu. Tulis namamu dulu ya!</p>
+          <p class="splash-sub">Kenali bentuk, warna, dan angka. Tulis namamu dulu ya!</p>
 
           <div class="input-group">
             <label for="playerNameInput" class="input-label">Nama kamu siapa?</label>
@@ -780,7 +780,7 @@
 
       <div class="level-bar">
         <button type="button" class="lvl-btn active" data-level="easy">Mudah</button>
-        <button type="button" class="lvl-btn" data-level="medium">Sedang (+Hewan)</button>
+        <button type="button" class="lvl-btn" data-level="medium">Sedang</button>
         <button type="button" class="lvl-btn" data-level="mix">Campuran</button>
       </div>
 
@@ -819,7 +819,6 @@
     let chosenMood = localStorage.getItem(MOOD_KEY) || "Ceria";
     let sfxEnabled = true;
 
-    // 6 Kartu Game modern dengan latar pastel, awan, dan ilustrasi 3D clay
     const SIX_GAMES = [
       {
         id: "game-1",
@@ -827,7 +826,7 @@
         sub: "Siap dimainkan",
         bg: "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
         ready: true,
-        note: "Kartu 1 siap dimainkan! Ayo hitung bentuk, warna, dan hewan.",
+        note: "Kartu 1 siap dimainkan! Ayo hitung bentuk dan warna.",
         svg: `
           <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16 18C16 14.5 19 12 22.5 12C25 12 27 13.5 28 15.5C31 15.5 33 17.5 33 20C33 22.5 31 24.5 28 24.5H18C15.5 24.5 13.5 22.5 13.5 20C13.5 18.8 14.5 18 16 18Z" fill="#ffffff" opacity="0.9"/>
@@ -937,7 +936,6 @@
       el.classList.add("bounce-now");
     }
 
-    // Efek suara Web Audio murni (tanpa suara AI / TTS)
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -1152,7 +1150,7 @@
       if (sfxEnabled) playPopSfx(180);
     });
 
-    // --- Game 1: Hitung Hewan, Bentuk & Warna (Bentuk 3D Clay & Efek Suara) ---
+    // --- Game 1: Hitung & Bentuk (Fokus penuh ke bentuk & warna di tiap kotak) ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const starsEl = document.getElementById("starsEl");
@@ -1160,12 +1158,11 @@
     const targetEl = document.getElementById("targetEl");
     const lvlBtns = document.querySelectorAll(".lvl-btn");
 
-    const ANIMALS = [
-      { id: "dog", name: "Anjing", fur: "#f59e0b", dark: "#b45309", ear: "#92400e" },
-      { id: "cat", name: "Kucing", fur: "#fb923c", dark: "#c2410c", ear: "#ea580c" },
-      { id: "frog", name: "Katak", fur: "#4ade80", dark: "#15803d", ear: "#22c55e" },
-      { id: "chick", name: "Anak Ayam", fur: "#facc15", dark: "#ca8a04", ear: "#eab308" },
-      { id: "bunny", name: "Kelinci", fur: "#ffffff", dark: "#94a3b8", ear: "#f472b6" }
+    const HELPER_BUDDIES = [
+      { id: "bunny", fur: "#ffffff", dark: "#94a3b8", ear: "#f472b6" },
+      { id: "cat", fur: "#fb923c", dark: "#c2410c", ear: "#ea580c" },
+      { id: "frog", fur: "#4ade80", dark: "#15803d", ear: "#22c55e" },
+      { id: "chick", fur: "#facc15", dark: "#ca8a04", ear: "#eab308" }
     ];
 
     const SHAPES = [
@@ -1193,9 +1190,9 @@
     let cards = [];
     let sparkles = [];
     let ripples = [];
-    let helperAnimal = ANIMALS[4];
+    let helperBuddy = HELPER_BUDDIES[0];
     let helperHop = 0;
-    let statusMsg = "Ketuk yang sesuai!";
+    let statusMsg = "Ketuk bentuk yang sesuai!";
     let statusColor = "#0369a1";
     let locked = false;
 
@@ -1204,9 +1201,9 @@
       if (shapeId === "circle") {
         ctx.arc(0, 0, r, 0, Math.PI * 2);
       } else if (shapeId === "square") {
-        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 10);
+        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 11);
       } else if (shapeId === "triangle") {
-        ctx.moveTo(0, -r * 1.04);
+        ctx.moveTo(0, -r * 1.05);
         ctx.lineTo(r * 0.98, r * 0.82);
         ctx.lineTo(-r * 0.98, r * 0.82);
         ctx.closePath();
@@ -1226,19 +1223,16 @@
       }
     }
 
-    // Bentuk 3D Clay: lapisan ketebalan bawah + gradasi atas + kilau glossy
     function draw3DShape(shapeId, r, colorObj) {
       ctx.save();
 
-      // 1. Lapisan ketebalan 3D di bawah
       ctx.save();
-      ctx.translate(0, 5.5);
+      ctx.translate(0, 6);
       traceShapePath(shapeId, r);
       ctx.fillStyle = colorObj.dark;
       ctx.fill();
       ctx.restore();
 
-      // 2. Permukaan utama dengan gradasi 3D lembut
       const grad = ctx.createLinearGradient(-r * 0.6, -r * 0.8, r * 0.6, r * 0.9);
       grad.addColorStop(0, colorObj.light);
       grad.addColorStop(0.45, colorObj.fill);
@@ -1248,11 +1242,10 @@
       ctx.fillStyle = grad;
       ctx.fill();
 
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.2;
       ctx.strokeStyle = colorObj.dark;
       ctx.stroke();
 
-      // 3. Kilau glossy melengkung di bagian atas
       ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
       ctx.beginPath();
       ctx.ellipse(-r * 0.28, -r * 0.34, r * 0.25, r * 0.12, -0.45, 0, Math.PI * 2);
@@ -1261,69 +1254,60 @@
       ctx.restore();
     }
 
-    // Karakter hewan 3D lucu di Canvas
-    function draw3DAnimal(animal, x, y, size) {
+    function drawHelperBuddy(buddy, x, y, size) {
       ctx.save();
       ctx.translate(x, y);
       const s = size / 44;
       ctx.scale(s, s);
 
-      if (animal.id === "bunny") {
+      if (buddy.id === "bunny") {
         ctx.fillStyle = "#cbd5e1";
         ctx.beginPath();
         ctx.ellipse(-9, -16, 5.5, 12.5, -0.15, 0, Math.PI * 2);
         ctx.ellipse(9, -16, 5.5, 12.5, 0.15, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = animal.fur;
+        ctx.fillStyle = buddy.fur;
         ctx.beginPath();
         ctx.ellipse(-9, -18, 5, 12, -0.15, 0, Math.PI * 2);
         ctx.ellipse(9, -18, 5, 12, 0.15, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = animal.ear;
+        ctx.fillStyle = buddy.ear;
         ctx.beginPath();
         ctx.ellipse(-9, -18, 2.6, 8, -0.15, 0, Math.PI * 2);
         ctx.ellipse(9, -18, 2.6, 8, 0.15, 0, Math.PI * 2);
         ctx.fill();
-      } else if (animal.id === "cat") {
-        ctx.fillStyle = animal.ear;
+      } else if (buddy.id === "cat") {
+        ctx.fillStyle = buddy.ear;
         ctx.beginPath();
         ctx.moveTo(-16, -6); ctx.lineTo(-12, -21); ctx.lineTo(-3, -12); ctx.closePath();
         ctx.moveTo(16, -6); ctx.lineTo(12, -21); ctx.lineTo(3, -12); ctx.closePath();
         ctx.fill();
-      } else if (animal.id === "dog") {
-        ctx.fillStyle = animal.ear;
-        ctx.beginPath();
-        ctx.ellipse(-16, -2, 6, 12, 0.28, 0, Math.PI * 2);
-        ctx.ellipse(16, -2, 6, 12, -0.28, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (animal.id === "frog") {
-        ctx.fillStyle = animal.fur;
+      } else if (buddy.id === "frog") {
+        ctx.fillStyle = buddy.fur;
         ctx.beginPath();
         ctx.arc(-10, -14, 7.5, 0, Math.PI * 2);
         ctx.arc(10, -14, 7.5, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Bayangan bawah kepala
-      ctx.fillStyle = animal.dark;
+      ctx.fillStyle = buddy.dark;
       ctx.beginPath();
       ctx.arc(0, 2.5, 16.5, 0, Math.PI * 2);
       ctx.fill();
 
-      // Kepala utama 3D
       const headGrad = ctx.createRadialGradient(-5, -8, 2, 0, 0, 19);
       headGrad.addColorStop(0, "#ffffff");
-      headGrad.addColorStop(0.3, animal.fur);
-      headGrad.addColorStop(1, animal.dark);
+      headGrad.addColorStop(0.3, buddy.fur);
+      headGrad.addColorStop(1, buddy.dark);
 
       ctx.beginPath();
       ctx.arc(0, 0, 16.5, 0, Math.PI * 2);
       ctx.fillStyle = headGrad;
       ctx.fill();
 
-      const eyeY = animal.id === "frog" ? -14 : -3;
+      const eyeY = buddy.id === "frog" ? -14 : -3;
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
       ctx.arc(-6, eyeY, 4.6, 0, Math.PI * 2);
@@ -1348,7 +1332,7 @@
       ctx.arc(10, 3, 3.4, 0, Math.PI * 2);
       ctx.fill();
 
-      if (animal.id === "chick") {
+      if (buddy.id === "chick") {
         ctx.fillStyle = "#f97316";
         ctx.beginPath();
         ctx.moveTo(-4.5, 2); ctx.lineTo(4.5, 2); ctx.lineTo(0, 7.5); ctx.closePath();
@@ -1391,29 +1375,28 @@
     function setupRound() {
       locked = false;
       pickedCount = 0;
-      targetCount = levelMode === "easy"
-        ? Math.floor(Math.random() * 3) + 1
-        : Math.floor(Math.random() * 3) + 2;
 
-      helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+      if (levelMode === "easy") {
+        targetCount = Math.floor(Math.random() * 3) + 1;
+      } else if (levelMode === "medium") {
+        targetCount = Math.floor(Math.random() * 3) + 2;
+      } else {
+        targetCount = Math.floor(Math.random() * 4) + 2;
+      }
+
+      helperBuddy = HELPER_BUDDIES[Math.floor(Math.random() * HELPER_BUDDIES.length)];
       helperHop = 18;
       const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
       const targetColor = COLORS[Math.floor(Math.random() * COLORS.length)];
-      const badgeAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
-
-      let useAnimal = false;
-      if (levelMode === "medium") useAnimal = true;
-      else if (levelMode === "mix") useAnimal = Math.random() < 0.6;
 
       mission = {
         shape: targetShape,
-        color: targetColor,
-        animal: useAnimal ? badgeAnimal : null
+        color: targetColor
       };
 
       pickedEl.textContent = pickedCount;
       targetEl.textContent = targetCount;
-      statusMsg = "Ketuk yang sesuai!";
+      statusMsg = "Ketuk bentuk yang sesuai!";
       statusColor = "#0369a1";
 
       const totalCards = 9;
@@ -1423,7 +1406,6 @@
         list.push({
           shape: mission.shape,
           color: mission.color,
-          animal: mission.animal || ANIMALS[Math.floor(Math.random() * ANIMALS.length)],
           isTarget: true
         });
       }
@@ -1431,15 +1413,10 @@
       while (list.length < totalCards) {
         const s = SHAPES[Math.floor(Math.random() * SHAPES.length)];
         const c = COLORS[Math.floor(Math.random() * COLORS.length)];
-        const a = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
-
-        const matchesTarget =
-          s.id === mission.shape.id &&
-          c.name === mission.color.name &&
-          (!mission.animal || a.id === mission.animal.id);
+        const matchesTarget = s.id === mission.shape.id && c.name === mission.color.name;
 
         if (!matchesTarget) {
-          list.push({ shape: s, color: c, animal: a, isTarget: false });
+          list.push({ shape: s, color: c, isTarget: false });
         }
       }
 
@@ -1500,7 +1477,7 @@
       ctx.save();
       ctx.translate(68, 98 + hopOffsetY);
       ctx.scale(hopScale, hopScale);
-      draw3DAnimal(helperAnimal, 0, 0, 64);
+      drawHelperBuddy(helperBuddy, 0, 0, 64);
       ctx.restore();
 
       ctx.fillStyle = "#ffffff";
@@ -1512,20 +1489,14 @@
       ctx.stroke();
 
       ctx.save();
-      ctx.translate(166, 84);
-      draw3DShape(mission.shape.id, 23, mission.color);
-      if (mission.animal) {
-        draw3DAnimal(mission.animal, 20, -18, 28);
-      }
+      ctx.translate(164, 86);
+      draw3DShape(mission.shape.id, 25, mission.color);
       ctx.restore();
 
       ctx.fillStyle = "#0f172a";
       ctx.font = "800 20px 'Baloo 2', 'Fredoka', sans-serif";
       ctx.textAlign = "left";
-      const ruleText = mission.animal
-        ? `Cari ${targetCount} ${mission.shape.name} ${mission.color.name} (${mission.animal.name})`
-        : `Cari ${targetCount} ${mission.shape.name} ${mission.color.name}`;
-      ctx.fillText(ruleText, 204, 70, 202);
+      ctx.fillText(`Cari ${targetCount} ${mission.shape.name} ${mission.color.name}`, 204, 70, 202);
 
       ctx.fillStyle = statusColor;
       ctx.font = "700 16px 'Fredoka', sans-serif";
@@ -1558,7 +1529,6 @@
         ctx.scale(cardScale, cardScale);
         ctx.translate(-card.w / 2, -card.h / 2);
 
-        // Bayangan kartu bawah
         ctx.fillStyle = card.picked ? "#86efac" : "#e2e8f0";
         ctx.beginPath();
         ctx.roundRect(0, 4, card.w, card.h, 20);
@@ -1572,12 +1542,11 @@
         ctx.fill();
         ctx.stroke();
 
+        // Bentuk 3D terpusat di tengah kotak agar fokus penuh ke bentuk
         ctx.save();
-        ctx.translate(card.w / 2, card.h / 2 + 5);
-        draw3DShape(card.shape.id, 24, card.color);
+        ctx.translate(card.w / 2, card.h / 2 + 2);
+        draw3DShape(card.shape.id, 30, card.color);
         ctx.restore();
-
-        draw3DAnimal(card.animal, 24, 24, 28);
 
         if (card.picked) {
           ctx.font = "800 22px 'Baloo 2', sans-serif";
@@ -1669,7 +1638,7 @@
           } else {
             card.shake = 14;
             statusColor = "#b45309";
-            statusMsg = "Coba perhatikan warna, bentuk & hewan";
+            statusMsg = "Coba perhatikan bentuk & warnanya";
             playThudSfx();
           }
           break;
