@@ -684,7 +684,7 @@
       width: 100%;
       height: 100%;
       display: block;
-      touch-action: manipulation;
+      touch-action: none;
     }
   </style>
 </head>
@@ -765,20 +765,20 @@
       <div id="gamesGrid" class="games-grid"></div>
 
       <div id="ideaBanner" class="idea-banner">
-        💡 Kartu 1 siap dimainkan. 5 kartu lainnya disiapkan untuk ide game TK berikutnya!
+        💡 Kartu 1 &amp; Kartu 2 siap dimainkan!
       </div>
     </section>
 
-    <!-- LAYAR 3: GAME AKTIF (KARTU 1) -->
+    <!-- LAYAR 3: GAME AKTIF -->
     <section id="gameScreen" class="screen">
       <div class="top-hud">
         <button id="backLobbyBtn" type="button" class="pill" style="background:#f1f5f9; border-color:#94a3b8; box-shadow:0 3px 0 #64748b;">← Menu</button>
         <div class="pill">⭐ <span id="starsEl">0</span></div>
-        <div class="pill">🎯 <span id="pickedEl">0</span>/<span id="targetEl">2</span></div>
+        <div class="pill" id="progressPill">🎯 <span id="pickedEl">0</span>/<span id="targetEl">2</span></div>
         <button id="sfxToggleBtn" type="button" class="pill" style="background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊</button>
       </div>
 
-      <div class="level-bar">
+      <div id="levelBar" class="level-bar">
         <button type="button" class="lvl-btn active" data-level="easy">Mudah</button>
         <button type="button" class="lvl-btn" data-level="medium">Sedang</button>
         <button type="button" class="lvl-btn" data-level="mix">Campuran</button>
@@ -812,12 +812,14 @@
     const ideaBanner = document.getElementById("ideaBanner");
     const backLobbyBtn = document.getElementById("backLobbyBtn");
     const sfxToggleBtn = document.getElementById("sfxToggleBtn");
+    const levelBar = document.getElementById("levelBar");
 
     const NAME_KEY = "tk_player_name";
     const MOOD_KEY = "tk_player_mood";
 
     let chosenMood = localStorage.getItem(MOOD_KEY) || "Ceria";
     let sfxEnabled = true;
+    let activeGameId = "game-1";
 
     const SIX_GAMES = [
       {
@@ -826,7 +828,7 @@
         sub: "Siap dimainkan",
         bg: "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
         ready: true,
-        note: "Kartu 1 siap dimainkan! Ayo hitung bentuk dan warna.",
+        note: "Kartu 1 (Hitung & Bentuk): ketuk bentuk sesuai perintah.",
         svg: `
           <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16 18C16 14.5 19 12 22.5 12C25 12 27 13.5 28 15.5C31 15.5 33 17.5 33 20C33 22.5 31 24.5 28 24.5H18C15.5 24.5 13.5 22.5 13.5 20C13.5 18.8 14.5 18 16 18Z" fill="#ffffff" opacity="0.9"/>
@@ -844,21 +846,21 @@
       },
       {
         id: "game-2",
-        title: "Susun Puzzle",
-        sub: "Segera hadir",
+        title: "Gabung Bentuk",
+        sub: "Geser & meledak",
         bg: "linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%)",
-        ready: false,
-        note: "Kartu 2 (Susun Puzzle): ide game TK berikutnya.",
+        ready: true,
+        note: "Kartu 2 (Gabung Bentuk): geser bentuk ke bentuk yang sama hingga membesar & meledak!",
         svg: `
           <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <ellipse cx="44" cy="66" rx="31" ry="8" fill="#15803d"/>
             <ellipse cx="44" cy="63" rx="31" ry="8" fill="#4ade80"/>
-            <rect x="20" y="23" width="23" height="23" rx="7" fill="#c2410c"/>
-            <rect x="20" y="20" width="23" height="23" rx="7" fill="#fb923c"/>
-            <rect x="45" y="23" width="23" height="23" rx="7" fill="#1d4ed8"/>
-            <rect x="45" y="20" width="23" height="23" rx="7" fill="#60a5fa"/>
-            <rect x="32" y="41" width="24" height="23" rx="7" fill="#be185d"/>
-            <rect x="32" y="38" width="24" height="23" rx="7" fill="#f472b6"/>
+            <rect x="19" y="24" width="22" height="22" rx="7" fill="#c2410c"/>
+            <rect x="19" y="21" width="22" height="22" rx="7" fill="#fb923c"/>
+            <rect x="47" y="21" width="24" height="24" rx="7" fill="#1d4ed8"/>
+            <rect x="47" y="18" width="24" height="24" rx="7" fill="#60a5fa"/>
+            <circle cx="44" cy="48" r="12" fill="#be185d"/>
+            <circle cx="44" cy="45" r="12" fill="#f472b6"/>
           </svg>`
       },
       {
@@ -971,12 +973,11 @@
       playSound([[460 + pitchBoost, 0, 0.11, "sine", 780 + pitchBoost]]);
     }
 
-    function playWinSfx() {
+    function playBoomSfx() {
       playSound([
-        [523.25, 0, 0.12, "triangle"],
-        [659.25, 0.09, 0.12, "triangle"],
-        [783.99, 0.18, 0.14, "triangle"],
-        [1046.5, 0.28, 0.26, "triangle"]
+        [170, 0, 0.18, "sawtooth", 58],
+        [523.25, 0.04, 0.14, "triangle", 880],
+        [783.99, 0.12, 0.22, "triangle", 1174.66]
       ]);
     }
 
@@ -1079,7 +1080,7 @@
         card.addEventListener("click", () => {
           if (game.ready) {
             playPopSfx(120);
-            setTimeout(openCountGame, 160);
+            setTimeout(() => openSelectedGame(game.id), 150);
           } else {
             ideaBanner.textContent = `💡 ${game.note}`;
             triggerBounce(ideaBanner);
@@ -1112,7 +1113,7 @@
       splashMsg.textContent = "";
       localStorage.setItem(NAME_KEY, name);
       localStorage.setItem(MOOD_KEY, chosenMood);
-      playWinSfx();
+      playPopSfx(220);
       renderLobby();
       showScreen(lobbyScreen);
     });
@@ -1150,7 +1151,7 @@
       if (sfxEnabled) playPopSfx(180);
     });
 
-    // --- Game 1: Hitung & Bentuk (Fokus penuh ke bentuk & warna di tiap kotak) ---
+    // --- Shared 3D Shape & Helper Renderer ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const starsEl = document.getElementById("starsEl");
@@ -1180,28 +1181,20 @@
       { name: "Ungu", light: "#d8b4fe", fill: "#a855f7", dark: "#6b21a8" }
     ];
 
-    let levelMode = "easy";
     let stars = Number(localStorage.getItem("tk_hitung_stars") || 0);
     starsEl.textContent = stars;
 
-    let targetCount = 2;
-    let pickedCount = 0;
-    let mission = null;
-    let cards = [];
     let sparkles = [];
     let ripples = [];
     let helperBuddy = HELPER_BUDDIES[0];
     let helperHop = 0;
-    let statusMsg = "Ketuk bentuk yang sesuai!";
-    let statusColor = "#0369a1";
-    let locked = false;
 
     function traceShapePath(shapeId, r) {
       ctx.beginPath();
       if (shapeId === "circle") {
         ctx.arc(0, 0, r, 0, Math.PI * 2);
       } else if (shapeId === "square") {
-        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 11);
+        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, Math.max(8, r * 0.34));
       } else if (shapeId === "triangle") {
         ctx.moveTo(0, -r * 1.05);
         ctx.lineTo(r * 0.98, r * 0.82);
@@ -1223,11 +1216,11 @@
       }
     }
 
-    function draw3DShape(shapeId, r, colorObj) {
+    function draw3DShape(shapeId, r, colorObj, depth = 6) {
       ctx.save();
 
       ctx.save();
-      ctx.translate(0, 6);
+      ctx.translate(0, depth);
       traceShapePath(shapeId, r);
       ctx.fillStyle = colorObj.dark;
       ctx.fill();
@@ -1353,73 +1346,85 @@
       ctx.restore();
     }
 
-    function spawnSparkles(x, y) {
-      for (let i = 0; i < 18; i++) {
-        const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.2;
-        const speed = 2.2 + Math.random() * 3.6;
+    function spawnSparkles(x, y, count = 18, speedScale = 1) {
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.25;
+        const speed = (2.2 + Math.random() * 3.8) * speedScale;
         sparkles.push({
           x,
           y,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1.4,
-          life: 36,
-          color: COLORS[i % COLORS.length].fill
+          vy: Math.sin(angle) * speed - 1.5,
+          life: 38 + Math.floor(Math.random() * 12),
+          color: COLORS[i % COLORS.length].fill,
+          size: 4.5 + Math.random() * 3.5
         });
       }
     }
 
-    function spawnCanvasRipple(x, y, color) {
-      ripples.push({ x, y, r: 8, maxR: 48, life: 22, color });
+    function spawnCanvasRipple(x, y, color, maxR = 48) {
+      ripples.push({ x, y, r: 8, maxR, life: 22, color });
     }
 
-    function setupRound() {
-      locked = false;
-      pickedCount = 0;
-
-      if (levelMode === "easy") {
-        targetCount = Math.floor(Math.random() * 3) + 1;
-      } else if (levelMode === "medium") {
-        targetCount = Math.floor(Math.random() * 3) + 2;
+    function awardStar(message) {
+      stars++;
+      starsEl.textContent = stars;
+      localStorage.setItem("tk_hitung_stars", stars);
+      if (activeGameId === "game-1") {
+        g1StatusMsg = message;
+        g1StatusColor = "#15803d";
       } else {
-        targetCount = Math.floor(Math.random() * 4) + 2;
+        g2StatusMsg = message;
+        g2StatusColor = "#15803d";
+      }
+    }
+
+    // --- GAME 1: Hitung & Bentuk ---
+    let g1Level = "easy";
+    let g1TargetCount = 2;
+    let g1PickedCount = 0;
+    let g1Mission = null;
+    let g1Cards = [];
+    let g1StatusMsg = "Ketuk bentuk yang sesuai!";
+    let g1StatusColor = "#0369a1";
+    let g1Locked = false;
+
+    function setupGame1() {
+      g1Locked = false;
+      g1PickedCount = 0;
+
+      if (g1Level === "easy") {
+        g1TargetCount = Math.floor(Math.random() * 3) + 1;
+      } else if (g1Level === "medium") {
+        g1TargetCount = Math.floor(Math.random() * 3) + 2;
+      } else {
+        g1TargetCount = Math.floor(Math.random() * 4) + 2;
       }
 
       helperBuddy = HELPER_BUDDIES[Math.floor(Math.random() * HELPER_BUDDIES.length)];
       helperHop = 18;
-      const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-      const targetColor = COLORS[Math.floor(Math.random() * COLORS.length)];
-
-      mission = {
-        shape: targetShape,
-        color: targetColor
+      g1Mission = {
+        shape: SHAPES[Math.floor(Math.random() * SHAPES.length)],
+        color: COLORS[Math.floor(Math.random() * COLORS.length)]
       };
 
-      pickedEl.textContent = pickedCount;
-      targetEl.textContent = targetCount;
-      statusMsg = "Ketuk bentuk yang sesuai!";
-      statusColor = "#0369a1";
+      pickedEl.textContent = g1PickedCount;
+      targetEl.textContent = g1TargetCount;
+      g1StatusMsg = "Ketuk bentuk yang sesuai!";
+      g1StatusColor = "#0369a1";
 
       const totalCards = 9;
       const list = [];
-
-      for (let i = 0; i < targetCount; i++) {
-        list.push({
-          shape: mission.shape,
-          color: mission.color,
-          isTarget: true
-        });
+      for (let i = 0; i < g1TargetCount; i++) {
+        list.push({ shape: g1Mission.shape, color: g1Mission.color, isTarget: true });
       }
-
       while (list.length < totalCards) {
         const s = SHAPES[Math.floor(Math.random() * SHAPES.length)];
         const c = COLORS[Math.floor(Math.random() * COLORS.length)];
-        const matchesTarget = s.id === mission.shape.id && c.name === mission.color.name;
-
-        if (!matchesTarget) {
+        if (!(s.id === g1Mission.shape.id && c.name === g1Mission.color.name)) {
           list.push({ shape: s, color: c, isTarget: false });
         }
       }
-
       for (let i = list.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [list[i], list[j]] = [list[j], list[i]];
@@ -1433,7 +1438,7 @@
       const startX = (canvas.width - (cols * cardW + (cols - 1) * gapX)) / 2;
       const startY = 228;
 
-      cards = list.map((item, idx) => {
+      g1Cards = list.map((item, idx) => {
         const r = Math.floor(idx / cols);
         const c = idx % cols;
         return {
@@ -1449,30 +1454,9 @@
       });
     }
 
-    function openCountGame() {
-      showScreen(gameScreen);
-      setupRound();
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (!mission) {
-        requestAnimationFrame(draw);
-        return;
-      }
-
+    function drawGame1(hopOffsetY, hopScale) {
       ctx.fillStyle = "#f0f9ff";
       ctx.fillRect(0, 0, canvas.width, 210);
-
-      let hopOffsetY = 0;
-      let hopScale = 1;
-      if (helperHop > 0) {
-        const p = 1 - helperHop / 18;
-        hopOffsetY = -Math.sin(p * Math.PI) * 14;
-        hopScale = 1 + Math.sin(p * Math.PI) * 0.14;
-        helperHop--;
-      }
 
       ctx.save();
       ctx.translate(68, 98 + hopOffsetY);
@@ -1490,34 +1474,32 @@
 
       ctx.save();
       ctx.translate(164, 86);
-      draw3DShape(mission.shape.id, 25, mission.color);
+      draw3DShape(g1Mission.shape.id, 25, g1Mission.color);
       ctx.restore();
 
       ctx.fillStyle = "#0f172a";
       ctx.font = "800 20px 'Baloo 2', 'Fredoka', sans-serif";
       ctx.textAlign = "left";
-      ctx.fillText(`Cari ${targetCount} ${mission.shape.name} ${mission.color.name}`, 204, 70, 202);
+      ctx.fillText(`Cari ${g1TargetCount} ${g1Mission.shape.name} ${g1Mission.color.name}`, 204, 70, 202);
 
-      ctx.fillStyle = statusColor;
+      ctx.fillStyle = g1StatusColor;
       ctx.font = "700 16px 'Fredoka', sans-serif";
-      ctx.fillText(statusMsg, 204, 106, 202);
+      ctx.fillText(g1StatusMsg, 204, 106, 202);
 
-      for (let i = 0; i < targetCount; i++) {
+      for (let i = 0; i < g1TargetCount; i++) {
         ctx.beginPath();
         ctx.arc(214 + i * 28, 146, 9, 0, Math.PI * 2);
-        ctx.fillStyle = i < pickedCount ? "#22c55e" : "#e2e8f0";
+        ctx.fillStyle = i < g1PickedCount ? "#22c55e" : "#e2e8f0";
         ctx.fill();
       }
 
-      for (const card of cards) {
+      for (const card of g1Cards) {
         let offsetX = 0;
         let cardScale = 1;
-
         if (card.shake > 0) {
           offsetX = Math.sin(card.shake * 1.4) * 7;
           card.shake--;
         }
-
         if (card.bounce > 0) {
           const t = 1 - card.bounce / 20;
           cardScale = 1 + Math.sin(t * Math.PI * 1.4) * 0.14 * (1 - t * 0.5);
@@ -1542,7 +1524,6 @@
         ctx.fill();
         ctx.stroke();
 
-        // Bentuk 3D terpusat di tengah kotak agar fokus penuh ke bentuk
         ctx.save();
         ctx.translate(card.w / 2, card.h / 2 + 2);
         draw3DShape(card.shape.id, 30, card.color);
@@ -1557,6 +1538,438 @@
 
         ctx.restore();
       }
+    }
+
+    function handleGame1PointerDown(px, py) {
+      if (g1Locked || !g1Mission) return;
+      if (px >= 24 && px <= 112 && py >= 52 && py <= 140) {
+        helperHop = 18;
+        spawnCanvasRipple(68, 98, "#38bdf8");
+        playBoingSfx();
+        return;
+      }
+
+      for (const card of g1Cards) {
+        if (px >= card.x && px <= card.x + card.w && py >= card.y && py <= card.y + card.h) {
+          card.bounce = 20;
+          spawnCanvasRipple(px, py, card.color.fill);
+
+          if (card.picked) {
+            playPopSfx(200);
+            return;
+          }
+
+          if (card.isTarget && g1PickedCount < g1TargetCount) {
+            card.picked = true;
+            g1PickedCount++;
+            helperHop = 14;
+            pickedEl.textContent = g1PickedCount;
+            g1StatusColor = "#15803d";
+            g1StatusMsg = `Mantap! ${g1PickedCount} dari ${g1TargetCount}`;
+            spawnSparkles(card.x + card.w / 2, card.y + card.h / 2);
+            playPopSfx(g1PickedCount * 95);
+
+            if (g1PickedCount === g1TargetCount) {
+              g1Locked = true;
+              helperHop = 22;
+              awardStar("Hebat! Dapat 1 bintang ⭐");
+              playBoomSfx();
+              setTimeout(setupGame1, 1150);
+            }
+          } else {
+            card.shake = 14;
+            g1StatusColor = "#b45309";
+            g1StatusMsg = "Coba perhatikan bentuk & warnanya";
+            playThudSfx();
+          }
+          break;
+        }
+      }
+    }
+
+    // --- GAME 2: Gabung Bentuk (Geser ke Bentuk Sama -> Membesar -> Meledak) ---
+    let g2Level = "easy";
+    let g2MergesNeeded = 3;
+    let g2MergeCount = 0;
+    let g2FocusPiece = null;
+    let g2Pieces = [];
+    let g2DraggingPiece = null;
+    let g2DragOffset = { x: 0, y: 0 };
+    let g2StatusMsg = "Geser bentuk ke bentuk yang sama!";
+    let g2StatusColor = "#15803d";
+    let g2Locked = false;
+    let g2ShakeTimer = 0;
+
+    function getMergesByLevel() {
+      if (g2Level === "easy") return 3;
+      if (g2Level === "medium") return 4;
+      return 5;
+    }
+
+    function getBaseRadiusForMergeStep(step) {
+      return 24 + step * 8.5;
+    }
+
+    function setupGame2() {
+      g2Locked = false;
+      g2DraggingPiece = null;
+      g2MergeCount = 0;
+      g2MergesNeeded = getMergesByLevel();
+
+      helperBuddy = HELPER_BUDDIES[Math.floor(Math.random() * HELPER_BUDDIES.length)];
+      helperHop = 18;
+
+      const focusShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+      const focusColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+      pickedEl.textContent = g2MergeCount;
+      targetEl.textContent = g2MergesNeeded;
+      g2StatusMsg = "Geser ke bentuk yang sama!";
+      g2StatusColor = "#15803d";
+
+      // Bentuk utama di tengah arena yang akan membesar tiap kali digabung
+      g2FocusPiece = {
+        id: "focus",
+        shape: focusShape,
+        color: focusColor,
+        x: canvas.width / 2,
+        y: 355,
+        baseR: getBaseRadiusForMergeStep(0),
+        scaleAnim: 1.18,
+        pulse: 0
+      };
+
+      // Beberapa bentuk berbeda + beberapa bentuk sama untuk digeser
+      const slots = [
+        { x: 82, y: 248 },
+        { x: 220, y: 242 },
+        { x: 358, y: 248 },
+        { x: 76, y: 365 },
+        { x: 364, y: 365 },
+        { x: 84, y: 486 },
+        { x: 220, y: 502 },
+        { x: 356, y: 486 }
+      ];
+
+      for (let i = slots.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [slots[i], slots[j]] = [slots[j], slots[i]];
+      }
+
+      const pieces = [];
+      // Pastikan jumlah bentuk yang sama cukup untuk mencapai target ledakan
+      for (let i = 0; i < g2MergesNeeded + 1; i++) {
+        const sl = slots[i];
+        pieces.push({
+          id: `match-${i}`,
+          shape: focusShape,
+          color: focusColor,
+          x: sl.x,
+          y: sl.y,
+          homeX: sl.x,
+          homeY: sl.y,
+          r: 22,
+          isMatch: true,
+          shake: 0
+        });
+      }
+
+      // Isi sisa slot dengan bentuk atau warna yang berbeda
+      for (let i = g2MergesNeeded + 1; i < slots.length; i++) {
+        const sl = slots[i];
+        let s = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+        let c = COLORS[Math.floor(Math.random() * COLORS.length)];
+        if (s.id === focusShape.id && c.name === focusColor.name) {
+          s = SHAPES[(SHAPES.findIndex((item) => item.id === s.id) + 1) % SHAPES.length];
+        }
+        pieces.push({
+          id: `other-${i}`,
+          shape: s,
+          color: c,
+          x: sl.x,
+          y: sl.y,
+          homeX: sl.x,
+          homeY: sl.y,
+          r: 22,
+          isMatch: false,
+          shake: 0
+        });
+      }
+
+      g2Pieces = pieces;
+    }
+
+    function drawGame2(hopOffsetY, hopScale) {
+      ctx.fillStyle = "#f0fdf4";
+      ctx.fillRect(0, 0, canvas.width, 206);
+
+      ctx.fillStyle = "#dcfce7";
+      ctx.fillRect(0, 206, canvas.width, canvas.height - 206);
+
+      // Karakter penyemangat di kiri atas
+      ctx.save();
+      ctx.translate(68, 96 + hopOffsetY);
+      ctx.scale(hopScale, hopScale);
+      drawHelperBuddy(helperBuddy, 0, 0, 62);
+      ctx.restore();
+
+      // Panel misi atas
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#86efac";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(118, 26, 300, 156, 22);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(162, 84);
+      draw3DShape(g2FocusPiece.shape.id, 22, g2FocusPiece.color, 5);
+      ctx.restore();
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "800 19px 'Baloo 2', 'Fredoka', sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(`Gabung ${g2MergesNeeded}x ${g2FocusPiece.shape.name}`, 202, 66, 204);
+
+      ctx.fillStyle = g2StatusColor;
+      ctx.font = "700 15px 'Fredoka', sans-serif";
+      ctx.fillText(g2StatusMsg, 202, 102, 204);
+
+      // Indikator ukuran / penyatuan
+      for (let i = 0; i < g2MergesNeeded; i++) {
+        ctx.beginPath();
+        ctx.arc(212 + i * 26, 144, 8.5, 0, Math.PI * 2);
+        ctx.fillStyle = i < g2MergeCount ? "#f97316" : "#e2e8f0";
+        ctx.fill();
+      }
+
+      // Lingkaran zona gabung lembut di tengah arena
+      if (!g2Locked) {
+        const zoneR = g2FocusPiece.baseR + 24;
+        ctx.save();
+        ctx.strokeStyle = g2DraggingPiece ? "#16a34a" : "rgba(34, 197, 94, 0.35)";
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 7]);
+        ctx.beginPath();
+        ctx.arc(g2FocusPiece.x, g2FocusPiece.y, zoneR, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        // Bentuk sasaran utama yang membesar tiap kali digabung
+        if (g2FocusPiece.scaleAnim > 1) {
+          g2FocusPiece.scaleAnim = Math.max(1, g2FocusPiece.scaleAnim - 0.025);
+        }
+        ctx.save();
+        ctx.translate(g2FocusPiece.x, g2FocusPiece.y);
+        ctx.scale(g2FocusPiece.scaleAnim, g2FocusPiece.scaleAnim);
+        draw3DShape(
+          g2FocusPiece.shape.id,
+          g2FocusPiece.baseR,
+          g2FocusPiece.color,
+          6 + g2MergeCount * 1.5
+        );
+        ctx.restore();
+      }
+
+      // Gambar potongan bentuk yang bisa digeser
+      for (const p of g2Pieces) {
+        if (p === g2DraggingPiece) continue;
+        let ox = 0;
+        if (p.shake > 0) {
+          ox = Math.sin(p.shake * 1.5) * 6;
+          p.shake--;
+        }
+        ctx.save();
+        ctx.translate(p.x + ox, p.y);
+        draw3DShape(p.shape.id, p.r, p.color, 5);
+        ctx.restore();
+      }
+
+      // Gambar potongan yang sedang ditarik di lapisan paling atas
+      if (g2DraggingPiece) {
+        ctx.save();
+        ctx.translate(g2DraggingPiece.x, g2DraggingPiece.y);
+        ctx.scale(1.15, 1.15);
+        draw3DShape(g2DraggingPiece.shape.id, g2DraggingPiece.r, g2DraggingPiece.color, 8);
+        ctx.restore();
+      }
+    }
+
+    function handleGame2PointerDown(px, py) {
+      if (g2Locked || !g2FocusPiece) return;
+
+      if (px >= 24 && px <= 112 && py >= 50 && py <= 138) {
+        helperHop = 18;
+        spawnCanvasRipple(68, 96, "#4ade80");
+        playBoingSfx();
+        return;
+      }
+
+      // Cek bentuk yang disentuh (dari paling depan)
+      for (let i = g2Pieces.length - 1; i >= 0; i--) {
+        const p = g2Pieces[i];
+        const dist = Math.hypot(px - p.x, py - p.y);
+        if (dist <= p.r + 14) {
+          g2DraggingPiece = p;
+          g2DragOffset = { x: px - p.x, y: py - p.y };
+          playPopSfx(70);
+          break;
+        }
+      }
+    }
+
+    function handleGame2PointerMove(px, py) {
+      if (!g2DraggingPiece || g2Locked) return;
+      g2DraggingPiece.x = Math.max(32, Math.min(canvas.width - 32, px - g2DragOffset.x));
+      g2DraggingPiece.y = Math.max(228, Math.min(canvas.height - 32, py - g2DragOffset.y));
+    }
+
+    function handleGame2PointerUp() {
+      if (!g2DraggingPiece || g2Locked) return;
+      const p = g2DraggingPiece;
+      g2DraggingPiece = null;
+
+      const distToCenter = Math.hypot(p.x - g2FocusPiece.x, p.y - g2FocusPiece.y);
+      const mergeThreshold = g2FocusPiece.baseR + p.r + 22;
+
+      if (distToCenter <= mergeThreshold) {
+        const sameShape = p.shape.id === g2FocusPiece.shape.id;
+        const sameColor = p.color.name === g2FocusPiece.color.name;
+
+        if (sameShape && sameColor) {
+          // Hapus bentuk yang disatukan dan besarkan bentuk utama
+          g2Pieces = g2Pieces.filter((item) => item.id !== p.id);
+          g2MergeCount++;
+          pickedEl.textContent = g2MergeCount;
+          helperHop = 14;
+          spawnSparkles(g2FocusPiece.x, g2FocusPiece.y, 16, 0.9);
+          spawnCanvasRipple(g2FocusPiece.x, g2FocusPiece.y, g2FocusPiece.color.fill, 64);
+
+          if (g2MergeCount >= g2MergesNeeded) {
+            // Meledak setelah mencapai batas penyatuan!
+            g2Locked = true;
+            g2ShakeTimer = 14;
+            helperHop = 24;
+            spawnSparkles(g2FocusPiece.x, g2FocusPiece.y, 44, 1.65);
+            spawnCanvasRipple(g2FocusPiece.x, g2FocusPiece.y, "#facc15", 130);
+            awardStar("BOOOOM! Dapat 1 bintang ⭐");
+            playBoomSfx();
+            setTimeout(setupGame2, 1300);
+          } else {
+            g2FocusPiece.baseR = getBaseRadiusForMergeStep(g2MergeCount);
+            g2FocusPiece.scaleAnim = 1.24;
+            g2StatusColor = "#15803d";
+            g2StatusMsg = `Makin besar! (${g2MergeCount}/${g2MergesNeeded})`;
+            playPopSfx(g2MergeCount * 115);
+          }
+          return;
+        } else {
+          // Salah bentuk atau warna: kembali ke posisi asal dengan getaran
+          p.shake = 14;
+          p.x = p.homeX;
+          p.y = p.homeY;
+          g2StatusColor = "#b45309";
+          g2StatusMsg = `Cari ${g2FocusPiece.shape.name} yang sama!`;
+          playThudSfx();
+          return;
+        }
+      }
+
+      // Kembali halus ke posisi awal kalau dilepas di luar zona gabung
+      p.x = p.homeX;
+      p.y = p.homeY;
+    }
+
+    function openSelectedGame(gameId) {
+      activeGameId = gameId;
+      showScreen(gameScreen);
+      if (gameId === "game-1") {
+        setupGame1();
+      } else {
+        setupGame2();
+      }
+    }
+
+    function getCanvasPoint(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        px: (e.clientX - rect.left) * (canvas.width / rect.width),
+        py: (e.clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    canvas.addEventListener("pointerdown", (e) => {
+      canvas.setPointerCapture(e.pointerId);
+      const { px, py } = getCanvasPoint(e);
+      if (activeGameId === "game-1") {
+        handleGame1PointerDown(px, py);
+      } else {
+        handleGame2PointerDown(px, py);
+      }
+    });
+
+    canvas.addEventListener("pointermove", (e) => {
+      if (activeGameId !== "game-2") return;
+      const { px, py } = getCanvasPoint(e);
+      handleGame2PointerMove(px, py);
+    });
+
+    canvas.addEventListener("pointerup", () => {
+      if (activeGameId === "game-2") {
+        handleGame2PointerUp();
+      }
+    });
+
+    canvas.addEventListener("pointercancel", () => {
+      if (activeGameId === "game-2" && g2DraggingPiece) {
+        g2DraggingPiece.x = g2DraggingPiece.homeX;
+        g2DraggingPiece.y = g2DraggingPiece.homeY;
+        g2DraggingPiece = null;
+      }
+    });
+
+    lvlBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        lvlBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        triggerBounce(btn);
+        playPopSfx(100);
+        if (activeGameId === "game-1") {
+          g1Level = btn.dataset.level;
+          setupGame1();
+        } else {
+          g2Level = btn.dataset.level;
+          setupGame2();
+        }
+      });
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      if (g2ShakeTimer > 0) {
+        const sx = Math.sin(g2ShakeTimer * 2.2) * 6;
+        const sy = Math.cos(g2ShakeTimer * 1.9) * 5;
+        ctx.translate(sx, sy);
+        g2ShakeTimer--;
+      }
+
+      let hopOffsetY = 0;
+      let hopScale = 1;
+      if (helperHop > 0) {
+        const p = 1 - helperHop / 18;
+        hopOffsetY = -Math.sin(p * Math.PI) * 14;
+        hopScale = 1 + Math.sin(p * Math.PI) * 0.14;
+        helperHop--;
+      }
+
+      if (activeGameId === "game-1" && g1Mission) {
+        drawGame1(hopOffsetY, hopScale);
+      } else if (activeGameId === "game-2" && g2FocusPiece) {
+        drawGame2(hopOffsetY, hopScale);
+      }
 
       for (let i = ripples.length - 1; i >= 0; i--) {
         const rp = ripples[i];
@@ -1565,7 +1978,7 @@
         ctx.save();
         ctx.globalAlpha = Math.max(0, 1 - progress);
         ctx.strokeStyle = rp.color;
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.arc(rp.x, rp.y, radius, 0, Math.PI * 2);
         ctx.stroke();
@@ -1578,88 +1991,25 @@
         const sp = sparkles[i];
         sp.x += sp.vx;
         sp.y += sp.vy;
-        sp.vy += 0.12;
+        sp.vy += 0.14;
         sp.life--;
-        ctx.globalAlpha = Math.max(0, sp.life / 36);
+        ctx.globalAlpha = Math.max(0, sp.life / 42);
         ctx.fillStyle = sp.color;
         ctx.beginPath();
-        ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+        ctx.arc(sp.x, sp.y, sp.size || 5, 0, Math.PI * 2);
         ctx.fill();
         ctx.globalAlpha = 1;
         if (sp.life <= 0) sparkles.splice(i, 1);
       }
 
+      ctx.restore();
       requestAnimationFrame(draw);
     }
 
-    canvas.addEventListener("pointerdown", (e) => {
-      if (locked || !mission) return;
-      const rect = canvas.getBoundingClientRect();
-      const px = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const py = (e.clientY - rect.top) * (canvas.height / rect.height);
-
-      if (px >= 24 && px <= 112 && py >= 52 && py <= 140) {
-        helperHop = 18;
-        spawnCanvasRipple(68, 98, "#38bdf8");
-        playBoingSfx();
-        return;
-      }
-
-      for (const card of cards) {
-        if (px >= card.x && px <= card.x + card.w && py >= card.y && py <= card.y + card.h) {
-          card.bounce = 20;
-          spawnCanvasRipple(px, py, card.color.fill);
-
-          if (card.picked) {
-            playPopSfx(200);
-            return;
-          }
-
-          if (card.isTarget && pickedCount < targetCount) {
-            card.picked = true;
-            pickedCount++;
-            helperHop = 14;
-            pickedEl.textContent = pickedCount;
-            statusColor = "#15803d";
-            statusMsg = `Mantap! ${pickedCount} dari ${targetCount}`;
-            spawnSparkles(card.x + card.w / 2, card.y + card.h / 2);
-            playPopSfx(pickedCount * 95);
-
-            if (pickedCount === targetCount) {
-              locked = true;
-              helperHop = 22;
-              stars++;
-              starsEl.textContent = stars;
-              localStorage.setItem("tk_hitung_stars", stars);
-              statusMsg = "Hebat! Dapat 1 bintang ⭐";
-              playWinSfx();
-              setTimeout(setupRound, 1150);
-            }
-          } else {
-            card.shake = 14;
-            statusColor = "#b45309";
-            statusMsg = "Coba perhatikan bentuk & warnanya";
-            playThudSfx();
-          }
-          break;
-        }
-      }
-    });
-
-    lvlBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        lvlBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        triggerBounce(btn);
-        playPopSfx(100);
-        levelMode = btn.dataset.level;
-        setupRound();
-      });
-    });
-
     refreshMoodButtons();
     syncQuickContinue();
-    setupRound();
+    setupGame1();
+    setupGame2();
     draw();
     showScreen(splashScreen);
   </script>
