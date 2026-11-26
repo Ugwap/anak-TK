@@ -3,53 +3,642 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Hitung Hewan, Bentuk & Warna - TK</title>
+  <meta name="theme-color" content="#84cc16" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Hitung TK" />
+  <title>Ayo Main & Belajar TK</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet" />
+
   <style>
+    :root {
+      --font-display: "Baloo 2", "Fredoka", "Comic Sans MS", system-ui, sans-serif;
+      --font-kids: "Fredoka", "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+      --bg-cream: #f4f1ea;
+      --ink-dark: #182026;
+      --ink-muted: #5c636a;
+      --lime-pop: #84cc16;
+      --lime-dark: #4d7c0f;
+      --navy-pop: #0f172a;
+      --periwinkle: #818cf8;
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: var(--font-kids);
     }
 
     body {
-      background: #e0f2fe;
-      color: #0f172a;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #eae6dd;
+      color: var(--ink-dark);
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100dvh;
       padding: 10px;
-      gap: 8px;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    .top-hud {
+    .app-shell {
       width: 100%;
-      max-width: 440px;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      animation: screenPop 0.28s var(--ease-bounce);
+    }
+
+    @keyframes screenPop {
+      0% { opacity: 0; transform: scale(0.96) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes jellyBounce {
+      0% { transform: scale(1, 1) translateY(0); }
+      28% { transform: scale(1.12, 0.88) translateY(3px); }
+      55% { transform: scale(0.94, 1.07) translateY(-7px); }
+      78% { transform: scale(1.03, 0.98) translateY(-1px); }
+      100% { transform: scale(1, 1) translateY(0); }
+    }
+
+    @keyframes floatBlob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .bounce-now {
+      animation: jellyBounce 0.45s var(--ease-bounce) !important;
+    }
+
+    /* LAYAR 1: SPLASH & ISI NAMA */
+    .splash-card {
+      position: relative;
+      width: 100%;
+      min-height: 620px;
+      background: var(--bg-cream);
+      border-radius: 30px;
+      border: 3px solid #dcd6c8;
+      box-shadow: 0 14px 32px rgba(24, 32, 38, 0.14);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .top-blobs {
+      position: relative;
+      height: 118px;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .blob-lime {
+      position: absolute;
+      top: -34px;
+      left: -26px;
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      background: var(--lime-pop);
+      box-shadow: inset -6px -8px 16px rgba(77, 124, 15, 0.28);
+      animation: floatBlob 4.2s ease-in-out infinite;
+    }
+
+    .blob-navy {
+      position: absolute;
+      top: 18px;
+      left: 196px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--navy-pop);
+      box-shadow: inset 3px 3px 8px rgba(255, 255, 255, 0.16);
+      animation: floatBlob 3.4s ease-in-out 0.5s infinite;
+    }
+
+    .blob-blue {
+      position: absolute;
+      top: -18px;
+      right: -28px;
+      width: 122px;
+      height: 122px;
+      border-radius: 50%;
+      background: var(--periwinkle);
+      box-shadow: inset -5px -7px 14px rgba(55, 48, 163, 0.28);
+      animation: floatBlob 4.8s ease-in-out 0.9s infinite;
+    }
+
+    .splash-body {
+      position: relative;
+      z-index: 2;
+      padding: 2px 24px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .splash-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.03;
+      color: var(--ink-dark);
+    }
+
+    .splash-sub {
+      font-size: 1.02rem;
+      font-weight: 600;
+      line-height: 1.32;
+      color: var(--ink-muted);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-family: var(--font-display);
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+    }
+
+    .splash-input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 16px;
+      border: 2.5px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink-dark);
+      font-family: var(--font-display);
+      font-size: 1.16rem;
+      font-weight: 700;
+      user-select: text;
+      -webkit-user-select: text;
+      outline: none;
+      transition: border-color 0.15s ease, transform 0.2s var(--ease-bounce);
+    }
+
+    .splash-input:focus {
+      border-color: var(--lime-dark);
+      transform: scale(1.01);
+    }
+
+    .question-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .q-pill {
+      padding: 8px 6px;
+      border-radius: 15px;
+      border: 2.5px solid #d6d0c0;
+      background: #ffffff;
+      color: var(--ink-dark);
+      font-family: var(--font-display);
+      font-size: 0.96rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: transform 0.22s var(--ease-bounce), background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .q-pill:active {
+      transform: scale(0.92);
+    }
+
+    .q-pill.active {
+      background: #ecfccb;
+      border-color: var(--lime-dark);
+      color: #365314;
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .btn-primary-dark {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 16px;
+      border: none;
+      background: var(--navy-pop);
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #334155;
+      transition: transform 0.22s var(--ease-bounce), box-shadow 0.12s ease;
+    }
+
+    .btn-primary-dark:active {
+      transform: translateY(3px) scale(0.98);
+      box-shadow: 0 1px 0 #334155;
+    }
+
+    .btn-secondary-cream {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 16px;
+      border: 2.5px solid #cbd5e1;
+      background: #faf8f3;
+      color: var(--ink-dark);
+      font-family: var(--font-display);
+      font-size: 1.04rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.22s var(--ease-bounce);
+    }
+
+    .btn-secondary-cream:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary-cream.hidden {
+      display: none;
+    }
+
+    .form-msg {
+      min-height: 18px;
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #dc2626;
+      text-align: center;
+    }
+
+    /* Karakter hijau 3D lucu di bagian bawah */
+    .bottom-monster {
+      position: relative;
+      width: 100%;
+      height: 130px;
+      margin-top: 2px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      transform-origin: bottom center;
+    }
+
+    .bottom-monster.hop {
+      animation: monsterHop 0.55s var(--ease-bounce);
+    }
+
+    @keyframes monsterHop {
+      0% { transform: scale(1, 1) translateY(0); }
+      22% { transform: scale(1.14, 0.84) translateY(6px); }
+      52% { transform: scale(0.93, 1.1) translateY(-18px); }
+      78% { transform: scale(1.05, 0.96) translateY(-3px); }
+      100% { transform: scale(1, 1) translateY(0); }
+    }
+
+    .monster-dome {
+      width: 116%;
+      height: 142px;
+      background: radial-gradient(circle at 50% 24%, #a3e635 0%, #84cc16 58%, #65a30d 100%);
+      border-top-left-radius: 50% 72%;
+      border-top-right-radius: 50% 72%;
+      box-shadow: inset 0 8px 18px rgba(255, 255, 255, 0.35);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 14px;
+    }
+
+    .monster-tuft {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 18px;
+      background: #84cc16;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .monster-eyes {
+      display: flex;
+      gap: 24px;
+      margin-top: 6px;
+    }
+
+    .eye-socket {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .brow {
+      width: 22px;
+      height: 5px;
+      background: #0f172a;
+      border-radius: 999px;
+      transition: transform 0.25s var(--ease-bounce);
+    }
+
+    .brow.left { transform: rotate(-10deg); }
+    .brow.right { transform: rotate(10deg); }
+
+    .bottom-monster.hop .brow.left { transform: rotate(-18deg) translateY(-3px); }
+    .bottom-monster.hop .brow.right { transform: rotate(18deg) translateY(-3px); }
+
+    .eyeball {
+      width: 56px;
+      height: 56px;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f1f5f9 85%, #cbd5e1 100%);
+      border-radius: 50%;
+      border: 3px solid #0f172a;
+      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.14s ease;
+    }
+
+    .eyeball.blink {
+      transform: scaleY(0.12);
+    }
+
+    .pupil {
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle at 35% 30%, #334155 0%, #0f172a 75%);
+      border-radius: 50%;
+      position: relative;
+      transition: transform 0.08s linear;
+    }
+
+    .pupil::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      width: 7px;
+      height: 7px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    .nostrils {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .nostril {
+      width: 7px;
+      height: 6px;
+      background: #3f6212;
+      border-radius: 50%;
+    }
+
+    /* LAYAR 2: LOBBY 6 KARTU MODERN 3D */
+    .lobby-header {
+      width: 100%;
+      background: #ffffff;
+      border: 2.5px solid #e2ddd2;
+      border-radius: 24px;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 6px 16px rgba(24, 32, 38, 0.07);
+    }
+
+    .greeting-main {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+      line-height: 1.12;
+    }
+
+    .greeting-sub {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+
+    .small-btn {
+      padding: 8px 12px;
+      border-radius: 14px;
+      border: 2px solid #e2e8f0;
+      background: #f8fafc;
+      color: var(--ink-dark);
+      font-family: var(--font-display);
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.2s var(--ease-bounce);
+    }
+
+    .small-btn:active {
+      transform: scale(0.92);
+    }
+
+    .games-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .game-card-modern {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      padding: 12px 12px 14px;
+      min-height: 170px;
+      border: 2.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 8px 18px rgba(24, 32, 38, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.24s var(--ease-bounce), box-shadow 0.2s ease;
+    }
+
+    .game-card-modern:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 22px rgba(24, 32, 38, 0.12);
+    }
+
+    .game-card-modern:active {
+      transform: scale(0.94);
+    }
+
+    .card-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .corner-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+    }
+
+    .status-chip {
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--ink-dark);
+    }
+
+    .game-card-modern.is-ready .status-chip {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .art-stage {
+      width: 100%;
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-bottom-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      z-index: 2;
+    }
+
+    .card-title-bold {
+      font-family: var(--font-display);
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.12;
+      color: var(--ink-dark);
+    }
+
+    .card-sub-muted {
+      font-size: 0.82rem;
       font-weight: 700;
-      font-size: 0.9rem;
+      color: var(--ink-muted);
+    }
+
+    .tap-ripple {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: translate(-50%, -50%) scale(0.2);
+      animation: rippleBurst 0.48s ease-out forwards;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    @keyframes rippleBurst {
+      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(5.5); }
+    }
+
+    .idea-banner {
+      width: 100%;
+      background: #ffffff;
+      border: 2.5px solid #e2ddd2;
+      border-radius: 18px;
+      padding: 10px 14px;
+      font-family: var(--font-display);
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--ink-dark);
+      text-align: center;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(24, 32, 38, 0.05);
+    }
+
+    /* LAYAR 3: GAME AKTIF */
+    .top-hud {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.96rem;
     }
 
     .pill {
       background: #ffffff;
-      border: 2px solid #7dd3fc;
+      border: 2.5px solid #7dd3fc;
       padding: 6px 12px;
       border-radius: 999px;
       box-shadow: 0 3px 0 #38bdf8;
       white-space: nowrap;
+      color: var(--ink-dark);
+      cursor: pointer;
+      transition: transform 0.2s var(--ease-bounce);
+    }
+
+    .pill:active {
+      transform: scale(0.92);
     }
 
     .level-bar {
       width: 100%;
-      max-width: 440px;
       display: flex;
       justify-content: center;
       gap: 6px;
@@ -57,15 +646,20 @@
 
     .lvl-btn {
       flex: 1;
-      padding: 6px 8px;
-      border-radius: 12px;
-      border: 2px solid #93c5fd;
+      padding: 7px 6px;
+      border-radius: 14px;
+      border: 2.5px solid #93c5fd;
       background: #ffffff;
       color: #1e3a8a;
-      font-weight: 700;
-      font-size: 0.8rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.88rem;
       cursor: pointer;
-      transition: transform 0.1s ease, background 0.15s ease;
+      transition: transform 0.2s var(--ease-bounce), background 0.15s ease;
+    }
+
+    .lvl-btn:active {
+      transform: scale(0.94);
     }
 
     .lvl-btn.active {
@@ -73,17 +667,13 @@
       border-color: #0369a1;
       color: #ffffff;
       box-shadow: 0 2px 0 #075985;
-    }
-
-    .lvl-btn:active {
-      transform: scale(0.97);
+      transform: translateY(-1px);
     }
 
     .canvas-wrap {
       width: 100%;
-      max-width: 440px;
       aspect-ratio: 3 / 4;
-      border-radius: 22px;
+      border-radius: 26px;
       overflow: hidden;
       border: 3px solid #0284c7;
       background: #ffffff;
@@ -99,37 +689,483 @@
   </style>
 </head>
 <body>
-  <div class="top-hud">
-    <div class="pill">⭐ Bintang: <span id="starsEl">0</span></div>
-    <div class="pill">🎯 Dapat: <span id="pickedEl">0</span> / <span id="targetEl">2</span></div>
-    <button id="voiceBtn" class="pill" style="cursor:pointer; background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊 Ulangi</button>
-  </div>
+  <div class="app-shell">
+    <!-- LAYAR 1: TAMPILAN PERTAMA -->
+    <section id="splashScreen" class="screen">
+      <div class="splash-card">
+        <div class="top-blobs">
+          <div class="blob-lime"></div>
+          <div class="blob-navy"></div>
+          <div class="blob-blue"></div>
+        </div>
 
-  <div class="level-bar">
-    <button class="lvl-btn active" data-level="easy">Mudah (Bentuk + Warna)</button>
-    <button class="lvl-btn" data-level="medium">Sedang (+ Hewan)</button>
-    <button class="lvl-btn" data-level="mix">Campuran Seru</button>
-  </div>
+        <div class="splash-body">
+          <h1 class="splash-title">Ayo main &amp; hitung seru!</h1>
+          <p class="splash-sub">Kenali bentuk, warna, dan hewan lucu. Tulis namamu dulu ya!</p>
 
-  <div class="canvas-wrap">
-    <canvas id="gameCanvas" width="440" height="586"></canvas>
+          <div class="input-group">
+            <label for="playerNameInput" class="input-label">Nama kamu siapa?</label>
+            <input
+              id="playerNameInput"
+              class="splash-input"
+              type="text"
+              maxlength="18"
+              placeholder="Ketik nama kamu..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="input-group">
+            <div class="input-label">Hari ini lagi gimana?</div>
+            <div class="question-pills" id="moodPills">
+              <button type="button" class="q-pill active" data-mood="Ceria">😄 Ceria</button>
+              <button type="button" class="q-pill" data-mood="Seru">🤩 Seru</button>
+              <button type="button" class="q-pill" data-mood="Siap">🚀 Siap</button>
+            </div>
+          </div>
+
+          <div id="splashMsg" class="form-msg"></div>
+
+          <button id="saveStartBtn" type="button" class="btn-primary-dark">Mulai &amp; Pilih Game</button>
+          <button id="quickContinueBtn" type="button" class="btn-secondary-cream hidden">Lanjut Sebagai ...</button>
+        </div>
+
+        <div id="monsterBuddy" class="bottom-monster" title="Ketuk aku!" aria-label="Karakter hijau lucu">
+          <div class="monster-dome">
+            <div class="monster-tuft"></div>
+            <div class="monster-eyes">
+              <div class="eye-socket">
+                <div class="brow left"></div>
+                <div class="eyeball"><div class="pupil"></div></div>
+              </div>
+              <div class="eye-socket">
+                <div class="brow right"></div>
+                <div class="eyeball"><div class="pupil"></div></div>
+              </div>
+            </div>
+            <div class="nostrils">
+              <div class="nostril"></div>
+              <div class="nostril"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYAR 2: 6 KARTU MODERN 3D -->
+    <section id="lobbyScreen" class="screen">
+      <div class="lobby-header">
+        <div>
+          <div id="lobbyGreeting" class="greeting-main">Halo, Teman!</div>
+          <div id="lobbySub" class="greeting-sub">Pilih 1 dari 6 kartu game</div>
+        </div>
+        <button id="changeNameBtn" type="button" class="small-btn">✏️ Nama</button>
+      </div>
+
+      <div id="gamesGrid" class="games-grid"></div>
+
+      <div id="ideaBanner" class="idea-banner">
+        💡 Kartu 1 siap dimainkan. 5 kartu lainnya disiapkan untuk ide game TK berikutnya!
+      </div>
+    </section>
+
+    <!-- LAYAR 3: GAME AKTIF (KARTU 1) -->
+    <section id="gameScreen" class="screen">
+      <div class="top-hud">
+        <button id="backLobbyBtn" type="button" class="pill" style="background:#f1f5f9; border-color:#94a3b8; box-shadow:0 3px 0 #64748b;">← Menu</button>
+        <div class="pill">⭐ <span id="starsEl">0</span></div>
+        <div class="pill">🎯 <span id="pickedEl">0</span>/<span id="targetEl">2</span></div>
+        <button id="sfxToggleBtn" type="button" class="pill" style="background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊</button>
+      </div>
+
+      <div class="level-bar">
+        <button type="button" class="lvl-btn active" data-level="easy">Mudah</button>
+        <button type="button" class="lvl-btn" data-level="medium">Sedang (+Hewan)</button>
+        <button type="button" class="lvl-btn" data-level="mix">Campuran</button>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas" width="440" height="586"></canvas>
+      </div>
+    </section>
   </div>
 
   <script>
+    const splashScreen = document.getElementById("splashScreen");
+    const lobbyScreen = document.getElementById("lobbyScreen");
+    const gameScreen = document.getElementById("gameScreen");
+
+    const playerNameInput = document.getElementById("playerNameInput");
+    const moodPills = document.querySelectorAll(".q-pill");
+    const splashMsg = document.getElementById("splashMsg");
+    const saveStartBtn = document.getElementById("saveStartBtn");
+    const quickContinueBtn = document.getElementById("quickContinueBtn");
+
+    const monsterBuddy = document.getElementById("monsterBuddy");
+    const pupils = document.querySelectorAll(".pupil");
+    const eyeballs = document.querySelectorAll(".eyeball");
+
+    const lobbyGreeting = document.getElementById("lobbyGreeting");
+    const lobbySub = document.getElementById("lobbySub");
+    const changeNameBtn = document.getElementById("changeNameBtn");
+    const gamesGrid = document.getElementById("gamesGrid");
+    const ideaBanner = document.getElementById("ideaBanner");
+    const backLobbyBtn = document.getElementById("backLobbyBtn");
+    const sfxToggleBtn = document.getElementById("sfxToggleBtn");
+
+    const NAME_KEY = "tk_player_name";
+    const MOOD_KEY = "tk_player_mood";
+
+    let chosenMood = localStorage.getItem(MOOD_KEY) || "Ceria";
+    let sfxEnabled = true;
+
+    // 6 Kartu Game modern dengan latar pastel, awan, dan ilustrasi 3D clay
+    const SIX_GAMES = [
+      {
+        id: "game-1",
+        title: "Hitung & Bentuk",
+        sub: "Siap dimainkan",
+        bg: "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
+        ready: true,
+        note: "Kartu 1 siap dimainkan! Ayo hitung bentuk, warna, dan hewan.",
+        svg: `
+          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 18C16 14.5 19 12 22.5 12C25 12 27 13.5 28 15.5C31 15.5 33 17.5 33 20C33 22.5 31 24.5 28 24.5H18C15.5 24.5 13.5 22.5 13.5 20C13.5 18.8 14.5 18 16 18Z" fill="#ffffff" opacity="0.9"/>
+            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#4d7c0f"/>
+            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#84cc16"/>
+            <polygon points="26,22 39,49 13,49" fill="#991b1b"/>
+            <polygon points="26,19 39,46 13,46" fill="#ef4444"/>
+            <circle cx="59" cy="27" r="13" fill="#a16207"/>
+            <circle cx="59" cy="24" r="13" fill="#facc15"/>
+            <circle cx="54" cy="20" r="3.5" fill="#fef9c3"/>
+            <rect x="46" y="42" width="23" height="22" rx="7" fill="#166534"/>
+            <rect x="46" y="39" width="23" height="22" rx="7" fill="#22c55e"/>
+            <rect x="50" y="42" width="12" height="10" rx="4" fill="#86efac" opacity="0.7"/>
+          </svg>`
+      },
+      {
+        id: "game-2",
+        title: "Susun Puzzle",
+        sub: "Segera hadir",
+        bg: "linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%)",
+        ready: false,
+        note: "Kartu 2 (Susun Puzzle): ide game TK berikutnya.",
+        svg: `
+          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#15803d"/>
+            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#4ade80"/>
+            <rect x="20" y="23" width="23" height="23" rx="7" fill="#c2410c"/>
+            <rect x="20" y="20" width="23" height="23" rx="7" fill="#fb923c"/>
+            <rect x="45" y="23" width="23" height="23" rx="7" fill="#1d4ed8"/>
+            <rect x="45" y="20" width="23" height="23" rx="7" fill="#60a5fa"/>
+            <rect x="32" y="41" width="24" height="23" rx="7" fill="#be185d"/>
+            <rect x="32" y="38" width="24" height="23" rx="7" fill="#f472b6"/>
+          </svg>`
+      },
+      {
+        id: "game-3",
+        title: "Warna Ajaib",
+        sub: "Segera hadir",
+        bg: "linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%)",
+        ready: false,
+        note: "Kartu 3 (Warna Ajaib): ide game TK berikutnya.",
+        svg: `
+          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#db2777" opacity="0.5"/>
+            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#f472b6" opacity="0.6"/>
+            <path d="M18 54C18 33 29 20 44 20C59 20 70 33 70 54" stroke="#9333ea" stroke-width="8" stroke-linecap="round"/>
+            <path d="M25 54C25 39 33 29 44 29C55 29 63 39 63 54" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+            <path d="M32 54C32 45 37 38 44 38C51 38 56 45 56 54" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+          </svg>`
+      },
+      {
+        id: "game-4",
+        title: "Rumah Hewan",
+        sub: "Segera hadir",
+        bg: "linear-gradient(180deg, #ffedd5 0%, #fed7aa 100%)",
+        ready: false,
+        note: "Kartu 4 (Rumah Hewan): ide game TK berikutnya.",
+        svg: `
+          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#4d7c0f"/>
+            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#84cc16"/>
+            <rect x="24" y="36" width="40" height="26" rx="7" fill="#d97706"/>
+            <rect x="24" y="34" width="40" height="25" rx="7" fill="#fef3c7"/>
+            <polygon points="44,13 17,36 71,36" fill="#be123c"/>
+            <polygon points="44,11 17,34 71,34" fill="#fb7185"/>
+            <rect x="37" y="44" width="14" height="15" rx="7" fill="#f59e0b"/>
+          </svg>`
+      },
+      {
+        id: "game-5",
+        title: "Huruf Ceria",
+        sub: "Segera hadir",
+        bg: "linear-gradient(180deg, #ede9fe 0%, #ddd6fe 100%)",
+        ready: false,
+        note: "Kartu 5 (Huruf Ceria): ide game TK berikutnya.",
+        svg: `
+          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#7c3aed" opacity="0.45"/>
+            <rect x="20" y="22" width="48" height="42" rx="14" fill="#4338ca"/>
+            <rect x="20" y="18" width="48" height="42" rx="14" fill="#818cf8"/>
+            <text x="44" y="46" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800" font-family="Baloo 2, Fredoka, sans-serif">ABC</text>
+          </svg>`
+      },
+      {
+        id: "game-6",
+        title: "Pola Pelangi",
+        sub: "Segera hadir",
+        bg: "linear-gradient(180deg, #fef9c3 0%, #fef08a 100%)",
+        ready: false,
+        note: "Kartu 6 (Pola Pelangi): ide game TK berikutnya.",
+        svg: `
+          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#ca8a04" opacity="0.45"/>
+            <circle cx="44" cy="41" r="22" fill="#ca8a04"/>
+            <circle cx="44" cy="38" r="22" fill="#facc15"/>
+            <circle cx="36" cy="34" r="3.2" fill="#182026"/>
+            <circle cx="52" cy="34" r="3.2" fill="#182026"/>
+            <path d="M35 44C38 49 50 49 53 44" stroke="#182026" stroke-width="3.2" stroke-linecap="round"/>
+          </svg>`
+      }
+    ];
+
+    function triggerBounce(el) {
+      if (!el) return;
+      el.classList.remove("bounce-now");
+      void el.offsetWidth;
+      el.classList.add("bounce-now");
+    }
+
+    // Efek suara Web Audio murni (tanpa suara AI / TTS)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSound(notes) {
+      if (!sfxEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const now = audioCtx.currentTime;
+        notes.forEach(([freq, delay, dur, type = "sine", slideTo = null]) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now + delay);
+          if (slideTo) {
+            osc.frequency.exponentialRampToValueAtTime(slideTo, now + delay + dur);
+          }
+          gain.gain.setValueAtTime(0.14, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + delay);
+          osc.stop(now + delay + dur);
+        });
+      } catch (_) {}
+    }
+
+    function playBoingSfx() {
+      playSound([[320, 0, 0.16, "triangle", 760]]);
+    }
+
+    function playPopSfx(pitchBoost = 0) {
+      playSound([[460 + pitchBoost, 0, 0.11, "sine", 780 + pitchBoost]]);
+    }
+
+    function playWinSfx() {
+      playSound([
+        [523.25, 0, 0.12, "triangle"],
+        [659.25, 0.09, 0.12, "triangle"],
+        [783.99, 0.18, 0.14, "triangle"],
+        [1046.5, 0.28, 0.26, "triangle"]
+      ]);
+    }
+
+    function playThudSfx() {
+      playSound([[230, 0, 0.15, "sine", 145]]);
+    }
+
+    function hopMonster() {
+      monsterBuddy.classList.remove("hop");
+      void monsterBuddy.offsetWidth;
+      monsterBuddy.classList.add("hop");
+      eyeballs.forEach((eb) => eb.classList.add("blink"));
+      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 150);
+      playBoingSfx();
+    }
+
+    monsterBuddy.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      hopMonster();
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!splashScreen.classList.contains("active")) return;
+      pupils.forEach((pupil) => {
+        const rect = pupil.parentElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dx = e.clientX - centerX;
+        const dy = e.clientY - centerY;
+        const angle = Math.atan2(dy, dx);
+        const maxOffset = 7;
+        const dist = Math.min(maxOffset, Math.hypot(dx, dy) / 28);
+        pupil.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
+      });
+    });
+
+    setInterval(() => {
+      if (!splashScreen.classList.contains("active")) return;
+      eyeballs.forEach((eb) => eb.classList.add("blink"));
+      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 140);
+    }, 3600);
+
+    function showScreen(target) {
+      [splashScreen, lobbyScreen, gameScreen].forEach((el) => el.classList.remove("active"));
+      target.classList.add("active");
+    }
+
+    function refreshMoodButtons() {
+      moodPills.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.mood === chosenMood);
+      });
+    }
+
+    function syncQuickContinue() {
+      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
+      if (saved) {
+        quickContinueBtn.textContent = `Lanjut sebagai ${saved} →`;
+        quickContinueBtn.classList.remove("hidden");
+      } else {
+        quickContinueBtn.classList.add("hidden");
+      }
+    }
+
+    function spawnCardRipple(card, clientX, clientY) {
+      const rect = card.getBoundingClientRect();
+      const rip = document.createElement("span");
+      rip.className = "tap-ripple";
+      rip.style.left = `${clientX - rect.left}px`;
+      rip.style.top = `${clientY - rect.top}px`;
+      card.appendChild(rip);
+      setTimeout(() => rip.remove(), 500);
+    }
+
+    function renderLobby() {
+      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
+      lobbyGreeting.textContent = `Halo, ${saved || "Teman"}!`;
+      lobbySub.textContent = `Perasaan: ${chosenMood} • Pilih 1 dari 6 kartu`;
+
+      gamesGrid.innerHTML = "";
+      SIX_GAMES.forEach((game, index) => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `game-card-modern ${game.ready ? "is-ready" : ""}`;
+        card.style.background = game.bg;
+        card.innerHTML = `
+          <div class="card-top-row">
+            <span class="corner-badge">${index + 1}</span>
+            <span class="status-chip">${game.ready ? "Main" : "Segera"}</span>
+          </div>
+          <div class="art-stage">${game.svg}</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">${game.title}</div>
+            <div class="card-sub-muted">${game.sub}</div>
+          </div>
+        `;
+        card.addEventListener("pointerdown", (e) => {
+          spawnCardRipple(card, e.clientX, e.clientY);
+          triggerBounce(card);
+        });
+        card.addEventListener("click", () => {
+          if (game.ready) {
+            playPopSfx(120);
+            setTimeout(openCountGame, 160);
+          } else {
+            ideaBanner.textContent = `💡 ${game.note}`;
+            triggerBounce(ideaBanner);
+            playThudSfx();
+          }
+        });
+        gamesGrid.appendChild(card);
+      });
+    }
+
+    moodPills.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        chosenMood = btn.dataset.mood;
+        refreshMoodButtons();
+        triggerBounce(btn);
+        hopMonster();
+      });
+    });
+
+    saveStartBtn.addEventListener("click", () => {
+      triggerBounce(saveStartBtn);
+      const name = playerNameInput.value.trim();
+      if (!name) {
+        splashMsg.textContent = "Tulis namamu dulu ya sebelum mulai!";
+        triggerBounce(splashMsg);
+        hopMonster();
+        playerNameInput.focus();
+        return;
+      }
+      splashMsg.textContent = "";
+      localStorage.setItem(NAME_KEY, name);
+      localStorage.setItem(MOOD_KEY, chosenMood);
+      playWinSfx();
+      renderLobby();
+      showScreen(lobbyScreen);
+    });
+
+    quickContinueBtn.addEventListener("click", () => {
+      triggerBounce(quickContinueBtn);
+      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
+      if (!saved) return;
+      playPopSfx(140);
+      renderLobby();
+      showScreen(lobbyScreen);
+    });
+
+    changeNameBtn.addEventListener("click", () => {
+      triggerBounce(changeNameBtn);
+      playPopSfx(60);
+      playerNameInput.value = localStorage.getItem(NAME_KEY) || "";
+      splashMsg.textContent = "";
+      refreshMoodButtons();
+      syncQuickContinue();
+      showScreen(splashScreen);
+    });
+
+    backLobbyBtn.addEventListener("click", () => {
+      triggerBounce(backLobbyBtn);
+      playPopSfx(40);
+      renderLobby();
+      showScreen(lobbyScreen);
+    });
+
+    sfxToggleBtn.addEventListener("click", () => {
+      sfxEnabled = !sfxEnabled;
+      sfxToggleBtn.textContent = sfxEnabled ? "🔊" : "🔇";
+      triggerBounce(sfxToggleBtn);
+      if (sfxEnabled) playPopSfx(180);
+    });
+
+    // --- Game 1: Hitung Hewan, Bentuk & Warna (Bentuk 3D Clay & Efek Suara) ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const starsEl = document.getElementById("starsEl");
     const pickedEl = document.getElementById("pickedEl");
     const targetEl = document.getElementById("targetEl");
-    const voiceBtn = document.getElementById("voiceBtn");
     const lvlBtns = document.querySelectorAll(".lvl-btn");
 
     const ANIMALS = [
-      { emoji: "🐶", name: "Anjing" },
-      { emoji: "🐱", name: "Kucing" },
-      { emoji: "🐸", name: "Katak" },
-      { emoji: "🐥", name: "Anak Ayam" },
-      { emoji: "🐰", name: "Kelinci" }
+      { id: "dog", name: "Anjing", fur: "#f59e0b", dark: "#b45309", ear: "#92400e" },
+      { id: "cat", name: "Kucing", fur: "#fb923c", dark: "#c2410c", ear: "#ea580c" },
+      { id: "frog", name: "Katak", fur: "#4ade80", dark: "#15803d", ear: "#22c55e" },
+      { id: "chick", name: "Anak Ayam", fur: "#facc15", dark: "#ca8a04", ear: "#eab308" },
+      { id: "bunny", name: "Kelinci", fur: "#ffffff", dark: "#94a3b8", ear: "#f472b6" }
     ];
 
     const SHAPES = [
@@ -140,11 +1176,11 @@
     ];
 
     const COLORS = [
-      { name: "Merah", fill: "#ef4444", stroke: "#991b1b" },
-      { name: "Kuning", fill: "#facc15", stroke: "#a16207" },
-      { name: "Hijau", fill: "#22c55e", stroke: "#166534" },
-      { name: "Biru", fill: "#3b82f6", stroke: "#1e40af" },
-      { name: "Ungu", fill: "#a855f7", stroke: "#6b21a8" }
+      { name: "Merah", light: "#fca5a5", fill: "#ef4444", dark: "#991b1b" },
+      { name: "Kuning", light: "#fef08a", fill: "#facc15", dark: "#a16207" },
+      { name: "Hijau", light: "#86efac", fill: "#22c55e", dark: "#166534" },
+      { name: "Biru", light: "#93c5fd", fill: "#3b82f6", dark: "#1e40af" },
+      { name: "Ungu", light: "#d8b4fe", fill: "#a855f7", dark: "#6b21a8" }
     ];
 
     let levelMode = "easy";
@@ -156,68 +1192,28 @@
     let mission = null;
     let cards = [];
     let sparkles = [];
+    let ripples = [];
     let helperAnimal = ANIMALS[4];
+    let helperHop = 0;
     let statusMsg = "Ketuk yang sesuai!";
     let statusColor = "#0369a1";
     let locked = false;
 
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function playSound(notes) {
-      try {
-        if (!audioCtx) audioCtx = new AudioCtx();
-        if (audioCtx.state === "suspended") audioCtx.resume();
-        const now = audioCtx.currentTime;
-        notes.forEach(([freq, delay, dur, type = "sine"]) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, now + delay);
-          gain.gain.setValueAtTime(0.12, now + delay);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now + delay);
-          osc.stop(now + delay + dur);
-        });
-      } catch (_) {}
-    }
-
-    function speakText(text) {
-      if (!("speechSynthesis" in window)) return;
-      try {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "id-ID";
-        utter.rate = 0.92;
-        utter.pitch = 1.15;
-        window.speechSynthesis.speak(utter);
-      } catch (_) {}
-    }
-
-    function getMissionSpeech() {
-      if (mission.animal) {
-        return `Cari ${targetCount} ${mission.shape.name} warna ${mission.color.name} bergambar ${mission.animal.name}`;
-      }
-      return `Cari ${targetCount} ${mission.shape.name} warna ${mission.color.name}`;
-    }
-
-    function drawShapePath(shapeId, r) {
+    function traceShapePath(shapeId, r) {
       ctx.beginPath();
       if (shapeId === "circle") {
         ctx.arc(0, 0, r, 0, Math.PI * 2);
       } else if (shapeId === "square") {
-        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 8);
+        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 10);
       } else if (shapeId === "triangle") {
-        ctx.moveTo(0, -r * 1.02);
+        ctx.moveTo(0, -r * 1.04);
         ctx.lineTo(r * 0.98, r * 0.82);
         ctx.lineTo(-r * 0.98, r * 0.82);
         ctx.closePath();
       } else if (shapeId === "star") {
         const spikes = 5;
-        const outer = r * 1.06;
-        const inner = r * 0.48;
+        const outer = r * 1.08;
+        const inner = r * 0.5;
         for (let i = 0; i < spikes * 2; i++) {
           const rad = i % 2 === 0 ? outer : inner;
           const angle = (i * Math.PI) / spikes - Math.PI / 2;
@@ -230,6 +1226,149 @@
       }
     }
 
+    // Bentuk 3D Clay: lapisan ketebalan bawah + gradasi atas + kilau glossy
+    function draw3DShape(shapeId, r, colorObj) {
+      ctx.save();
+
+      // 1. Lapisan ketebalan 3D di bawah
+      ctx.save();
+      ctx.translate(0, 5.5);
+      traceShapePath(shapeId, r);
+      ctx.fillStyle = colorObj.dark;
+      ctx.fill();
+      ctx.restore();
+
+      // 2. Permukaan utama dengan gradasi 3D lembut
+      const grad = ctx.createLinearGradient(-r * 0.6, -r * 0.8, r * 0.6, r * 0.9);
+      grad.addColorStop(0, colorObj.light);
+      grad.addColorStop(0.45, colorObj.fill);
+      grad.addColorStop(1, colorObj.dark);
+
+      traceShapePath(shapeId, r);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = colorObj.dark;
+      ctx.stroke();
+
+      // 3. Kilau glossy melengkung di bagian atas
+      ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.28, -r * 0.34, r * 0.25, r * 0.12, -0.45, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // Karakter hewan 3D lucu di Canvas
+    function draw3DAnimal(animal, x, y, size) {
+      ctx.save();
+      ctx.translate(x, y);
+      const s = size / 44;
+      ctx.scale(s, s);
+
+      if (animal.id === "bunny") {
+        ctx.fillStyle = "#cbd5e1";
+        ctx.beginPath();
+        ctx.ellipse(-9, -16, 5.5, 12.5, -0.15, 0, Math.PI * 2);
+        ctx.ellipse(9, -16, 5.5, 12.5, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = animal.fur;
+        ctx.beginPath();
+        ctx.ellipse(-9, -18, 5, 12, -0.15, 0, Math.PI * 2);
+        ctx.ellipse(9, -18, 5, 12, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = animal.ear;
+        ctx.beginPath();
+        ctx.ellipse(-9, -18, 2.6, 8, -0.15, 0, Math.PI * 2);
+        ctx.ellipse(9, -18, 2.6, 8, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (animal.id === "cat") {
+        ctx.fillStyle = animal.ear;
+        ctx.beginPath();
+        ctx.moveTo(-16, -6); ctx.lineTo(-12, -21); ctx.lineTo(-3, -12); ctx.closePath();
+        ctx.moveTo(16, -6); ctx.lineTo(12, -21); ctx.lineTo(3, -12); ctx.closePath();
+        ctx.fill();
+      } else if (animal.id === "dog") {
+        ctx.fillStyle = animal.ear;
+        ctx.beginPath();
+        ctx.ellipse(-16, -2, 6, 12, 0.28, 0, Math.PI * 2);
+        ctx.ellipse(16, -2, 6, 12, -0.28, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (animal.id === "frog") {
+        ctx.fillStyle = animal.fur;
+        ctx.beginPath();
+        ctx.arc(-10, -14, 7.5, 0, Math.PI * 2);
+        ctx.arc(10, -14, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Bayangan bawah kepala
+      ctx.fillStyle = animal.dark;
+      ctx.beginPath();
+      ctx.arc(0, 2.5, 16.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Kepala utama 3D
+      const headGrad = ctx.createRadialGradient(-5, -8, 2, 0, 0, 19);
+      headGrad.addColorStop(0, "#ffffff");
+      headGrad.addColorStop(0.3, animal.fur);
+      headGrad.addColorStop(1, animal.dark);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 16.5, 0, Math.PI * 2);
+      ctx.fillStyle = headGrad;
+      ctx.fill();
+
+      const eyeY = animal.id === "frog" ? -14 : -3;
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(-6, eyeY, 4.6, 0, Math.PI * 2);
+      ctx.arc(6, eyeY, 4.6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.arc(-5.5, eyeY, 2.6, 0, Math.PI * 2);
+      ctx.arc(6.5, eyeY, 2.6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(-6.4, eyeY - 1, 1, 0, Math.PI * 2);
+      ctx.arc(5.6, eyeY - 1, 1, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(244, 114, 182, 0.58)";
+      ctx.beginPath();
+      ctx.arc(-10, 3, 3.4, 0, Math.PI * 2);
+      ctx.arc(10, 3, 3.4, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (animal.id === "chick") {
+        ctx.fillStyle = "#f97316";
+        ctx.beginPath();
+        ctx.moveTo(-4.5, 2); ctx.lineTo(4.5, 2); ctx.lineTo(0, 7.5); ctx.closePath();
+        ctx.fill();
+      } else {
+        ctx.fillStyle = "#1e293b";
+        ctx.beginPath();
+        ctx.arc(0, 2, 2.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(-3, 5, 3, 0.1, Math.PI - 0.1);
+        ctx.arc(3, 5, 3, 0.1, Math.PI - 0.1);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
     function spawnSparkles(x, y) {
       for (let i = 0; i < 18; i++) {
         const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.2;
@@ -238,21 +1377,26 @@
           x,
           y,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1.2,
-          life: 34,
+          vy: Math.sin(angle) * speed - 1.4,
+          life: 36,
           color: COLORS[i % COLORS.length].fill
         });
       }
     }
 
-    function setupRound(autoSpeak = true) {
+    function spawnCanvasRipple(x, y, color) {
+      ripples.push({ x, y, r: 8, maxR: 48, life: 22, color });
+    }
+
+    function setupRound() {
       locked = false;
       pickedCount = 0;
       targetCount = levelMode === "easy"
-        ? Math.floor(Math.random() * 3) + 1 // 1 - 3
-        : Math.floor(Math.random() * 3) + 2; // 2 - 4
+        ? Math.floor(Math.random() * 3) + 1
+        : Math.floor(Math.random() * 3) + 2;
 
       helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+      helperHop = 18;
       const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
       const targetColor = COLORS[Math.floor(Math.random() * COLORS.length)];
       const badgeAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
@@ -292,7 +1436,7 @@
         const matchesTarget =
           s.id === mission.shape.id &&
           c.name === mission.color.name &&
-          (!mission.animal || a.emoji === mission.animal.emoji);
+          (!mission.animal || a.id === mission.animal.id);
 
         if (!matchesTarget) {
           list.push({ shape: s, color: c, animal: a, isTarget: false });
@@ -322,64 +1466,71 @@
           w: cardW,
           h: cardH,
           picked: false,
-          shake: 0
+          shake: 0,
+          bounce: 0
         };
       });
+    }
 
-      if (autoSpeak) {
-        setTimeout(() => speakText(getMissionSpeech()), 220);
-      }
+    function openCountGame() {
+      showScreen(gameScreen);
+      setupRound();
     }
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Panel misi atas
+      if (!mission) {
+        requestAnimationFrame(draw);
+        return;
+      }
+
       ctx.fillStyle = "#f0f9ff";
       ctx.fillRect(0, 0, canvas.width, 210);
 
-      ctx.font = "56px system-ui";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(helperAnimal.emoji, 68, 96);
+      let hopOffsetY = 0;
+      let hopScale = 1;
+      if (helperHop > 0) {
+        const p = 1 - helperHop / 18;
+        hopOffsetY = -Math.sin(p * Math.PI) * 14;
+        hopScale = 1 + Math.sin(p * Math.PI) * 0.14;
+        helperHop--;
+      }
+
+      ctx.save();
+      ctx.translate(68, 98 + hopOffsetY);
+      ctx.scale(hopScale, hopScale);
+      draw3DAnimal(helperAnimal, 0, 0, 64);
+      ctx.restore();
 
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#7dd3fc";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.roundRect(118, 28, 300, 156, 20);
+      ctx.roundRect(118, 28, 300, 156, 22);
       ctx.fill();
       ctx.stroke();
 
-      // Preview bentuk, warna & hewan target
       ctx.save();
-      ctx.translate(166, 82);
-      ctx.fillStyle = mission.color.fill;
-      ctx.strokeStyle = mission.color.stroke;
-      ctx.lineWidth = 3;
-      drawShapePath(mission.shape.id, 24);
-      ctx.fill();
-      ctx.stroke();
-
+      ctx.translate(166, 84);
+      draw3DShape(mission.shape.id, 23, mission.color);
       if (mission.animal) {
-        ctx.font = "24px system-ui";
-        ctx.fillText(mission.animal.emoji, 20, -18);
+        draw3DAnimal(mission.animal, 20, -18, 28);
       }
       ctx.restore();
 
       ctx.fillStyle = "#0f172a";
-      ctx.font = "bold 19px system-ui";
+      ctx.font = "800 20px 'Baloo 2', 'Fredoka', sans-serif";
       ctx.textAlign = "left";
       const ruleText = mission.animal
-        ? `Cari ${targetCount} ${mission.shape.name} ${mission.color.name} (${mission.animal.emoji})`
+        ? `Cari ${targetCount} ${mission.shape.name} ${mission.color.name} (${mission.animal.name})`
         : `Cari ${targetCount} ${mission.shape.name} ${mission.color.name}`;
       ctx.fillText(ruleText, 204, 70, 202);
 
       ctx.fillStyle = statusColor;
-      ctx.font = "bold 16px system-ui";
+      ctx.font = "700 16px 'Fredoka', sans-serif";
       ctx.fillText(statusMsg, 204, 106, 202);
 
-      // Indikator hitungan visual
       for (let i = 0; i < targetCount; i++) {
         ctx.beginPath();
         ctx.arc(214 + i * 28, 146, 9, 0, Math.PI * 2);
@@ -387,59 +1538,80 @@
         ctx.fill();
       }
 
-      // Kartu pilihan
       for (const card of cards) {
         let offsetX = 0;
+        let cardScale = 1;
+
         if (card.shake > 0) {
           offsetX = Math.sin(card.shake * 1.4) * 7;
           card.shake--;
         }
 
+        if (card.bounce > 0) {
+          const t = 1 - card.bounce / 20;
+          cardScale = 1 + Math.sin(t * Math.PI * 1.4) * 0.14 * (1 - t * 0.5);
+          card.bounce--;
+        }
+
         ctx.save();
-        ctx.translate(card.x + offsetX, card.y);
+        ctx.translate(card.x + card.w / 2 + offsetX, card.y + card.h / 2);
+        ctx.scale(cardScale, cardScale);
+        ctx.translate(-card.w / 2, -card.h / 2);
+
+        // Bayangan kartu bawah
+        ctx.fillStyle = card.picked ? "#86efac" : "#e2e8f0";
+        ctx.beginPath();
+        ctx.roundRect(0, 4, card.w, card.h, 20);
+        ctx.fill();
 
         ctx.fillStyle = card.picked ? "#dcfce7" : "#f8fafc";
         ctx.strokeStyle = card.picked ? "#22c55e" : "#cbd5e1";
         ctx.lineWidth = card.picked ? 3.5 : 2;
         ctx.beginPath();
-        ctx.roundRect(0, 0, card.w, card.h, 16);
+        ctx.roundRect(0, 0, card.w, card.h, 20);
         ctx.fill();
         ctx.stroke();
 
-        // Bentuk berwarna
         ctx.save();
         ctx.translate(card.w / 2, card.h / 2 + 5);
-        ctx.fillStyle = card.color.fill;
-        ctx.strokeStyle = card.color.stroke;
-        ctx.lineWidth = 2.5;
-        drawShapePath(card.shape.id, 25);
-        ctx.fill();
-        ctx.stroke();
+        draw3DShape(card.shape.id, 24, card.color);
         ctx.restore();
 
-        // Hewan di pojok kiri atas kartu
-        ctx.font = "22px system-ui";
-        ctx.textAlign = "left";
-        ctx.fillText(card.animal.emoji, 20, 22);
+        draw3DAnimal(card.animal, 24, 24, 28);
 
         if (card.picked) {
-          ctx.font = "bold 20px system-ui";
+          ctx.font = "800 22px 'Baloo 2', sans-serif";
           ctx.textAlign = "right";
           ctx.fillStyle = "#16a34a";
-          ctx.fillText("✓", card.w - 10, 22);
+          ctx.fillText("✓", card.w - 11, 24);
         }
 
         ctx.restore();
       }
 
-      // Efek kilau bintang
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rp = ripples[i];
+        const progress = 1 - rp.life / 22;
+        const radius = rp.r + (rp.maxR - rp.r) * progress;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - progress);
+        ctx.strokeStyle = rp.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(rp.x, rp.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        rp.life--;
+        if (rp.life <= 0) ripples.splice(i, 1);
+      }
+
       for (let i = sparkles.length - 1; i >= 0; i--) {
         const sp = sparkles[i];
         sp.x += sp.vx;
         sp.y += sp.vy;
         sp.vy += 0.12;
         sp.life--;
-        ctx.globalAlpha = Math.max(0, sp.life / 34);
+        ctx.globalAlpha = Math.max(0, sp.life / 36);
         ctx.fillStyle = sp.color;
         ctx.beginPath();
         ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
@@ -452,64 +1624,75 @@
     }
 
     canvas.addEventListener("pointerdown", (e) => {
-      if (locked) return;
+      if (locked || !mission) return;
       const rect = canvas.getBoundingClientRect();
       const px = (e.clientX - rect.left) * (canvas.width / rect.width);
       const py = (e.clientY - rect.top) * (canvas.height / rect.height);
 
+      if (px >= 24 && px <= 112 && py >= 52 && py <= 140) {
+        helperHop = 18;
+        spawnCanvasRipple(68, 98, "#38bdf8");
+        playBoingSfx();
+        return;
+      }
+
       for (const card of cards) {
         if (px >= card.x && px <= card.x + card.w && py >= card.y && py <= card.y + card.h) {
-          if (card.picked) return;
+          card.bounce = 20;
+          spawnCanvasRipple(px, py, card.color.fill);
+
+          if (card.picked) {
+            playPopSfx(200);
+            return;
+          }
 
           if (card.isTarget && pickedCount < targetCount) {
             card.picked = true;
             pickedCount++;
+            helperHop = 14;
             pickedEl.textContent = pickedCount;
             statusColor = "#15803d";
             statusMsg = `Mantap! ${pickedCount} dari ${targetCount}`;
             spawnSparkles(card.x + card.w / 2, card.y + card.h / 2);
-            playSound([[523 + pickedCount * 75, 0, 0.13, "triangle"]]);
+            playPopSfx(pickedCount * 95);
 
             if (pickedCount === targetCount) {
               locked = true;
+              helperHop = 22;
               stars++;
               starsEl.textContent = stars;
               localStorage.setItem("tk_hitung_stars", stars);
               statusMsg = "Hebat! Dapat 1 bintang ⭐";
-              playSound([
-                [523.25, 0, 0.12, "triangle"],
-                [659.25, 0.1, 0.12, "triangle"],
-                [783.99, 0.2, 0.22, "triangle"]
-              ]);
-              speakText("Hebat sekali! Kamu dapat bintang");
-              setTimeout(() => setupRound(true), 1250);
+              playWinSfx();
+              setTimeout(setupRound, 1150);
             }
           } else {
             card.shake = 14;
             statusColor = "#b45309";
             statusMsg = "Coba perhatikan warna, bentuk & hewan";
-            playSound([[220, 0, 0.14, "sine"]]);
+            playThudSfx();
           }
           break;
         }
       }
     });
 
-    voiceBtn.addEventListener("click", () => {
-      speakText(getMissionSpeech());
-    });
-
     lvlBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         lvlBtns.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
+        triggerBounce(btn);
+        playPopSfx(100);
         levelMode = btn.dataset.level;
-        setupRound(true);
+        setupRound();
       });
     });
 
-    setupRound(false);
+    refreshMoodButtons();
+    syncQuickContinue();
+    setupRound();
     draw();
+    showScreen(splashScreen);
   </script>
 </body>
 </html>
