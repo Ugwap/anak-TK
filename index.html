@@ -16,33 +16,67 @@
     body {
       background: #e0f2fe;
       color: #0f172a;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100dvh;
-      padding: 12px;
+      padding: 10px;
+      gap: 8px;
       overflow: hidden;
     }
 
-    .hud {
+    .top-hud {
       width: 100%;
       max-width: 440px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      gap: 8px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .pill {
       background: #ffffff;
       border: 2px solid #7dd3fc;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 999px;
       box-shadow: 0 3px 0 #38bdf8;
+      white-space: nowrap;
+    }
+
+    .level-bar {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .lvl-btn {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 2px solid #93c5fd;
+      background: #ffffff;
+      color: #1e3a8a;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+
+    .lvl-btn.active {
+      background: #0284c7;
+      border-color: #0369a1;
+      color: #ffffff;
+      box-shadow: 0 2px 0 #075985;
+    }
+
+    .lvl-btn:active {
+      transform: scale(0.97);
     }
 
     .canvas-wrap {
@@ -65,9 +99,16 @@
   </style>
 </head>
 <body>
-  <div class="hud">
+  <div class="top-hud">
     <div class="pill">⭐ Bintang: <span id="starsEl">0</span></div>
     <div class="pill">🎯 Dapat: <span id="pickedEl">0</span> / <span id="targetEl">2</span></div>
+    <button id="voiceBtn" class="pill" style="cursor:pointer; background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊 Ulangi</button>
+  </div>
+
+  <div class="level-bar">
+    <button class="lvl-btn active" data-level="easy">Mudah (Bentuk + Warna)</button>
+    <button class="lvl-btn" data-level="medium">Sedang (+ Hewan)</button>
+    <button class="lvl-btn" data-level="mix">Campuran Seru</button>
   </div>
 
   <div class="canvas-wrap">
@@ -80,9 +121,24 @@
     const starsEl = document.getElementById("starsEl");
     const pickedEl = document.getElementById("pickedEl");
     const targetEl = document.getElementById("targetEl");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const lvlBtns = document.querySelectorAll(".lvl-btn");
 
-    const ANIMALS = ["🐶", "🐱", "🐸", "🐥", "🐰"];
-    const SHAPES = ["circle", "triangle", "square", "star"];
+    const ANIMALS = [
+      { emoji: "🐶", name: "Anjing" },
+      { emoji: "🐱", name: "Kucing" },
+      { emoji: "🐸", name: "Katak" },
+      { emoji: "🐥", name: "Anak Ayam" },
+      { emoji: "🐰", name: "Kelinci" }
+    ];
+
+    const SHAPES = [
+      { id: "circle", name: "Lingkaran" },
+      { id: "triangle", name: "Segitiga" },
+      { id: "square", name: "Kotak" },
+      { id: "star", name: "Bintang" }
+    ];
+
     const COLORS = [
       { name: "Merah", fill: "#ef4444", stroke: "#991b1b" },
       { name: "Kuning", fill: "#facc15", stroke: "#a16207" },
@@ -91,13 +147,16 @@
       { name: "Ungu", fill: "#a855f7", stroke: "#6b21a8" }
     ];
 
-    let stars = 0;
+    let levelMode = "easy";
+    let stars = Number(localStorage.getItem("tk_hitung_stars") || 0);
+    starsEl.textContent = stars;
+
     let targetCount = 2;
     let pickedCount = 0;
     let mission = null;
     let cards = [];
     let sparkles = [];
-    let helperAnimal = "🐰";
+    let helperAnimal = ANIMALS[4];
     let statusMsg = "Ketuk yang sesuai!";
     let statusColor = "#0369a1";
     let locked = false;
@@ -106,35 +165,56 @@
     let audioCtx = null;
 
     function playSound(notes) {
-      if (!audioCtx) audioCtx = new AudioCtx();
-      if (audioCtx.state === "suspended") audioCtx.resume();
-      const now = audioCtx.currentTime;
-      notes.forEach(([freq, delay, dur, type = "sine"]) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, now + delay);
-        gain.gain.setValueAtTime(0.12, now + delay);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now + delay);
-        osc.stop(now + delay + dur);
-      });
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const now = audioCtx.currentTime;
+        notes.forEach(([freq, delay, dur, type = "sine"]) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now + delay);
+          gain.gain.setValueAtTime(0.12, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + delay);
+          osc.stop(now + delay + dur);
+        });
+      } catch (_) {}
     }
 
-    function drawShapePath(shape, r) {
+    function speakText(text) {
+      if (!("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "id-ID";
+        utter.rate = 0.92;
+        utter.pitch = 1.15;
+        window.speechSynthesis.speak(utter);
+      } catch (_) {}
+    }
+
+    function getMissionSpeech() {
+      if (mission.animal) {
+        return `Cari ${targetCount} ${mission.shape.name} warna ${mission.color.name} bergambar ${mission.animal.name}`;
+      }
+      return `Cari ${targetCount} ${mission.shape.name} warna ${mission.color.name}`;
+    }
+
+    function drawShapePath(shapeId, r) {
       ctx.beginPath();
-      if (shape === "circle") {
+      if (shapeId === "circle") {
         ctx.arc(0, 0, r, 0, Math.PI * 2);
-      } else if (shape === "square") {
+      } else if (shapeId === "square") {
         ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, 8);
-      } else if (shape === "triangle") {
+      } else if (shapeId === "triangle") {
         ctx.moveTo(0, -r * 1.02);
         ctx.lineTo(r * 0.98, r * 0.82);
         ctx.lineTo(-r * 0.98, r * 0.82);
         ctx.closePath();
-      } else if (shape === "star") {
+      } else if (shapeId === "star") {
         const spikes = 5;
         const outer = r * 1.06;
         const inner = r * 0.48;
@@ -150,44 +230,41 @@
       }
     }
 
-    function shapeLabel(shape) {
-      if (shape === "circle") return "Lingkaran";
-      if (shape === "triangle") return "Segitiga";
-      if (shape === "square") return "Kotak";
-      return "Bintang";
-    }
-
     function spawnSparkles(x, y) {
-      for (let i = 0; i < 16; i++) {
-        const angle = (Math.PI * 2 * i) / 16 + Math.random() * 0.2;
-        const speed = 2 + Math.random() * 3.5;
+      for (let i = 0; i < 18; i++) {
+        const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.2;
+        const speed = 2.2 + Math.random() * 3.6;
         sparkles.push({
           x,
           y,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1,
-          life: 32,
+          vy: Math.sin(angle) * speed - 1.2,
+          life: 34,
           color: COLORS[i % COLORS.length].fill
         });
       }
     }
 
-    function setupRound() {
+    function setupRound(autoSpeak = true) {
       locked = false;
       pickedCount = 0;
-      targetCount = Math.floor(Math.random() * 3) + 2; // 2 sampai 4
-      helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+      targetCount = levelMode === "easy"
+        ? Math.floor(Math.random() * 3) + 1 // 1 - 3
+        : Math.floor(Math.random() * 3) + 2; // 2 - 4
 
+      helperAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
       const targetShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
       const targetColor = COLORS[Math.floor(Math.random() * COLORS.length)];
       const badgeAnimal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
 
-      // Mode campuran: cocokkan bentuk + warna, dan opsional cocokkan hewan
-      const useAnimalRule = Math.random() < 0.45;
+      let useAnimal = false;
+      if (levelMode === "medium") useAnimal = true;
+      else if (levelMode === "mix") useAnimal = Math.random() < 0.6;
+
       mission = {
         shape: targetShape,
         color: targetColor,
-        animal: useAnimalRule ? badgeAnimal : null
+        animal: useAnimal ? badgeAnimal : null
       };
 
       pickedEl.textContent = pickedCount;
@@ -195,7 +272,6 @@
       statusMsg = "Ketuk yang sesuai!";
       statusColor = "#0369a1";
 
-      // Buat 9 kartu (3x3) dengan jumlah target terjamin ada
       const totalCards = 9;
       const list = [];
 
@@ -214,16 +290,15 @@
         const a = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
 
         const matchesTarget =
-          s === mission.shape &&
+          s.id === mission.shape.id &&
           c.name === mission.color.name &&
-          (!mission.animal || a === mission.animal);
+          (!mission.animal || a.emoji === mission.animal.emoji);
 
         if (!matchesTarget) {
           list.push({ shape: s, color: c, animal: a, isTarget: false });
         }
       }
 
-      // Acak posisi kartu
       for (let i = list.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [list[i], list[j]] = [list[j], list[i]];
@@ -250,6 +325,10 @@
           shake: 0
         };
       });
+
+      if (autoSpeak) {
+        setTimeout(() => speakText(getMissionSpeech()), 220);
+      }
     }
 
     function draw() {
@@ -262,7 +341,7 @@
       ctx.font = "56px system-ui";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(helperAnimal, 68, 96);
+      ctx.fillText(helperAnimal.emoji, 68, 96);
 
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#7dd3fc";
@@ -272,35 +351,35 @@
       ctx.fill();
       ctx.stroke();
 
-      // Preview bentuk & warna target
+      // Preview bentuk, warna & hewan target
       ctx.save();
       ctx.translate(166, 82);
       ctx.fillStyle = mission.color.fill;
       ctx.strokeStyle = mission.color.stroke;
       ctx.lineWidth = 3;
-      drawShapePath(mission.shape, 24);
+      drawShapePath(mission.shape.id, 24);
       ctx.fill();
       ctx.stroke();
 
       if (mission.animal) {
-        ctx.font = "22px system-ui";
-        ctx.fillText(mission.animal, 20, -18);
+        ctx.font = "24px system-ui";
+        ctx.fillText(mission.animal.emoji, 20, -18);
       }
       ctx.restore();
 
       ctx.fillStyle = "#0f172a";
-      ctx.font = "bold 20px system-ui";
+      ctx.font = "bold 19px system-ui";
       ctx.textAlign = "left";
       const ruleText = mission.animal
-        ? `Cari ${targetCount} ${shapeLabel(mission.shape)} ${mission.color.name} (${mission.animal})`
-        : `Cari ${targetCount} ${shapeLabel(mission.shape)} ${mission.color.name}`;
-      ctx.fillText(ruleText, 204, 72, 202);
+        ? `Cari ${targetCount} ${mission.shape.name} ${mission.color.name} (${mission.animal.emoji})`
+        : `Cari ${targetCount} ${mission.shape.name} ${mission.color.name}`;
+      ctx.fillText(ruleText, 204, 70, 202);
 
       ctx.fillStyle = statusColor;
       ctx.font = "bold 16px system-ui";
-      ctx.fillText(statusMsg, 204, 108, 202);
+      ctx.fillText(statusMsg, 204, 106, 202);
 
-      // Indikator hitungan visual (bulatan kosong -> terisi)
+      // Indikator hitungan visual
       for (let i = 0; i < targetCount; i++) {
         ctx.beginPath();
         ctx.arc(214 + i * 28, 146, 9, 0, Math.PI * 2);
@@ -329,19 +408,19 @@
 
         // Bentuk berwarna
         ctx.save();
-        ctx.translate(card.w / 2, card.h / 2 + 4);
+        ctx.translate(card.w / 2, card.h / 2 + 5);
         ctx.fillStyle = card.color.fill;
         ctx.strokeStyle = card.color.stroke;
         ctx.lineWidth = 2.5;
-        drawShapePath(card.shape, 25);
+        drawShapePath(card.shape.id, 25);
         ctx.fill();
         ctx.stroke();
         ctx.restore();
 
-        // Hewan kecil di pojok kartu
+        // Hewan di pojok kiri atas kartu
         ctx.font = "22px system-ui";
         ctx.textAlign = "left";
-        ctx.fillText(card.animal, 20, 22);
+        ctx.fillText(card.animal.emoji, 20, 22);
 
         if (card.picked) {
           ctx.font = "bold 20px system-ui";
@@ -353,14 +432,14 @@
         ctx.restore();
       }
 
-      // Efek kilau
+      // Efek kilau bintang
       for (let i = sparkles.length - 1; i >= 0; i--) {
         const sp = sparkles[i];
         sp.x += sp.vx;
         sp.y += sp.vy;
         sp.vy += 0.12;
         sp.life--;
-        ctx.globalAlpha = Math.max(0, sp.life / 32);
+        ctx.globalAlpha = Math.max(0, sp.life / 34);
         ctx.fillStyle = sp.color;
         ctx.beginPath();
         ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
@@ -395,18 +474,20 @@
               locked = true;
               stars++;
               starsEl.textContent = stars;
+              localStorage.setItem("tk_hitung_stars", stars);
               statusMsg = "Hebat! Dapat 1 bintang ⭐";
               playSound([
                 [523.25, 0, 0.12, "triangle"],
                 [659.25, 0.1, 0.12, "triangle"],
                 [783.99, 0.2, 0.22, "triangle"]
               ]);
-              setTimeout(setupRound, 1050);
+              speakText("Hebat sekali! Kamu dapat bintang");
+              setTimeout(() => setupRound(true), 1250);
             }
           } else {
             card.shake = 14;
             statusColor = "#b45309";
-            statusMsg = "Coba perhatikan warna & bentuknya";
+            statusMsg = "Coba perhatikan warna, bentuk & hewan";
             playSound([[220, 0, 0.14, "sine"]]);
           }
           break;
@@ -414,7 +495,20 @@
       }
     });
 
-    setupRound();
+    voiceBtn.addEventListener("click", () => {
+      speakText(getMissionSpeech());
+    });
+
+    lvlBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        lvlBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        levelMode = btn.dataset.level;
+        setupRound(true);
+      });
+    });
+
+    setupRound(false);
     draw();
   </script>
 </body>
