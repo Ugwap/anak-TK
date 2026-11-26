@@ -88,6 +88,14 @@
       100% { transform: scale(1, 1) translateY(0); }
     }
 
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+    }
+
     @keyframes floatBlob {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-5px); }
@@ -95,6 +103,10 @@
 
     .bounce-now {
       animation: jellyBounce 0.45s var(--ease-bounce) !important;
+    }
+
+    .shake-now {
+      animation: shakeWrong 0.4s ease !important;
     }
 
     /* LAYAR 1: SPLASH & ISI NAMA */
@@ -570,128 +582,265 @@
 
     .card-sub-muted {
       font-size: 0.82rem;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    /* Warna gradien tiap kartu */
+    .card-1 { background: linear-gradient(145deg, #fef08a 0%, #fde047 100%); }
+    .card-2 { background: linear-gradient(145deg, #bae6fd 0%, #7dd3fc 100%); }
+    .card-3 { background: linear-gradient(145deg, #fed7aa 0%, #fdba74 100%); }
+    .card-4 { background: linear-gradient(145deg, #ddd6fe 0%, #c4b5fd 100%); }
+    .card-5 { background: linear-gradient(145deg, #bbf7d0 0%, #86efac 100%); }
+    .card-6 { background: linear-gradient(145deg, #fecdd3 0%, #fda4af 100%); }
+
+    /* LAYAR 3: AREA BERMAIN */
+    .game-topbar {
+      width: 100%;
+      background: #ffffff;
+      border: 2.5px solid #e2ddd2;
+      border-radius: 22px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 6px 14px rgba(24, 32, 38, 0.06);
+    }
+
+    .progress-pill {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      background: #ecfccb;
+      color: #365314;
+      border: 2px solid #bef264;
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    .game-arena {
+      width: 100%;
+      min-height: 490px;
+      background: var(--bg-cream);
+      border: 3px solid #dcd6c8;
+      border-radius: 30px;
+      padding: 20px 18px;
+      box-shadow: 0 12px 28px rgba(24, 32, 38, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .question-badge {
+      font-family: var(--font-display);
+      font-size: 1.24rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+      background: #ffffff;
+      border: 2px solid #e2ddd2;
+      padding: 8px 18px;
+      border-radius: 999px;
+    }
+
+    .visual-stage {
+      width: 100%;
+      flex: 1;
+      background: #ffffff;
+      border: 2.5px solid #e2ddd2;
+      border-radius: 24px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    /* Gaya Game 1 & 2 */
+    .items-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      font-size: 2.7rem;
+      line-height: 1.1;
+    }
+
+    .options-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .opt-btn {
+      padding: 14px 10px;
+      border-radius: 20px;
+      border: 3px solid #cbd5e1;
+      background: #ffffff;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+      cursor: pointer;
+      box-shadow: 0 4px 0 #cbd5e1;
+      transition: transform 0.2s var(--ease-bounce), background 0.15s ease;
+    }
+
+    .opt-btn:active {
+      transform: translateY(3px) scale(0.96);
+      box-shadow: 0 1px 0 #cbd5e1;
+    }
+
+    .opt-btn.correct {
+      background: #bef264;
+      border-color: #4d7c0f;
+      color: #1a2e05;
+      box-shadow: 0 4px 0 #4d7c0f;
+    }
+
+    .opt-btn.wrong {
+      background: #fecaca;
+      border-color: #dc2626;
+      color: #7f1d1d;
+    }
+
+    /* Gaya Khusus Game 3: Susun Kata */
+    .word-picture {
+      font-size: 4.6rem;
+      line-height: 1;
+      filter: drop-shadow(0 6px 8px rgba(15, 23, 42, 0.12));
+    }
+
+    .word-hint {
+      font-size: 0.96rem;
       font-weight: 700;
       color: var(--ink-muted);
     }
 
-    .tap-ripple {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.6);
-      transform: translate(-50%, -50%) scale(0.2);
-      animation: rippleBurst 0.48s ease-out forwards;
-      pointer-events: none;
-      z-index: 3;
+    .word-slots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
     }
 
-    @keyframes rippleBurst {
-      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(5.5); }
+    .letter-slot {
+      width: 52px;
+      height: 58px;
+      border-radius: 16px;
+      border: 3px dashed #94a3b8;
+      background: #f8fafc;
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-bounce);
     }
 
-    .idea-banner {
+    .letter-slot.filled {
+      border-style: solid;
+      border-color: #f97316;
+      background: #ffedd5;
+      color: #9a3412;
+      box-shadow: 0 4px 0 #fdba74;
+      transform: translateY(-2px);
+    }
+
+    .letter-slot.solved {
+      border-color: #4d7c0f;
+      background: #bef264;
+      color: #1a2e05;
+      box-shadow: 0 4px 0 #4d7c0f;
+    }
+
+    .letter-bank {
       width: 100%;
-      background: #ffffff;
-      border: 2.5px solid #e2ddd2;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 4px 0;
+    }
+
+    .letter-tile {
+      width: 56px;
+      height: 60px;
       border-radius: 18px;
-      padding: 10px 14px;
+      border: 3px solid #cbd5e1;
+      background: #ffffff;
       font-family: var(--font-display);
-      font-size: 0.96rem;
-      font-weight: 700;
-      color: var(--ink-dark);
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--navy-pop);
+      cursor: pointer;
+      box-shadow: 0 4px 0 #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s var(--ease-bounce), opacity 0.15s ease;
+    }
+
+    .letter-tile:active {
+      transform: translateY(3px) scale(0.94);
+      box-shadow: 0 1px 0 #cbd5e1;
+    }
+
+    .letter-tile.used {
+      opacity: 0.25;
+      pointer-events: none;
+      transform: scale(0.9);
+    }
+
+    .word-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .feedback-banner {
+      min-height: 28px;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--lime-dark);
+    }
+
+    /* LAYAR 4: SELESAI / SKOR */
+    .result-card {
+      width: 100%;
+      background: var(--bg-cream);
+      border: 3px solid #dcd6c8;
+      border-radius: 30px;
+      padding: 28px 22px;
       text-align: center;
-      min-height: 44px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(24, 32, 38, 0.05);
+      gap: 14px;
+      box-shadow: 0 14px 30px rgba(24, 32, 38, 0.12);
     }
 
-    /* LAYAR 3: GAME AKTIF */
-    .top-hud {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 0.96rem;
-    }
-
-    .pill {
-      background: #ffffff;
-      border: 2.5px solid #7dd3fc;
-      padding: 6px 12px;
-      border-radius: 999px;
-      box-shadow: 0 3px 0 #38bdf8;
-      white-space: nowrap;
-      color: var(--ink-dark);
-      cursor: pointer;
-      transition: transform 0.2s var(--ease-bounce);
-    }
-
-    .pill:active {
-      transform: scale(0.92);
-    }
-
-    .level-bar {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .lvl-btn {
-      flex: 1;
-      padding: 7px 6px;
-      border-radius: 14px;
-      border: 2.5px solid #93c5fd;
-      background: #ffffff;
-      color: #1e3a8a;
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: transform 0.2s var(--ease-bounce), background 0.15s ease;
-    }
-
-    .lvl-btn:active {
-      transform: scale(0.94);
-    }
-
-    .lvl-btn.active {
-      background: #0284c7;
-      border-color: #0369a1;
-      color: #ffffff;
-      box-shadow: 0 2px 0 #075985;
-      transform: translateY(-1px);
-    }
-
-    .canvas-wrap {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      border-radius: 26px;
-      overflow: hidden;
-      border: 3px solid #0284c7;
-      background: #ffffff;
-      box-shadow: 0 12px 28px rgba(2, 132, 199, 0.18);
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      touch-action: none;
+    .trophy-emoji {
+      font-size: 4.5rem;
+      line-height: 1;
     }
   </style>
 </head>
 <body>
   <div class="app-shell">
-    <!-- LAYAR 1: TAMPILAN PERTAMA -->
-    <section id="splashScreen" class="screen">
+
+    <!-- LAYAR 1: SPLASH & ISI NAMA -->
+    <section id="screen-splash" class="screen active">
       <div class="splash-card">
         <div class="top-blobs">
           <div class="blob-lime"></div>
@@ -700,37 +849,30 @@
         </div>
 
         <div class="splash-body">
-          <h1 class="splash-title">Ayo main &amp; hitung seru!</h1>
-          <p class="splash-sub">Kenali bentuk, warna, dan angka. Tulis namamu dulu ya!</p>
+          <h1 class="splash-title">Ayo Main &amp;<br />Belajar TK!</h1>
+          <p class="splash-sub">Asah berhitung, warna, dan menyusun kata dengan seru.</p>
 
           <div class="input-group">
-            <label for="playerNameInput" class="input-label">Nama kamu siapa?</label>
-            <input
-              id="playerNameInput"
-              class="splash-input"
-              type="text"
-              maxlength="18"
-              placeholder="Ketik nama kamu..."
-              autocomplete="off"
-            />
+            <label class="input-label" for="player-name">Siapa nama kamu?</label>
+            <input id="player-name" class="splash-input" type="text" placeholder="Contoh: Raka" maxlength="18" autocomplete="off" />
           </div>
 
           <div class="input-group">
-            <div class="input-label">Hari ini lagi gimana?</div>
-            <div class="question-pills" id="moodPills">
-              <button type="button" class="q-pill active" data-mood="Ceria">😄 Ceria</button>
-              <button type="button" class="q-pill" data-mood="Seru">🤩 Seru</button>
-              <button type="button" class="q-pill" data-mood="Siap">🚀 Siap</button>
+            <span class="input-label">Mau berapa soal?</span>
+            <div class="question-pills" id="q-count-pills">
+              <button type="button" class="q-pill active" data-count="5">5 Soal</button>
+              <button type="button" class="q-pill" data-count="8">8 Soal</button>
+              <button type="button" class="q-pill" data-count="10">10 Soal</button>
             </div>
           </div>
 
-          <div id="splashMsg" class="form-msg"></div>
+          <div id="form-msg" class="form-msg"></div>
 
-          <button id="saveStartBtn" type="button" class="btn-primary-dark">Mulai &amp; Pilih Game</button>
-          <button id="quickContinueBtn" type="button" class="btn-secondary-cream hidden">Lanjut Sebagai ...</button>
+          <button type="button" id="btn-start-lobby" class="btn-primary-dark">Mulai Bermain 🚀</button>
+          <button type="button" id="btn-continue-saved" class="btn-secondary-cream hidden">Lanjut Bermain</button>
         </div>
 
-        <div id="monsterBuddy" class="bottom-monster" title="Ketuk aku!" aria-label="Karakter hijau lucu">
+        <div class="bottom-monster" id="monster-mascot" title="Sentuh aku!">
           <div class="monster-dome">
             <div class="monster-tuft"></div>
             <div class="monster-eyes">
@@ -752,1266 +894,649 @@
       </div>
     </section>
 
-    <!-- LAYAR 2: 6 KARTU MODERN 3D -->
-    <section id="lobbyScreen" class="screen">
+    <!-- LAYAR 2: LOBBY 6 KARTU -->
+    <section id="screen-lobby" class="screen">
       <div class="lobby-header">
         <div>
-          <div id="lobbyGreeting" class="greeting-main">Halo, Teman!</div>
-          <div id="lobbySub" class="greeting-sub">Pilih 1 dari 6 kartu game</div>
+          <div class="greeting-main" id="lobby-greeting">Halo, Teman! 👋</div>
+          <div class="greeting-sub" id="lobby-sub">Pilih permainan kesukaanmu</div>
         </div>
-        <button id="changeNameBtn" type="button" class="small-btn">✏️ Nama</button>
+        <button type="button" id="btn-change-name" class="small-btn">Ganti Nama</button>
       </div>
 
-      <div id="gamesGrid" class="games-grid"></div>
+      <div class="games-grid">
+        <!-- Game 1 -->
+        <div class="game-card-modern card-1 is-ready" data-game="1">
+          <div class="card-top-row">
+            <span class="corner-badge">1</span>
+            <span class="status-chip">Siap Main</span>
+          </div>
+          <div class="art-stage" style="font-size: 3.3rem;">🍎🍌</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">Hitung Buah</div>
+            <div class="card-sub-muted">Berapa jumlahnya?</div>
+          </div>
+        </div>
 
-      <div id="ideaBanner" class="idea-banner">
-        💡 Kartu 1 &amp; Kartu 2 siap dimainkan!
+        <!-- Game 2 -->
+        <div class="game-card-modern card-2 is-ready" data-game="2">
+          <div class="card-top-row">
+            <span class="corner-badge">2</span>
+            <span class="status-chip">Siap Main</span>
+          </div>
+          <div class="art-stage" style="font-size: 3.3rem;">🎨🔵</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">Tebak Warna</div>
+            <div class="card-sub-muted">Kenali warna benda</div>
+          </div>
+        </div>
+
+        <!-- Game 3 (BARU: SUSUN KATA) -->
+        <div class="game-card-modern card-3 is-ready" data-game="3">
+          <div class="card-top-row">
+            <span class="corner-badge">3</span>
+            <span class="status-chip">Siap Main</span>
+          </div>
+          <div class="art-stage" style="font-size: 3.2rem;">🐴🔤</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">Susun Kata</div>
+            <div class="card-sub-muted">Rangkai huruf jadi kata</div>
+          </div>
+        </div>
+
+        <!-- Game 4 -->
+        <div class="game-card-modern card-4" data-game="4">
+          <div class="card-top-row">
+            <span class="corner-badge">4</span>
+            <span class="status-chip">Segera</span>
+          </div>
+          <div class="art-stage" style="font-size: 3.2rem;">🔷⭐</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">Tebak Bentuk</div>
+            <div class="card-sub-muted">Lingkaran &amp; kotak</div>
+          </div>
+        </div>
+
+        <!-- Game 5 -->
+        <div class="game-card-modern card-5" data-game="5">
+          <div class="card-top-row">
+            <span class="corner-badge">5</span>
+            <span class="status-chip">Segera</span>
+          </div>
+          <div class="art-stage" style="font-size: 3.2rem;">➕🔢</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">Tambah Seru</div>
+            <div class="card-sub-muted">Penjumlahan dasar</div>
+          </div>
+        </div>
+
+        <!-- Game 6 -->
+        <div class="game-card-modern card-6" data-game="6">
+          <div class="card-top-row">
+            <span class="corner-badge">6</span>
+            <span class="status-chip">Segera</span>
+          </div>
+          <div class="art-stage" style="font-size: 3.2rem;">🦁🔊</div>
+          <div class="card-bottom-text">
+            <div class="card-title-bold">Suara Hewan</div>
+            <div class="card-sub-muted">Tebak nama hewan</div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- LAYAR 3: GAME AKTIF -->
-    <section id="gameScreen" class="screen">
-      <div class="top-hud">
-        <button id="backLobbyBtn" type="button" class="pill" style="background:#f1f5f9; border-color:#94a3b8; box-shadow:0 3px 0 #64748b;">← Menu</button>
-        <div class="pill">⭐ <span id="starsEl">0</span></div>
-        <div class="pill" id="progressPill">🎯 <span id="pickedEl">0</span>/<span id="targetEl">2</span></div>
-        <button id="sfxToggleBtn" type="button" class="pill" style="background:#fef9c3; border-color:#facc15; box-shadow:0 3px 0 #eab308;">🔊</button>
+    <!-- LAYAR 3: AREA BERMAIN -->
+    <section id="screen-game" class="screen">
+      <div class="game-topbar">
+        <button type="button" id="btn-back-lobby" class="small-btn">← Menu</button>
+        <div class="progress-pill" id="game-progress">Soal 1 / 5</div>
+        <div class="progress-pill" id="game-score">⭐ 0</div>
       </div>
 
-      <div id="levelBar" class="level-bar">
-        <button type="button" class="lvl-btn active" data-level="easy">Mudah</button>
-        <button type="button" class="lvl-btn" data-level="medium">Sedang</button>
-        <button type="button" class="lvl-btn" data-level="mix">Campuran</button>
-      </div>
+      <div class="game-arena">
+        <div class="question-badge" id="question-title">Ayo Jawab!</div>
 
-      <div class="canvas-wrap">
-        <canvas id="gameCanvas" width="440" height="586"></canvas>
+        <div class="visual-stage" id="visual-stage">
+          <!-- Konten soal dinamis diisi oleh JavaScript -->
+        </div>
+
+        <div id="answer-area" style="width: 100%;">
+          <!-- Tombol pilihan / huruf acak diisi oleh JavaScript -->
+        </div>
+
+        <div class="feedback-banner" id="feedback-banner"></div>
       </div>
     </section>
+
+    <!-- LAYAR 4: SELESAI -->
+    <section id="screen-result" class="screen">
+      <div class="result-card">
+        <div class="trophy-emoji">🏆</div>
+        <h2 class="splash-title" id="result-title">Hebat Sekali!</h2>
+        <p class="splash-sub" id="result-desc">Kamu sudah menyelesaikan semua soal.</p>
+        <div class="question-badge" id="result-score-badge" style="font-size: 1.5rem;">⭐ Skor: 5 / 5</div>
+        <button type="button" id="btn-play-again" class="btn-primary-dark">Main Lagi 🔄</button>
+        <button type="button" id="btn-result-lobby" class="btn-secondary-cream">Pilih Game Lain</button>
+      </div>
+    </section>
+
   </div>
 
   <script>
-    const splashScreen = document.getElementById("splashScreen");
-    const lobbyScreen = document.getElementById("lobbyScreen");
-    const gameScreen = document.getElementById("gameScreen");
+    // --- STATE APLIKASI ---
+    const state = {
+      name: "",
+      totalQuestions: 5,
+      currentGame: 1,
+      currentIndex: 0,
+      score: 0,
+      questions: [],
+      locked: false,
+      // State khusus Game 3 (Susun Kata)
+      wordSlots: [],
+      wordBank: []
+    };
 
-    const playerNameInput = document.getElementById("playerNameInput");
-    const moodPills = document.querySelectorAll(".q-pill");
-    const splashMsg = document.getElementById("splashMsg");
-    const saveStartBtn = document.getElementById("saveStartBtn");
-    const quickContinueBtn = document.getElementById("quickContinueBtn");
+    // --- EFEK SUARA SEDERHANA (WEB AUDIO API) ---
+    function playTone(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
 
-    const monsterBuddy = document.getElementById("monsterBuddy");
+        if (type === "tap") {
+          osc.frequency.setValueAtTime(520, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.07);
+        } else if (type === "correct") {
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+          osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.32);
+        } else if (type === "wrong") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(220, ctx.currentTime);
+          osc.frequency.setValueAtTime(175, ctx.currentTime + 0.14);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.28);
+        }
+      } catch (e) {}
+    }
+
+    // --- NAVIGASI LAYAR ---
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach((el) => el.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // --- INTERAKSI MASKOT MONSTER HIJAU ---
+    const monster = document.getElementById("monster-mascot");
     const pupils = document.querySelectorAll(".pupil");
     const eyeballs = document.querySelectorAll(".eyeball");
 
-    const lobbyGreeting = document.getElementById("lobbyGreeting");
-    const lobbySub = document.getElementById("lobbySub");
-    const changeNameBtn = document.getElementById("changeNameBtn");
-    const gamesGrid = document.getElementById("gamesGrid");
-    const ideaBanner = document.getElementById("ideaBanner");
-    const backLobbyBtn = document.getElementById("backLobbyBtn");
-    const sfxToggleBtn = document.getElementById("sfxToggleBtn");
-    const levelBar = document.getElementById("levelBar");
-
-    const NAME_KEY = "tk_player_name";
-    const MOOD_KEY = "tk_player_mood";
-
-    let chosenMood = localStorage.getItem(MOOD_KEY) || "Ceria";
-    let sfxEnabled = true;
-    let activeGameId = "game-1";
-
-    const SIX_GAMES = [
-      {
-        id: "game-1",
-        title: "Hitung & Bentuk",
-        sub: "Siap dimainkan",
-        bg: "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
-        ready: true,
-        note: "Kartu 1 (Hitung & Bentuk): ketuk bentuk sesuai perintah.",
-        svg: `
-          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 18C16 14.5 19 12 22.5 12C25 12 27 13.5 28 15.5C31 15.5 33 17.5 33 20C33 22.5 31 24.5 28 24.5H18C15.5 24.5 13.5 22.5 13.5 20C13.5 18.8 14.5 18 16 18Z" fill="#ffffff" opacity="0.9"/>
-            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#4d7c0f"/>
-            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#84cc16"/>
-            <polygon points="26,22 39,49 13,49" fill="#991b1b"/>
-            <polygon points="26,19 39,46 13,46" fill="#ef4444"/>
-            <circle cx="59" cy="27" r="13" fill="#a16207"/>
-            <circle cx="59" cy="24" r="13" fill="#facc15"/>
-            <circle cx="54" cy="20" r="3.5" fill="#fef9c3"/>
-            <rect x="46" y="42" width="23" height="22" rx="7" fill="#166534"/>
-            <rect x="46" y="39" width="23" height="22" rx="7" fill="#22c55e"/>
-            <rect x="50" y="42" width="12" height="10" rx="4" fill="#86efac" opacity="0.7"/>
-          </svg>`
-      },
-      {
-        id: "game-2",
-        title: "Gabung Bentuk",
-        sub: "Geser & meledak",
-        bg: "linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%)",
-        ready: true,
-        note: "Kartu 2 (Gabung Bentuk): geser bentuk ke bentuk yang sama hingga membesar & meledak!",
-        svg: `
-          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#15803d"/>
-            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#4ade80"/>
-            <rect x="19" y="24" width="22" height="22" rx="7" fill="#c2410c"/>
-            <rect x="19" y="21" width="22" height="22" rx="7" fill="#fb923c"/>
-            <rect x="47" y="21" width="24" height="24" rx="7" fill="#1d4ed8"/>
-            <rect x="47" y="18" width="24" height="24" rx="7" fill="#60a5fa"/>
-            <circle cx="44" cy="48" r="12" fill="#be185d"/>
-            <circle cx="44" cy="45" r="12" fill="#f472b6"/>
-          </svg>`
-      },
-      {
-        id: "game-3",
-        title: "Warna Ajaib",
-        sub: "Segera hadir",
-        bg: "linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%)",
-        ready: false,
-        note: "Kartu 3 (Warna Ajaib): ide game TK berikutnya.",
-        svg: `
-          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#db2777" opacity="0.5"/>
-            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#f472b6" opacity="0.6"/>
-            <path d="M18 54C18 33 29 20 44 20C59 20 70 33 70 54" stroke="#9333ea" stroke-width="8" stroke-linecap="round"/>
-            <path d="M25 54C25 39 33 29 44 29C55 29 63 39 63 54" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
-            <path d="M32 54C32 45 37 38 44 38C51 38 56 45 56 54" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
-          </svg>`
-      },
-      {
-        id: "game-4",
-        title: "Rumah Hewan",
-        sub: "Segera hadir",
-        bg: "linear-gradient(180deg, #ffedd5 0%, #fed7aa 100%)",
-        ready: false,
-        note: "Kartu 4 (Rumah Hewan): ide game TK berikutnya.",
-        svg: `
-          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#4d7c0f"/>
-            <ellipse cx="44" cy="63" rx="31" ry="8" fill="#84cc16"/>
-            <rect x="24" y="36" width="40" height="26" rx="7" fill="#d97706"/>
-            <rect x="24" y="34" width="40" height="25" rx="7" fill="#fef3c7"/>
-            <polygon points="44,13 17,36 71,36" fill="#be123c"/>
-            <polygon points="44,11 17,34 71,34" fill="#fb7185"/>
-            <rect x="37" y="44" width="14" height="15" rx="7" fill="#f59e0b"/>
-          </svg>`
-      },
-      {
-        id: "game-5",
-        title: "Huruf Ceria",
-        sub: "Segera hadir",
-        bg: "linear-gradient(180deg, #ede9fe 0%, #ddd6fe 100%)",
-        ready: false,
-        note: "Kartu 5 (Huruf Ceria): ide game TK berikutnya.",
-        svg: `
-          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#7c3aed" opacity="0.45"/>
-            <rect x="20" y="22" width="48" height="42" rx="14" fill="#4338ca"/>
-            <rect x="20" y="18" width="48" height="42" rx="14" fill="#818cf8"/>
-            <text x="44" y="46" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800" font-family="Baloo 2, Fredoka, sans-serif">ABC</text>
-          </svg>`
-      },
-      {
-        id: "game-6",
-        title: "Pola Pelangi",
-        sub: "Segera hadir",
-        bg: "linear-gradient(180deg, #fef9c3 0%, #fef08a 100%)",
-        ready: false,
-        note: "Kartu 6 (Pola Pelangi): ide game TK berikutnya.",
-        svg: `
-          <svg width="88" height="80" viewBox="0 0 88 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="44" cy="66" rx="31" ry="8" fill="#ca8a04" opacity="0.45"/>
-            <circle cx="44" cy="41" r="22" fill="#ca8a04"/>
-            <circle cx="44" cy="38" r="22" fill="#facc15"/>
-            <circle cx="36" cy="34" r="3.2" fill="#182026"/>
-            <circle cx="52" cy="34" r="3.2" fill="#182026"/>
-            <path d="M35 44C38 49 50 49 53 44" stroke="#182026" stroke-width="3.2" stroke-linecap="round"/>
-          </svg>`
-      }
-    ];
-
-    function triggerBounce(el) {
-      if (!el) return;
-      el.classList.remove("bounce-now");
-      void el.offsetWidth;
-      el.classList.add("bounce-now");
-    }
-
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function playSound(notes) {
-      if (!sfxEnabled) return;
-      try {
-        if (!audioCtx) audioCtx = new AudioCtx();
-        if (audioCtx.state === "suspended") audioCtx.resume();
-        const now = audioCtx.currentTime;
-        notes.forEach(([freq, delay, dur, type = "sine", slideTo = null]) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, now + delay);
-          if (slideTo) {
-            osc.frequency.exponentialRampToValueAtTime(slideTo, now + delay + dur);
-          }
-          gain.gain.setValueAtTime(0.14, now + delay);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now + delay);
-          osc.stop(now + delay + dur);
-        });
-      } catch (_) {}
-    }
-
-    function playBoingSfx() {
-      playSound([[320, 0, 0.16, "triangle", 760]]);
-    }
-
-    function playPopSfx(pitchBoost = 0) {
-      playSound([[460 + pitchBoost, 0, 0.11, "sine", 780 + pitchBoost]]);
-    }
-
-    function playBoomSfx() {
-      playSound([
-        [170, 0, 0.18, "sawtooth", 58],
-        [523.25, 0.04, 0.14, "triangle", 880],
-        [783.99, 0.12, 0.22, "triangle", 1174.66]
-      ]);
-    }
-
-    function playThudSfx() {
-      playSound([[230, 0, 0.15, "sine", 145]]);
-    }
-
-    function hopMonster() {
-      monsterBuddy.classList.remove("hop");
-      void monsterBuddy.offsetWidth;
-      monsterBuddy.classList.add("hop");
-      eyeballs.forEach((eb) => eb.classList.add("blink"));
-      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 150);
-      playBoingSfx();
-    }
-
-    monsterBuddy.addEventListener("pointerdown", (e) => {
-      e.stopPropagation();
-      hopMonster();
-    });
-
-    window.addEventListener("pointermove", (e) => {
-      if (!splashScreen.classList.contains("active")) return;
-      pupils.forEach((pupil) => {
-        const rect = pupil.parentElement.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const dx = e.clientX - centerX;
-        const dy = e.clientY - centerY;
-        const angle = Math.atan2(dy, dx);
-        const maxOffset = 7;
-        const dist = Math.min(maxOffset, Math.hypot(dx, dy) / 28);
-        pupil.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
-      });
+    monster.addEventListener("click", () => {
+      playTone("tap");
+      monster.classList.remove("hop");
+      void monster.offsetWidth;
+      monster.classList.add("hop");
     });
 
     setInterval(() => {
-      if (!splashScreen.classList.contains("active")) return;
       eyeballs.forEach((eb) => eb.classList.add("blink"));
-      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 140);
+      setTimeout(() => eyeballs.forEach((eb) => eb.classList.remove("blink")), 150);
     }, 3600);
 
-    function showScreen(target) {
-      [splashScreen, lobbyScreen, gameScreen].forEach((el) => el.classList.remove("active"));
-      target.classList.add("active");
-    }
-
-    function refreshMoodButtons() {
-      moodPills.forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.mood === chosenMood);
-      });
-    }
-
-    function syncQuickContinue() {
-      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
-      if (saved) {
-        quickContinueBtn.textContent = `Lanjut sebagai ${saved} →`;
-        quickContinueBtn.classList.remove("hidden");
-      } else {
-        quickContinueBtn.classList.add("hidden");
-      }
-    }
-
-    function spawnCardRipple(card, clientX, clientY) {
-      const rect = card.getBoundingClientRect();
-      const rip = document.createElement("span");
-      rip.className = "tap-ripple";
-      rip.style.left = `${clientX - rect.left}px`;
-      rip.style.top = `${clientY - rect.top}px`;
-      card.appendChild(rip);
-      setTimeout(() => rip.remove(), 500);
-    }
-
-    function renderLobby() {
-      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
-      lobbyGreeting.textContent = `Halo, ${saved || "Teman"}!`;
-      lobbySub.textContent = `Perasaan: ${chosenMood} • Pilih 1 dari 6 kartu`;
-
-      gamesGrid.innerHTML = "";
-      SIX_GAMES.forEach((game, index) => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = `game-card-modern ${game.ready ? "is-ready" : ""}`;
-        card.style.background = game.bg;
-        card.innerHTML = `
-          <div class="card-top-row">
-            <span class="corner-badge">${index + 1}</span>
-            <span class="status-chip">${game.ready ? "Main" : "Segera"}</span>
-          </div>
-          <div class="art-stage">${game.svg}</div>
-          <div class="card-bottom-text">
-            <div class="card-title-bold">${game.title}</div>
-            <div class="card-sub-muted">${game.sub}</div>
-          </div>
-        `;
-        card.addEventListener("pointerdown", (e) => {
-          spawnCardRipple(card, e.clientX, e.clientY);
-          triggerBounce(card);
-        });
-        card.addEventListener("click", () => {
-          if (game.ready) {
-            playPopSfx(120);
-            setTimeout(() => openSelectedGame(game.id), 150);
-          } else {
-            ideaBanner.textContent = `💡 ${game.note}`;
-            triggerBounce(ideaBanner);
-            playThudSfx();
-          }
-        });
-        gamesGrid.appendChild(card);
-      });
-    }
-
-    moodPills.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        chosenMood = btn.dataset.mood;
-        refreshMoodButtons();
-        triggerBounce(btn);
-        hopMonster();
+    document.addEventListener("pointermove", (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 12;
+      const y = (e.clientY / window.innerHeight - 0.5) * 10;
+      pupils.forEach((p) => {
+        p.style.transform = `translate(${x}px, ${y}px)`;
       });
     });
 
-    saveStartBtn.addEventListener("click", () => {
-      triggerBounce(saveStartBtn);
-      const name = playerNameInput.value.trim();
-      if (!name) {
-        splashMsg.textContent = "Tulis namamu dulu ya sebelum mulai!";
-        triggerBounce(splashMsg);
-        hopMonster();
-        playerNameInput.focus();
+    // --- SPLASH SCREEN ---
+    const nameInput = document.getElementById("player-name");
+    const formMsg = document.getElementById("form-msg");
+    const btnContinue = document.getElementById("btn-continue-saved");
+
+    const savedName = localStorage.getItem("tk_player_name");
+    if (savedName) {
+      nameInput.value = savedName;
+      btnContinue.textContent = `Lanjut sebagai ${savedName} 👋`;
+      btnContinue.classList.remove("hidden");
+    }
+
+    document.querySelectorAll(".q-pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        playTone("tap");
+        document.querySelectorAll(".q-pill").forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        state.totalQuestions = Number(pill.dataset.count);
+      });
+    });
+
+    function enterLobby() {
+      const cleanName = nameInput.value.trim();
+      if (!cleanName) {
+        formMsg.textContent = "Tulis nama kamu dulu ya! 😊";
+        nameInput.focus();
         return;
       }
-      splashMsg.textContent = "";
-      localStorage.setItem(NAME_KEY, name);
-      localStorage.setItem(MOOD_KEY, chosenMood);
-      playPopSfx(220);
-      renderLobby();
-      showScreen(lobbyScreen);
+      formMsg.textContent = "";
+      state.name = cleanName;
+      localStorage.setItem("tk_player_name", cleanName);
+      document.getElementById("lobby-greeting").textContent = `Halo, ${state.name}! 👋`;
+      document.getElementById("lobby-sub").textContent = `Target bermain: ${state.totalQuestions} soal`;
+      showScreen("screen-lobby");
+    }
+
+    document.getElementById("btn-start-lobby").addEventListener("click", () => {
+      playTone("tap");
+      enterLobby();
     });
 
-    quickContinueBtn.addEventListener("click", () => {
-      triggerBounce(quickContinueBtn);
-      const saved = (localStorage.getItem(NAME_KEY) || "").trim();
-      if (!saved) return;
-      playPopSfx(140);
-      renderLobby();
-      showScreen(lobbyScreen);
+    btnContinue.addEventListener("click", () => {
+      playTone("tap");
+      enterLobby();
     });
 
-    changeNameBtn.addEventListener("click", () => {
-      triggerBounce(changeNameBtn);
-      playPopSfx(60);
-      playerNameInput.value = localStorage.getItem(NAME_KEY) || "";
-      splashMsg.textContent = "";
-      refreshMoodButtons();
-      syncQuickContinue();
-      showScreen(splashScreen);
+    document.getElementById("btn-change-name").addEventListener("click", () => {
+      playTone("tap");
+      showScreen("screen-splash");
     });
 
-    backLobbyBtn.addEventListener("click", () => {
-      triggerBounce(backLobbyBtn);
-      playPopSfx(40);
-      renderLobby();
-      showScreen(lobbyScreen);
-    });
-
-    sfxToggleBtn.addEventListener("click", () => {
-      sfxEnabled = !sfxEnabled;
-      sfxToggleBtn.textContent = sfxEnabled ? "🔊" : "🔇";
-      triggerBounce(sfxToggleBtn);
-      if (sfxEnabled) playPopSfx(180);
-    });
-
-    // --- Shared 3D Shape & Helper Renderer ---
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    const starsEl = document.getElementById("starsEl");
-    const pickedEl = document.getElementById("pickedEl");
-    const targetEl = document.getElementById("targetEl");
-    const lvlBtns = document.querySelectorAll(".lvl-btn");
-
-    const HELPER_BUDDIES = [
-      { id: "bunny", fur: "#ffffff", dark: "#94a3b8", ear: "#f472b6" },
-      { id: "cat", fur: "#fb923c", dark: "#c2410c", ear: "#ea580c" },
-      { id: "frog", fur: "#4ade80", dark: "#15803d", ear: "#22c55e" },
-      { id: "chick", fur: "#facc15", dark: "#ca8a04", ear: "#eab308" }
+    // --- BANK DATA PERMAINAN ---
+    const FRUIT_ITEMS = [
+      { emoji: "🍎", name: "Apel" },
+      { emoji: "🍌", name: "Pisang" },
+      { emoji: "🍊", name: "Jeruk" },
+      { emoji: "🍓", name: "Stroberi" },
+      { emoji: "🍇", name: "Anggur" },
+      { emoji: "🍉", name: "Semangka" }
     ];
 
-    const SHAPES = [
-      { id: "circle", name: "Lingkaran" },
-      { id: "triangle", name: "Segitiga" },
-      { id: "square", name: "Kotak" },
-      { id: "star", name: "Bintang" }
+    const COLOR_ITEMS = [
+      { colorName: "Merah", hex: "#ef4444", emoji: "🍎" },
+      { colorName: "Biru", hex: "#3b82f6", emoji: "🐳" },
+      { colorName: "Kuning", hex: "#eab308", emoji: "🍌" },
+      { colorName: "Hijau", hex: "#22c55e", emoji: "🐸" },
+      { colorName: "Oranye", hex: "#f97316", emoji: "🍊" },
+      { colorName: "Ungu", hex: "#a855f7", emoji: "🍇" }
     ];
 
-    const COLORS = [
-      { name: "Merah", light: "#fca5a5", fill: "#ef4444", dark: "#991b1b" },
-      { name: "Kuning", light: "#fef08a", fill: "#facc15", dark: "#a16207" },
-      { name: "Hijau", light: "#86efac", fill: "#22c55e", dark: "#166534" },
-      { name: "Biru", light: "#93c5fd", fill: "#3b82f6", dark: "#1e40af" },
-      { name: "Ungu", light: "#d8b4fe", fill: "#a855f7", dark: "#6b21a8" }
+    // Bank Kata TK (3 - 5 huruf mudah & akrab dengan anak)
+    const WORD_BANK = [
+      { word: "KUDA", emoji: "🐴", hint: "Hewan berkaki empat yang larinya kencang" },
+      { word: "BOLA", emoji: "⚽", hint: "Bentuknya bulat dan bisa ditendang" },
+      { word: "IKAN", emoji: "🐟", hint: "Hewan yang berenang di dalam air" },
+      { word: "APEL", emoji: "🍎", hint: "Buah manis berwarna merah" },
+      { word: "BUKU", emoji: "📘", hint: "Tempat kita membaca dan menulis" },
+      { word: "MATA", emoji: "👀", hint: "Anggota tubuh untuk melihat" },
+      { word: "SAPI", emoji: "🐄", hint: "Hewan penghasil susu, suaranya moo" },
+      { word: "TOPI", emoji: "🧢", hint: "Dipakai di atas kepala saat panas" },
+      { word: "ROTI", emoji: "🍞", hint: "Makanan enak untuk sarapan pagi" },
+      { word: "BEBEK", emoji: "🦆", hint: "Hewan berenang yang bunyinya kwek-kwek" },
+      { word: "GAJAH", emoji: "🐘", hint: "Hewan besar yang punya belalai panjang" },
+      { word: "BALON", emoji: "🎈", hint: "Mainan warna-warni yang bisa terbang" }
     ];
 
-    let stars = Number(localStorage.getItem("tk_hitung_stars") || 0);
-    starsEl.textContent = stars;
-
-    let sparkles = [];
-    let ripples = [];
-    let helperBuddy = HELPER_BUDDIES[0];
-    let helperHop = 0;
-
-    function traceShapePath(shapeId, r) {
-      ctx.beginPath();
-      if (shapeId === "circle") {
-        ctx.arc(0, 0, r, 0, Math.PI * 2);
-      } else if (shapeId === "square") {
-        ctx.roundRect(-r * 0.88, -r * 0.88, r * 1.76, r * 1.76, Math.max(8, r * 0.34));
-      } else if (shapeId === "triangle") {
-        ctx.moveTo(0, -r * 1.05);
-        ctx.lineTo(r * 0.98, r * 0.82);
-        ctx.lineTo(-r * 0.98, r * 0.82);
-        ctx.closePath();
-      } else if (shapeId === "star") {
-        const spikes = 5;
-        const outer = r * 1.08;
-        const inner = r * 0.5;
-        for (let i = 0; i < spikes * 2; i++) {
-          const rad = i % 2 === 0 ? outer : inner;
-          const angle = (i * Math.PI) / spikes - Math.PI / 2;
-          const px = Math.cos(angle) * rad;
-          const py = Math.sin(angle) * rad;
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-      }
-    }
-
-    function draw3DShape(shapeId, r, colorObj, depth = 6) {
-      ctx.save();
-
-      ctx.save();
-      ctx.translate(0, depth);
-      traceShapePath(shapeId, r);
-      ctx.fillStyle = colorObj.dark;
-      ctx.fill();
-      ctx.restore();
-
-      const grad = ctx.createLinearGradient(-r * 0.6, -r * 0.8, r * 0.6, r * 0.9);
-      grad.addColorStop(0, colorObj.light);
-      grad.addColorStop(0.45, colorObj.fill);
-      grad.addColorStop(1, colorObj.dark);
-
-      traceShapePath(shapeId, r);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      ctx.lineWidth = 2.2;
-      ctx.strokeStyle = colorObj.dark;
-      ctx.stroke();
-
-      ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
-      ctx.beginPath();
-      ctx.ellipse(-r * 0.28, -r * 0.34, r * 0.25, r * 0.12, -0.45, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    function drawHelperBuddy(buddy, x, y, size) {
-      ctx.save();
-      ctx.translate(x, y);
-      const s = size / 44;
-      ctx.scale(s, s);
-
-      if (buddy.id === "bunny") {
-        ctx.fillStyle = "#cbd5e1";
-        ctx.beginPath();
-        ctx.ellipse(-9, -16, 5.5, 12.5, -0.15, 0, Math.PI * 2);
-        ctx.ellipse(9, -16, 5.5, 12.5, 0.15, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = buddy.fur;
-        ctx.beginPath();
-        ctx.ellipse(-9, -18, 5, 12, -0.15, 0, Math.PI * 2);
-        ctx.ellipse(9, -18, 5, 12, 0.15, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = buddy.ear;
-        ctx.beginPath();
-        ctx.ellipse(-9, -18, 2.6, 8, -0.15, 0, Math.PI * 2);
-        ctx.ellipse(9, -18, 2.6, 8, 0.15, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (buddy.id === "cat") {
-        ctx.fillStyle = buddy.ear;
-        ctx.beginPath();
-        ctx.moveTo(-16, -6); ctx.lineTo(-12, -21); ctx.lineTo(-3, -12); ctx.closePath();
-        ctx.moveTo(16, -6); ctx.lineTo(12, -21); ctx.lineTo(3, -12); ctx.closePath();
-        ctx.fill();
-      } else if (buddy.id === "frog") {
-        ctx.fillStyle = buddy.fur;
-        ctx.beginPath();
-        ctx.arc(-10, -14, 7.5, 0, Math.PI * 2);
-        ctx.arc(10, -14, 7.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.fillStyle = buddy.dark;
-      ctx.beginPath();
-      ctx.arc(0, 2.5, 16.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      const headGrad = ctx.createRadialGradient(-5, -8, 2, 0, 0, 19);
-      headGrad.addColorStop(0, "#ffffff");
-      headGrad.addColorStop(0.3, buddy.fur);
-      headGrad.addColorStop(1, buddy.dark);
-
-      ctx.beginPath();
-      ctx.arc(0, 0, 16.5, 0, Math.PI * 2);
-      ctx.fillStyle = headGrad;
-      ctx.fill();
-
-      const eyeY = buddy.id === "frog" ? -14 : -3;
-      ctx.fillStyle = "#ffffff";
-      ctx.beginPath();
-      ctx.arc(-6, eyeY, 4.6, 0, Math.PI * 2);
-      ctx.arc(6, eyeY, 4.6, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#0f172a";
-      ctx.beginPath();
-      ctx.arc(-5.5, eyeY, 2.6, 0, Math.PI * 2);
-      ctx.arc(6.5, eyeY, 2.6, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#ffffff";
-      ctx.beginPath();
-      ctx.arc(-6.4, eyeY - 1, 1, 0, Math.PI * 2);
-      ctx.arc(5.6, eyeY - 1, 1, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "rgba(244, 114, 182, 0.58)";
-      ctx.beginPath();
-      ctx.arc(-10, 3, 3.4, 0, Math.PI * 2);
-      ctx.arc(10, 3, 3.4, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (buddy.id === "chick") {
-        ctx.fillStyle = "#f97316";
-        ctx.beginPath();
-        ctx.moveTo(-4.5, 2); ctx.lineTo(4.5, 2); ctx.lineTo(0, 7.5); ctx.closePath();
-        ctx.fill();
-      } else {
-        ctx.fillStyle = "#1e293b";
-        ctx.beginPath();
-        ctx.arc(0, 2, 2.3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = "#1e293b";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(-3, 5, 3, 0.1, Math.PI - 0.1);
-        ctx.arc(3, 5, 3, 0.1, Math.PI - 0.1);
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    }
-
-    function spawnSparkles(x, y, count = 18, speedScale = 1) {
-      for (let i = 0; i < count; i++) {
-        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.25;
-        const speed = (2.2 + Math.random() * 3.8) * speedScale;
-        sparkles.push({
-          x,
-          y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1.5,
-          life: 38 + Math.floor(Math.random() * 12),
-          color: COLORS[i % COLORS.length].fill,
-          size: 4.5 + Math.random() * 3.5
-        });
-      }
-    }
-
-    function spawnCanvasRipple(x, y, color, maxR = 48) {
-      ripples.push({ x, y, r: 8, maxR, life: 22, color });
-    }
-
-    function awardStar(message) {
-      stars++;
-      starsEl.textContent = stars;
-      localStorage.setItem("tk_hitung_stars", stars);
-      if (activeGameId === "game-1") {
-        g1StatusMsg = message;
-        g1StatusColor = "#15803d";
-      } else {
-        g2StatusMsg = message;
-        g2StatusColor = "#15803d";
-      }
-    }
-
-    // --- GAME 1: Hitung & Bentuk ---
-    let g1Level = "easy";
-    let g1TargetCount = 2;
-    let g1PickedCount = 0;
-    let g1Mission = null;
-    let g1Cards = [];
-    let g1StatusMsg = "Ketuk bentuk yang sesuai!";
-    let g1StatusColor = "#0369a1";
-    let g1Locked = false;
-
-    function setupGame1() {
-      g1Locked = false;
-      g1PickedCount = 0;
-
-      if (g1Level === "easy") {
-        g1TargetCount = Math.floor(Math.random() * 3) + 1;
-      } else if (g1Level === "medium") {
-        g1TargetCount = Math.floor(Math.random() * 3) + 2;
-      } else {
-        g1TargetCount = Math.floor(Math.random() * 4) + 2;
-      }
-
-      helperBuddy = HELPER_BUDDIES[Math.floor(Math.random() * HELPER_BUDDIES.length)];
-      helperHop = 18;
-      g1Mission = {
-        shape: SHAPES[Math.floor(Math.random() * SHAPES.length)],
-        color: COLORS[Math.floor(Math.random() * COLORS.length)]
-      };
-
-      pickedEl.textContent = g1PickedCount;
-      targetEl.textContent = g1TargetCount;
-      g1StatusMsg = "Ketuk bentuk yang sesuai!";
-      g1StatusColor = "#0369a1";
-
-      const totalCards = 9;
+    // --- GENERATOR SOAL ---
+    function generateQuestions(gameId, count) {
       const list = [];
-      for (let i = 0; i < g1TargetCount; i++) {
-        list.push({ shape: g1Mission.shape, color: g1Mission.color, isTarget: true });
-      }
-      while (list.length < totalCards) {
-        const s = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-        const c = COLORS[Math.floor(Math.random() * COLORS.length)];
-        if (!(s.id === g1Mission.shape.id && c.name === g1Mission.color.name)) {
-          list.push({ shape: s, color: c, isTarget: false });
-        }
-      }
-      for (let i = list.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [list[i], list[j]] = [list[j], list[i]];
-      }
 
-      const cols = 3;
-      const cardW = 122;
-      const cardH = 104;
-      const gapX = 16;
-      const gapY = 14;
-      const startX = (canvas.width - (cols * cardW + (cols - 1) * gapX)) / 2;
-      const startY = 228;
-
-      g1Cards = list.map((item, idx) => {
-        const r = Math.floor(idx / cols);
-        const c = idx % cols;
-        return {
-          ...item,
-          x: startX + c * (cardW + gapX),
-          y: startY + r * (cardH + gapY),
-          w: cardW,
-          h: cardH,
-          picked: false,
-          shake: 0,
-          bounce: 0
-        };
-      });
-    }
-
-    function drawGame1(hopOffsetY, hopScale) {
-      ctx.fillStyle = "#f0f9ff";
-      ctx.fillRect(0, 0, canvas.width, 210);
-
-      ctx.save();
-      ctx.translate(68, 98 + hopOffsetY);
-      ctx.scale(hopScale, hopScale);
-      drawHelperBuddy(helperBuddy, 0, 0, 64);
-      ctx.restore();
-
-      ctx.fillStyle = "#ffffff";
-      ctx.strokeStyle = "#7dd3fc";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.roundRect(118, 28, 300, 156, 22);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.save();
-      ctx.translate(164, 86);
-      draw3DShape(g1Mission.shape.id, 25, g1Mission.color);
-      ctx.restore();
-
-      ctx.fillStyle = "#0f172a";
-      ctx.font = "800 20px 'Baloo 2', 'Fredoka', sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText(`Cari ${g1TargetCount} ${g1Mission.shape.name} ${g1Mission.color.name}`, 204, 70, 202);
-
-      ctx.fillStyle = g1StatusColor;
-      ctx.font = "700 16px 'Fredoka', sans-serif";
-      ctx.fillText(g1StatusMsg, 204, 106, 202);
-
-      for (let i = 0; i < g1TargetCount; i++) {
-        ctx.beginPath();
-        ctx.arc(214 + i * 28, 146, 9, 0, Math.PI * 2);
-        ctx.fillStyle = i < g1PickedCount ? "#22c55e" : "#e2e8f0";
-        ctx.fill();
-      }
-
-      for (const card of g1Cards) {
-        let offsetX = 0;
-        let cardScale = 1;
-        if (card.shake > 0) {
-          offsetX = Math.sin(card.shake * 1.4) * 7;
-          card.shake--;
-        }
-        if (card.bounce > 0) {
-          const t = 1 - card.bounce / 20;
-          cardScale = 1 + Math.sin(t * Math.PI * 1.4) * 0.14 * (1 - t * 0.5);
-          card.bounce--;
-        }
-
-        ctx.save();
-        ctx.translate(card.x + card.w / 2 + offsetX, card.y + card.h / 2);
-        ctx.scale(cardScale, cardScale);
-        ctx.translate(-card.w / 2, -card.h / 2);
-
-        ctx.fillStyle = card.picked ? "#86efac" : "#e2e8f0";
-        ctx.beginPath();
-        ctx.roundRect(0, 4, card.w, card.h, 20);
-        ctx.fill();
-
-        ctx.fillStyle = card.picked ? "#dcfce7" : "#f8fafc";
-        ctx.strokeStyle = card.picked ? "#22c55e" : "#cbd5e1";
-        ctx.lineWidth = card.picked ? 3.5 : 2;
-        ctx.beginPath();
-        ctx.roundRect(0, 0, card.w, card.h, 20);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.save();
-        ctx.translate(card.w / 2, card.h / 2 + 2);
-        draw3DShape(card.shape.id, 30, card.color);
-        ctx.restore();
-
-        if (card.picked) {
-          ctx.font = "800 22px 'Baloo 2', sans-serif";
-          ctx.textAlign = "right";
-          ctx.fillStyle = "#16a34a";
-          ctx.fillText("✓", card.w - 11, 24);
-        }
-
-        ctx.restore();
-      }
-    }
-
-    function handleGame1PointerDown(px, py) {
-      if (g1Locked || !g1Mission) return;
-      if (px >= 24 && px <= 112 && py >= 52 && py <= 140) {
-        helperHop = 18;
-        spawnCanvasRipple(68, 98, "#38bdf8");
-        playBoingSfx();
-        return;
-      }
-
-      for (const card of g1Cards) {
-        if (px >= card.x && px <= card.x + card.w && py >= card.y && py <= card.y + card.h) {
-          card.bounce = 20;
-          spawnCanvasRipple(px, py, card.color.fill);
-
-          if (card.picked) {
-            playPopSfx(200);
-            return;
+      if (gameId === 1) {
+        for (let i = 0; i < count; i++) {
+          const item = FRUIT_ITEMS[i % FRUIT_ITEMS.length];
+          const answer = Math.floor(Math.random() * 8) + 1;
+          const opts = new Set([answer]);
+          while (opts.size < 4) {
+            opts.add(Math.floor(Math.random() * 9) + 1);
           }
-
-          if (card.isTarget && g1PickedCount < g1TargetCount) {
-            card.picked = true;
-            g1PickedCount++;
-            helperHop = 14;
-            pickedEl.textContent = g1PickedCount;
-            g1StatusColor = "#15803d";
-            g1StatusMsg = `Mantap! ${g1PickedCount} dari ${g1TargetCount}`;
-            spawnSparkles(card.x + card.w / 2, card.y + card.h / 2);
-            playPopSfx(g1PickedCount * 95);
-
-            if (g1PickedCount === g1TargetCount) {
-              g1Locked = true;
-              helperHop = 22;
-              awardStar("Hebat! Dapat 1 bintang ⭐");
-              playBoomSfx();
-              setTimeout(setupGame1, 1150);
-            }
-          } else {
-            card.shake = 14;
-            g1StatusColor = "#b45309";
-            g1StatusMsg = "Coba perhatikan bentuk & warnanya";
-            playThudSfx();
-          }
-          break;
+          list.push({
+            item,
+            answer,
+            options: shuffle([...opts])
+          });
+        }
+      } else if (gameId === 2) {
+        for (let i = 0; i < count; i++) {
+          const target = COLOR_ITEMS[i % COLOR_ITEMS.length];
+          const others = shuffle(COLOR_ITEMS.filter((c) => c.colorName !== target.colorName)).slice(0, 3);
+          list.push({
+            target,
+            options: shuffle([target, ...others])
+          });
+        }
+      } else if (gameId === 3) {
+        const pool = shuffle(WORD_BANK);
+        for (let i = 0; i < count; i++) {
+          list.push(pool[i % pool.length]);
         }
       }
+
+      return list;
     }
 
-    // --- GAME 2: Gabung Bentuk (Geser ke Bentuk Sama -> Membesar -> Meledak) ---
-    let g2Level = "easy";
-    let g2MergesNeeded = 3;
-    let g2MergeCount = 0;
-    let g2FocusPiece = null;
-    let g2Pieces = [];
-    let g2DraggingPiece = null;
-    let g2DragOffset = { x: 0, y: 0 };
-    let g2StatusMsg = "Geser bentuk ke bentuk yang sama!";
-    let g2StatusColor = "#15803d";
-    let g2Locked = false;
-    let g2ShakeTimer = 0;
-
-    function getMergesByLevel() {
-      if (g2Level === "easy") return 3;
-      if (g2Level === "medium") return 4;
-      return 5;
-    }
-
-    function getBaseRadiusForMergeStep(step) {
-      return 24 + step * 8.5;
-    }
-
-    function setupGame2() {
-      g2Locked = false;
-      g2DraggingPiece = null;
-      g2MergeCount = 0;
-      g2MergesNeeded = getMergesByLevel();
-
-      helperBuddy = HELPER_BUDDIES[Math.floor(Math.random() * HELPER_BUDDIES.length)];
-      helperHop = 18;
-
-      const focusShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-      const focusColor = COLORS[Math.floor(Math.random() * COLORS.length)];
-
-      pickedEl.textContent = g2MergeCount;
-      targetEl.textContent = g2MergesNeeded;
-      g2StatusMsg = "Geser ke bentuk yang sama!";
-      g2StatusColor = "#15803d";
-
-      // Bentuk utama di tengah arena yang akan membesar tiap kali digabung
-      g2FocusPiece = {
-        id: "focus",
-        shape: focusShape,
-        color: focusColor,
-        x: canvas.width / 2,
-        y: 355,
-        baseR: getBaseRadiusForMergeStep(0),
-        scaleAnim: 1.18,
-        pulse: 0
-      };
-
-      // Beberapa bentuk berbeda + beberapa bentuk sama untuk digeser
-      const slots = [
-        { x: 82, y: 248 },
-        { x: 220, y: 242 },
-        { x: 358, y: 248 },
-        { x: 76, y: 365 },
-        { x: 364, y: 365 },
-        { x: 84, y: 486 },
-        { x: 220, y: 502 },
-        { x: 356, y: 486 }
-      ];
-
-      for (let i = slots.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [slots[i], slots[j]] = [slots[j], slots[i]];
-      }
-
-      const pieces = [];
-      // Pastikan jumlah bentuk yang sama cukup untuk mencapai target ledakan
-      for (let i = 0; i < g2MergesNeeded + 1; i++) {
-        const sl = slots[i];
-        pieces.push({
-          id: `match-${i}`,
-          shape: focusShape,
-          color: focusColor,
-          x: sl.x,
-          y: sl.y,
-          homeX: sl.x,
-          homeY: sl.y,
-          r: 22,
-          isMatch: true,
-          shake: 0
-        });
-      }
-
-      // Isi sisa slot dengan bentuk atau warna yang berbeda
-      for (let i = g2MergesNeeded + 1; i < slots.length; i++) {
-        const sl = slots[i];
-        let s = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-        let c = COLORS[Math.floor(Math.random() * COLORS.length)];
-        if (s.id === focusShape.id && c.name === focusColor.name) {
-          s = SHAPES[(SHAPES.findIndex((item) => item.id === s.id) + 1) % SHAPES.length];
-        }
-        pieces.push({
-          id: `other-${i}`,
-          shape: s,
-          color: c,
-          x: sl.x,
-          y: sl.y,
-          homeX: sl.x,
-          homeY: sl.y,
-          r: 22,
-          isMatch: false,
-          shake: 0
-        });
-      }
-
-      g2Pieces = pieces;
-    }
-
-    function drawGame2(hopOffsetY, hopScale) {
-      ctx.fillStyle = "#f0fdf4";
-      ctx.fillRect(0, 0, canvas.width, 206);
-
-      ctx.fillStyle = "#dcfce7";
-      ctx.fillRect(0, 206, canvas.width, canvas.height - 206);
-
-      // Karakter penyemangat di kiri atas
-      ctx.save();
-      ctx.translate(68, 96 + hopOffsetY);
-      ctx.scale(hopScale, hopScale);
-      drawHelperBuddy(helperBuddy, 0, 0, 62);
-      ctx.restore();
-
-      // Panel misi atas
-      ctx.fillStyle = "#ffffff";
-      ctx.strokeStyle = "#86efac";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.roundRect(118, 26, 300, 156, 22);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.save();
-      ctx.translate(162, 84);
-      draw3DShape(g2FocusPiece.shape.id, 22, g2FocusPiece.color, 5);
-      ctx.restore();
-
-      ctx.fillStyle = "#0f172a";
-      ctx.font = "800 19px 'Baloo 2', 'Fredoka', sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText(`Gabung ${g2MergesNeeded}x ${g2FocusPiece.shape.name}`, 202, 66, 204);
-
-      ctx.fillStyle = g2StatusColor;
-      ctx.font = "700 15px 'Fredoka', sans-serif";
-      ctx.fillText(g2StatusMsg, 202, 102, 204);
-
-      // Indikator ukuran / penyatuan
-      for (let i = 0; i < g2MergesNeeded; i++) {
-        ctx.beginPath();
-        ctx.arc(212 + i * 26, 144, 8.5, 0, Math.PI * 2);
-        ctx.fillStyle = i < g2MergeCount ? "#f97316" : "#e2e8f0";
-        ctx.fill();
-      }
-
-      // Lingkaran zona gabung lembut di tengah arena
-      if (!g2Locked) {
-        const zoneR = g2FocusPiece.baseR + 24;
-        ctx.save();
-        ctx.strokeStyle = g2DraggingPiece ? "#16a34a" : "rgba(34, 197, 94, 0.35)";
-        ctx.lineWidth = 3;
-        ctx.setLineDash([8, 7]);
-        ctx.beginPath();
-        ctx.arc(g2FocusPiece.x, g2FocusPiece.y, zoneR, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-
-        // Bentuk sasaran utama yang membesar tiap kali digabung
-        if (g2FocusPiece.scaleAnim > 1) {
-          g2FocusPiece.scaleAnim = Math.max(1, g2FocusPiece.scaleAnim - 0.025);
-        }
-        ctx.save();
-        ctx.translate(g2FocusPiece.x, g2FocusPiece.y);
-        ctx.scale(g2FocusPiece.scaleAnim, g2FocusPiece.scaleAnim);
-        draw3DShape(
-          g2FocusPiece.shape.id,
-          g2FocusPiece.baseR,
-          g2FocusPiece.color,
-          6 + g2MergeCount * 1.5
-        );
-        ctx.restore();
-      }
-
-      // Gambar potongan bentuk yang bisa digeser
-      for (const p of g2Pieces) {
-        if (p === g2DraggingPiece) continue;
-        let ox = 0;
-        if (p.shake > 0) {
-          ox = Math.sin(p.shake * 1.5) * 6;
-          p.shake--;
-        }
-        ctx.save();
-        ctx.translate(p.x + ox, p.y);
-        draw3DShape(p.shape.id, p.r, p.color, 5);
-        ctx.restore();
-      }
-
-      // Gambar potongan yang sedang ditarik di lapisan paling atas
-      if (g2DraggingPiece) {
-        ctx.save();
-        ctx.translate(g2DraggingPiece.x, g2DraggingPiece.y);
-        ctx.scale(1.15, 1.15);
-        draw3DShape(g2DraggingPiece.shape.id, g2DraggingPiece.r, g2DraggingPiece.color, 8);
-        ctx.restore();
-      }
-    }
-
-    function handleGame2PointerDown(px, py) {
-      if (g2Locked || !g2FocusPiece) return;
-
-      if (px >= 24 && px <= 112 && py >= 50 && py <= 138) {
-        helperHop = 18;
-        spawnCanvasRipple(68, 96, "#4ade80");
-        playBoingSfx();
-        return;
-      }
-
-      // Cek bentuk yang disentuh (dari paling depan)
-      for (let i = g2Pieces.length - 1; i >= 0; i--) {
-        const p = g2Pieces[i];
-        const dist = Math.hypot(px - p.x, py - p.y);
-        if (dist <= p.r + 14) {
-          g2DraggingPiece = p;
-          g2DragOffset = { x: px - p.x, y: py - p.y };
-          playPopSfx(70);
-          break;
-        }
-      }
-    }
-
-    function handleGame2PointerMove(px, py) {
-      if (!g2DraggingPiece || g2Locked) return;
-      g2DraggingPiece.x = Math.max(32, Math.min(canvas.width - 32, px - g2DragOffset.x));
-      g2DraggingPiece.y = Math.max(228, Math.min(canvas.height - 32, py - g2DragOffset.y));
-    }
-
-    function handleGame2PointerUp() {
-      if (!g2DraggingPiece || g2Locked) return;
-      const p = g2DraggingPiece;
-      g2DraggingPiece = null;
-
-      const distToCenter = Math.hypot(p.x - g2FocusPiece.x, p.y - g2FocusPiece.y);
-      const mergeThreshold = g2FocusPiece.baseR + p.r + 22;
-
-      if (distToCenter <= mergeThreshold) {
-        const sameShape = p.shape.id === g2FocusPiece.shape.id;
-        const sameColor = p.color.name === g2FocusPiece.color.name;
-
-        if (sameShape && sameColor) {
-          // Hapus bentuk yang disatukan dan besarkan bentuk utama
-          g2Pieces = g2Pieces.filter((item) => item.id !== p.id);
-          g2MergeCount++;
-          pickedEl.textContent = g2MergeCount;
-          helperHop = 14;
-          spawnSparkles(g2FocusPiece.x, g2FocusPiece.y, 16, 0.9);
-          spawnCanvasRipple(g2FocusPiece.x, g2FocusPiece.y, g2FocusPiece.color.fill, 64);
-
-          if (g2MergeCount >= g2MergesNeeded) {
-            // Meledak setelah mencapai batas penyatuan!
-            g2Locked = true;
-            g2ShakeTimer = 14;
-            helperHop = 24;
-            spawnSparkles(g2FocusPiece.x, g2FocusPiece.y, 44, 1.65);
-            spawnCanvasRipple(g2FocusPiece.x, g2FocusPiece.y, "#facc15", 130);
-            awardStar("BOOOOM! Dapat 1 bintang ⭐");
-            playBoomSfx();
-            setTimeout(setupGame2, 1300);
-          } else {
-            g2FocusPiece.baseR = getBaseRadiusForMergeStep(g2MergeCount);
-            g2FocusPiece.scaleAnim = 1.24;
-            g2StatusColor = "#15803d";
-            g2StatusMsg = `Makin besar! (${g2MergeCount}/${g2MergesNeeded})`;
-            playPopSfx(g2MergeCount * 115);
-          }
-          return;
-        } else {
-          // Salah bentuk atau warna: kembali ke posisi asal dengan getaran
-          p.shake = 14;
-          p.x = p.homeX;
-          p.y = p.homeY;
-          g2StatusColor = "#b45309";
-          g2StatusMsg = `Cari ${g2FocusPiece.shape.name} yang sama!`;
-          playThudSfx();
+    // --- MEMULAI GAME ---
+    document.querySelectorAll(".game-card-modern").forEach((card) => {
+      card.addEventListener("click", () => {
+        const gameId = Number(card.dataset.game);
+        if (!card.classList.contains("is-ready")) {
+          playTone("wrong");
+          card.classList.remove("shake-now");
+          void card.offsetWidth;
+          card.classList.add("shake-now");
           return;
         }
-      }
-
-      // Kembali halus ke posisi awal kalau dilepas di luar zona gabung
-      p.x = p.homeX;
-      p.y = p.homeY;
-    }
-
-    function openSelectedGame(gameId) {
-      activeGameId = gameId;
-      showScreen(gameScreen);
-      if (gameId === "game-1") {
-        setupGame1();
-      } else {
-        setupGame2();
-      }
-    }
-
-    function getCanvasPoint(e) {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        px: (e.clientX - rect.left) * (canvas.width / rect.width),
-        py: (e.clientY - rect.top) * (canvas.height / rect.height)
-      };
-    }
-
-    canvas.addEventListener("pointerdown", (e) => {
-      canvas.setPointerCapture(e.pointerId);
-      const { px, py } = getCanvasPoint(e);
-      if (activeGameId === "game-1") {
-        handleGame1PointerDown(px, py);
-      } else {
-        handleGame2PointerDown(px, py);
-      }
-    });
-
-    canvas.addEventListener("pointermove", (e) => {
-      if (activeGameId !== "game-2") return;
-      const { px, py } = getCanvasPoint(e);
-      handleGame2PointerMove(px, py);
-    });
-
-    canvas.addEventListener("pointerup", () => {
-      if (activeGameId === "game-2") {
-        handleGame2PointerUp();
-      }
-    });
-
-    canvas.addEventListener("pointercancel", () => {
-      if (activeGameId === "game-2" && g2DraggingPiece) {
-        g2DraggingPiece.x = g2DraggingPiece.homeX;
-        g2DraggingPiece.y = g2DraggingPiece.homeY;
-        g2DraggingPiece = null;
-      }
-    });
-
-    lvlBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        lvlBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        triggerBounce(btn);
-        playPopSfx(100);
-        if (activeGameId === "game-1") {
-          g1Level = btn.dataset.level;
-          setupGame1();
-        } else {
-          g2Level = btn.dataset.level;
-          setupGame2();
-        }
+        playTone("tap");
+        startGame(gameId);
       });
     });
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.save();
-      if (g2ShakeTimer > 0) {
-        const sx = Math.sin(g2ShakeTimer * 2.2) * 6;
-        const sy = Math.cos(g2ShakeTimer * 1.9) * 5;
-        ctx.translate(sx, sy);
-        g2ShakeTimer--;
-      }
-
-      let hopOffsetY = 0;
-      let hopScale = 1;
-      if (helperHop > 0) {
-        const p = 1 - helperHop / 18;
-        hopOffsetY = -Math.sin(p * Math.PI) * 14;
-        hopScale = 1 + Math.sin(p * Math.PI) * 0.14;
-        helperHop--;
-      }
-
-      if (activeGameId === "game-1" && g1Mission) {
-        drawGame1(hopOffsetY, hopScale);
-      } else if (activeGameId === "game-2" && g2FocusPiece) {
-        drawGame2(hopOffsetY, hopScale);
-      }
-
-      for (let i = ripples.length - 1; i >= 0; i--) {
-        const rp = ripples[i];
-        const progress = 1 - rp.life / 22;
-        const radius = rp.r + (rp.maxR - rp.r) * progress;
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, 1 - progress);
-        ctx.strokeStyle = rp.color;
-        ctx.lineWidth = 3.5;
-        ctx.beginPath();
-        ctx.arc(rp.x, rp.y, radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-        rp.life--;
-        if (rp.life <= 0) ripples.splice(i, 1);
-      }
-
-      for (let i = sparkles.length - 1; i >= 0; i--) {
-        const sp = sparkles[i];
-        sp.x += sp.vx;
-        sp.y += sp.vy;
-        sp.vy += 0.14;
-        sp.life--;
-        ctx.globalAlpha = Math.max(0, sp.life / 42);
-        ctx.fillStyle = sp.color;
-        ctx.beginPath();
-        ctx.arc(sp.x, sp.y, sp.size || 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-        if (sp.life <= 0) sparkles.splice(i, 1);
-      }
-
-      ctx.restore();
-      requestAnimationFrame(draw);
+    function startGame(gameId) {
+      state.currentGame = gameId;
+      state.currentIndex = 0;
+      state.score = 0;
+      state.locked = false;
+      state.questions = generateQuestions(gameId, state.totalQuestions);
+      showScreen("screen-game");
+      renderQuestion();
     }
 
-    refreshMoodButtons();
-    syncQuickContinue();
-    setupGame1();
-    setupGame2();
-    draw();
-    showScreen(splashScreen);
+    function renderQuestion() {
+      state.locked = false;
+      const total = state.totalQuestions;
+      const idx = state.currentIndex;
+      const q = state.questions[idx];
+
+      document.getElementById("game-progress").textContent = `Soal ${idx + 1} / ${total}`;
+      document.getElementById("game-score").textContent = `⭐ ${state.score}`;
+      document.getElementById("feedback-banner").textContent = "";
+
+      const titleEl = document.getElementById("question-title");
+      const stageEl = document.getElementById("visual-stage");
+      const answerEl = document.getElementById("answer-area");
+
+      stageEl.innerHTML = "";
+      answerEl.innerHTML = "";
+
+      if (state.currentGame === 1) {
+        // GAME 1: HITUNG BUAH
+        titleEl.textContent = `Ada berapa ${q.item.name}?`;
+        const wrap = document.createElement("div");
+        wrap.className = "items-wrap";
+        wrap.textContent = q.item.emoji.repeat(q.answer);
+        stageEl.appendChild(wrap);
+
+        const grid = document.createElement("div");
+        grid.className = "options-grid";
+        q.options.forEach((num) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "opt-btn";
+          btn.textContent = num;
+          btn.addEventListener("click", () => handleChoiceAnswer(btn, num === q.answer));
+          grid.appendChild(btn);
+        });
+        answerEl.appendChild(grid);
+
+      } else if (state.currentGame === 2) {
+        // GAME 2: TEBAK WARNA
+        titleEl.textContent = "Apa warna gambar ini?";
+        const circle = document.createElement("div");
+        circle.style.width = "110px";
+        circle.style.height = "110px";
+        circle.style.borderRadius = "50%";
+        circle.style.background = q.target.hex;
+        circle.style.display = "flex";
+        circle.style.alignItems = "center";
+        circle.style.justifyContent = "center";
+        circle.style.fontSize = "3.4rem";
+        circle.style.boxShadow = "0 8px 18px rgba(0,0,0,0.14)";
+        circle.textContent = q.target.emoji;
+        stageEl.appendChild(circle);
+
+        const grid = document.createElement("div");
+        grid.className = "options-grid";
+        q.options.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "opt-btn";
+          btn.style.fontSize = "1.25rem";
+          btn.textContent = opt.colorName;
+          btn.addEventListener("click", () => handleChoiceAnswer(btn, opt.colorName === q.target.colorName));
+          grid.appendChild(btn);
+        });
+        answerEl.appendChild(grid);
+
+      } else if (state.currentGame === 3) {
+        // GAME 3: SUSUN KATA
+        titleEl.textContent = "Susun huruf menjadi kata!";
+        setupWordPuzzle(q, stageEl, answerEl);
+      }
+    }
+
+    // --- LOGIKA GAME 1 & 2 ---
+    function handleChoiceAnswer(btn, isCorrect) {
+      if (state.locked) return;
+      const banner = document.getElementById("feedback-banner");
+
+      if (isCorrect) {
+        state.locked = true;
+        state.score++;
+        playTone("correct");
+        btn.classList.add("correct", "bounce-now");
+        banner.style.color = "#4d7c0f";
+        banner.textContent = `Pintar sekali, ${state.name}! 🎉`;
+        document.getElementById("game-score").textContent = `⭐ ${state.score}`;
+        setTimeout(nextQuestion, 1000);
+      } else {
+        playTone("wrong");
+        btn.classList.add("wrong", "shake-now");
+        banner.style.color = "#dc2626";
+        banner.textContent = "Coba pilih yang lain ya! 💪";
+        setTimeout(() => {
+          btn.classList.remove("wrong", "shake-now");
+        }, 600);
+      }
+    }
+
+    // --- LOGIKA GAME 3: SUSUN KATA ---
+    function setupWordPuzzle(q, stageEl, answerEl) {
+      const targetLetters = q.word.split("");
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+      // Tambahkan 2 huruf pengecoh acak agar anak berpikir memilih huruf yang benar
+      const extraLetters = [];
+      while (extraLetters.length < 2) {
+        const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+        if (!targetLetters.includes(randChar) && !extraLetters.includes(randChar)) {
+          extraLetters.push(randChar);
+        }
+      }
+
+      const mixed = shuffle([...targetLetters, ...extraLetters]);
+      state.wordSlots = Array(targetLetters.length).fill(null);
+      state.wordBank = mixed.map((char, index) => ({
+        id: index,
+        char,
+        used: false
+      }));
+
+      renderWordPuzzleUI(q, stageEl, answerEl);
+    }
+
+    function renderWordPuzzleUI(q, stageEl, answerEl) {
+      stageEl.innerHTML = "";
+      answerEl.innerHTML = "";
+
+      // Gambar & petunjuk di area atas
+      const pic = document.createElement("div");
+      pic.className = "word-picture";
+      pic.textContent = q.emoji;
+
+      const hint = document.createElement("div");
+      hint.className = "word-hint";
+      hint.textContent = q.hint;
+
+      // Kotak-kotak slot kata (misal: [K] [U] [D] [A])
+      const slotsWrap = document.createElement("div");
+      slotsWrap.className = "word-slots";
+      slotsWrap.id = "word-slots-wrap";
+
+      state.wordSlots.forEach((slotObj, slotIdx) => {
+        const slotEl = document.createElement("div");
+        slotEl.className = "letter-slot" + (slotObj ? " filled" : "");
+        slotEl.textContent = slotObj ? slotObj.char : "";
+
+        // Jika slot terisi dan belum terkunci, anak bisa tap untuk mengembalikan huruf
+        if (slotObj && !state.locked) {
+          slotEl.title = "Ketuk untuk melepas huruf";
+          slotEl.addEventListener("click", () => {
+            playTone("tap");
+            slotObj.used = false;
+            state.wordSlots[slotIdx] = null;
+            document.getElementById("feedback-banner").textContent = "";
+            renderWordPuzzleUI(q, stageEl, answerEl);
+          });
+        }
+        slotsWrap.appendChild(slotEl);
+      });
+
+      stageEl.appendChild(pic);
+      stageEl.appendChild(hint);
+      stageEl.appendChild(slotsWrap);
+
+      // Pilihan huruf acak di bawah
+      const bankWrap = document.createElement("div");
+      bankWrap.className = "letter-bank";
+
+      state.wordBank.forEach((tile) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "letter-tile" + (tile.used ? " used" : "");
+        btn.textContent = tile.char;
+
+        btn.addEventListener("click", () => {
+          if (state.locked || tile.used) return;
+          const emptyIdx = state.wordSlots.findIndex((s) => s === null);
+          if (emptyIdx === -1) return;
+
+          playTone("tap");
+          tile.used = true;
+          state.wordSlots[emptyIdx] = tile;
+          renderWordPuzzleUI(q, stageEl, answerEl);
+          checkWordCompletion(q);
+        });
+
+        bankWrap.appendChild(btn);
+      });
+
+      // Tombol Hapus / Ulangi susunan jika salah
+      const actionsWrap = document.createElement("div");
+      actionsWrap.className = "word-actions";
+
+      const resetBtn = document.createElement("button");
+      resetBtn.type = "button";
+      resetBtn.className = "small-btn";
+      resetBtn.textContent = "↺ Ulangi Huruf";
+      resetBtn.addEventListener("click", () => {
+        if (state.locked) return;
+        playTone("tap");
+        state.wordSlots.fill(null);
+        state.wordBank.forEach((t) => (t.used = false));
+        document.getElementById("feedback-banner").textContent = "";
+        renderWordPuzzleUI(q, stageEl, answerEl);
+      });
+
+      actionsWrap.appendChild(resetBtn);
+      answerEl.appendChild(bankWrap);
+      answerEl.appendChild(actionsWrap);
+    }
+
+    function checkWordCompletion(q) {
+      // Cek apakah semua kotak slot sudah terisi
+      if (state.wordSlots.some((s) => s === null)) return;
+
+      const formedWord = state.wordSlots.map((s) => s.char).join("");
+      const banner = document.getElementById("feedback-banner");
+      const slotsWrap = document.getElementById("word-slots-wrap");
+
+      if (formedWord === q.word) {
+        state.locked = true;
+        state.score++;
+        playTone("correct");
+        document.getElementById("game-score").textContent = `⭐ ${state.score}`;
+
+        if (slotsWrap) {
+          slotsWrap.querySelectorAll(".letter-slot").forEach((el) => {
+            el.classList.add("solved", "bounce-now");
+          });
+        }
+
+        banner.style.color = "#4d7c0f";
+        banner.textContent = `Hebat! Itu kata "${q.word}" 🎉`;
+        setTimeout(nextQuestion, 1150);
+      } else {
+        playTone("wrong");
+        if (slotsWrap) {
+          slotsWrap.classList.remove("shake-now");
+          void slotsWrap.offsetWidth;
+          slotsWrap.classList.add("shake-now");
+        }
+        banner.style.color = "#dc2626";
+        banner.textContent = `Belum tepat (${formedWord}), ketuk huruf untuk perbaiki! 💪`;
+      }
+    }
+
+    // --- LANJUT SOAL / SELESAI ---
+    function nextQuestion() {
+      state.currentIndex++;
+      if (state.currentIndex < state.totalQuestions) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      playTone("correct");
+      document.getElementById("result-title").textContent = `Hebat, ${state.name}!`;
+      document.getElementById("result-desc").textContent = `Kamu berhasil menyelesaikan permainan dengan baik.`;
+      document.getElementById("result-score-badge").textContent = `⭐ Skor: ${state.score} / ${state.totalQuestions}`;
+      showScreen("screen-result");
+    }
+
+    // Tombol Navigasi Bawah & Hasil
+    document.getElementById("btn-back-lobby").addEventListener("click", () => {
+      playTone("tap");
+      showScreen("screen-lobby");
+    });
+
+    document.getElementById("btn-play-again").addEventListener("click", () => {
+      playTone("tap");
+      startGame(state.currentGame);
+    });
+
+    document.getElementById("btn-result-lobby").addEventListener("click", () => {
+      playTone("tap");
+      showScreen("screen-lobby");
+    });
   </script>
 </body>
 </html>
